@@ -31,20 +31,9 @@ import BrightnessAutoRoundedIcon from '@mui/icons-material/BrightnessAutoRounded
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
-import { closeSidebar } from '.././utils';
+import { closeSidebar } from '../utils';
 
-function Toggler({
-  defaultExpanded = false,
-  renderToggle,
-  children,
-}: {
-  defaultExpanded?: boolean;
-  children: React.ReactNode;
-  renderToggle: (params: {
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => React.ReactNode;
-}) {
+function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
   return (
     <React.Fragment>
