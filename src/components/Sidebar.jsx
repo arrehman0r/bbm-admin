@@ -32,6 +32,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
+import { leftBarTabs } from './utils';
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
@@ -56,22 +57,6 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 
 export default function Sidebar() {
 
-
-
-  const leftBarTabs = [
-    {
-   heading : "Agency",
-   subheading: ["Add Agency", "View Agency","User Management"],
-  },
-  {
-    heading : "CRM",
-    subheading: ["Booking Managemnt", "Lead Management"],
-   },
-   {
-    heading : "Admin",
-    subheading: ["Booking Managemnt", "Lead Management"],
-   }
-]
 
 
 
