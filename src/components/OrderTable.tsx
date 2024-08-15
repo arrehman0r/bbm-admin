@@ -290,7 +290,7 @@ export default function OrderTable() {
           placeholder="Filter by status"
           slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
         >
-          <Option value="paid">Paid</Option>
+          <Option value="paid">Paid</Option>FormControl
           <Option value="pending">Pending</Option>
           <Option value="refunded">Refunded</Option>
           <Option value="cancelled">Cancelled</Option>

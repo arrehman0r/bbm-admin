@@ -5,7 +5,8 @@ import { StoreProviders } from "./redux/provider/Provider";
 const App = () => {
   return (
     <StoreProviders>
-      <AppRoutes /></StoreProviders>
+      <AppRoutes />
+    </StoreProviders>
   );
 }
 export default App

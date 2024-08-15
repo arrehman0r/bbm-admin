@@ -15,9 +15,14 @@ import Sidebar from '../../components/Sidebar';
 import OrderTable from '../../components/OrderTable';
 import OrderList from '../../components/OrderList';
 import Header from '../../components/Header';
+import AgencyManagement from '../agencyManagement/AddAgency';
+import DashboardMain from './DashboardMain';
+import { useSelector } from 'react-redux';
 
 
 const AppDashboard= ()=>  {
+  const selectedOption = useSelector((state) => state.dashboard.option);
+
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -68,7 +73,7 @@ const AppDashboard= ()=>  {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Orders
+                {selectedOption}
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -84,18 +89,23 @@ const AppDashboard= ()=>  {
             }}
           >
             <Typography level="h2" component="h1">
-              Orders
+           {selectedOption}
             </Typography>
-            <Button
+            {/* <Button
               color="primary"
               startDecorator={<DownloadRoundedIcon />}
               size="sm"
             >
               Download PDF
-            </Button>
+            </Button> */}
           </Box>
-          <OrderTable />
-          <OrderList /> 
+
+
+          
+        
+          <DashboardMain/>
+          {/* <OrderTable /> */}
+          {/* <OrderList />  */}
         </Box>
       </Box>
     </CssVarsProvider>

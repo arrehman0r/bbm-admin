@@ -6,15 +6,15 @@ export const leftBarTabs = [
   },
   {
     heading : "CRM",
-    subheading: ["Booking Managemnt", "Lead Management"],
+    subheading: ["Flight Booking", "Lead Management"],
    },
    {
     heading : "Administration",
-    subheading: ["Product List", "commerical plane" ,"Migration","supplier Management","Tax Configuration","Flight Rule Configuration","Command Builder","Location Setting","Security Management",],
+    subheading: ["Product List", "Commerical Plane" ,"Migration","supplier Management","Tax Configuration","Flight Rule Configuration","Command Builder","Location Setting","Security Management",],
    },
    {
     heading : "Organization Management",
-    subheading:["rganization Staff",]
+    subheading:["rganization Staff"]
    },
    {
     heading : "Role Management",

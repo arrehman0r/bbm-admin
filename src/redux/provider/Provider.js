@@ -6,11 +6,16 @@ import { SnackbarProvider } from "notistack";
 
 
 export function StoreProviders({ children }) {
+  const snackbarAnchorOrigin = {
+    vertical: 'bottom', // Position from bottom
+    horizontal: 'right', // Position from right
+  };
+  
   return (
     <Provider store={Store}>
       <PersistGate loading={null} persistor={persistor}>
        
-          <SnackbarProvider>
+          <SnackbarProvider anchorOrigin={snackbarAnchorOrigin}   autoHideDuration={3000}>
             {/* <AppLoader /> */}
             
             {children}

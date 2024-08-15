@@ -33,6 +33,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../utils';
 import { leftBarTabs } from './utils';
+import { useDispatch } from 'react-redux';
+import { setDashboardOption } from '../redux/reducer/dashboardSlice';
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
@@ -57,8 +59,13 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 
 export default function Sidebar() {
 
+  const dispatch = useDispatch()
 
+  const handleOptionClick = (option) => {
+    console.log("option is ", option)
+    dispatch(setDashboardOption(option))
 
+  }
 
   return (
     <Sheet
@@ -113,13 +120,13 @@ export default function Sidebar() {
         onClick={() => closeSidebar()}
       />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <IconButton variant="soft" color="primary" size="sm">
+        {/* <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
-        </IconButton>
+        </IconButton> */}
         <Typography level="title-lg">Alasam.</Typography>
-        <ColorSchemeToggle sx={{ ml: 'auto' }} />
+        {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
-      <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" />
+      {/* <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" /> */}
       <Box
         sx={{
           minHeight: 0,
@@ -141,171 +148,35 @@ export default function Sidebar() {
           }}
         >
 
-          {  leftBarTabs.map((item, index)=> (  
-          <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <AssignmentRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">{item.heading}</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                { item.subheading.map((subitem, index)=> (  
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>{subitem}</ListItemButton>
-                </ListItem>
-               ) )}
-              </List>
-            </Toggler>
-          </ListItem>))}
-
-          {/* <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <AssignmentRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">CRM</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>Booking Management</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Lead Management</ListItemButton>
-                </ListItem>
-                
-              </List>
-            </Toggler>
-          </ListItem>
-
-          <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <AssignmentRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">Administration</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>Product List</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Backlog</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>In progress</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Done</ListItemButton>
-                </ListItem>
-              </List>
-            </Toggler>
-          </ListItem>
-
-          <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <AssignmentRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">Tasks</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>All tasks</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Backlog</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>In progress</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Done</ListItemButton>
-                </ListItem>
-              </List>
-            </Toggler>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              role="menuitem"
-              component="a"
-              href="/joy-ui/getting-started/templates/messages/"
-            >
-              <QuestionAnswerRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Messages</Typography>
-              </ListItemContent>
-              <Chip size="sm" color="primary" variant="solid">
-                4
-              </Chip>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <GroupRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">Users</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton
-                    role="menuitem"
-                    component="a"
-                    // href="/joy-ui/getting-started/templates/profile-dashboard/"
-                  >
-                    My profile
+          {leftBarTabs.map((item, index) => (
+            <ListItem nested>
+              <Toggler
+                renderToggle={({ open, setOpen }) => (
+                  <ListItemButton onClick={() => setOpen(!open)}>
+                    <AssignmentRoundedIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">{item.heading}</Typography>
+                    </ListItemContent>
+                    <KeyboardArrowDownIcon
+                      sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
+                    />
                   </ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Create a new user</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Roles & permission</ListItemButton>
-                </ListItem>
-              </List>
-            </Toggler>
-          </ListItem> */}
+                )}
+              >
+                <List sx={{ gap: 0.5 }}>
+                  {item.subheading.map((subitem, index) => (
+                    <ListItem sx={{ mt: 0.5 }} key={index}>
+                      <ListItemButton onClick={() => handleOptionClick(subitem)}>{subitem}</ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </Toggler>
+            </ListItem>))}
+
+
         </List>
 
-        <List
+        {/* <List
           size="sm"
           sx={{
             mt: 'auto',
@@ -327,31 +198,11 @@ export default function Sidebar() {
               Settings
             </ListItemButton>
           </ListItem>
-        </List>
- <Card
-          invertedColors
-          variant="soft"
-          color="warning"
-          size="sm"
-          sx={{ boxShadow: 'none' }}
-        >
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography level="title-sm">Used space</Typography>
-            <IconButton size="sm">
-              <CloseRoundedIcon />
-            </IconButton>
-          </Stack>
-          <Typography level="body-xs">
-            Your team has used 80% of your available space. Need more?
-          </Typography>
-          <LinearProgress variant="outlined" value={80} determinate sx={{ my: 1 }} />
-          <Button size="sm" variant="solid">
-            Upgrade plan
-          </Button>
-        </Card>
+        </List> */}
+
       </Box>
       <Divider />
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      {/* <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <Avatar
           variant="outlined"
           size="sm"
@@ -364,7 +215,7 @@ export default function Sidebar() {
         <IconButton size="sm" variant="plain" color="neutral">
           <LogoutRoundedIcon />
         </IconButton>
-      </Box>
+      </Box> */}
     </Sheet>
   );
 }
