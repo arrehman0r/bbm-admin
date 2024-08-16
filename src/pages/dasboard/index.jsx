@@ -12,10 +12,10 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
 import Sidebar from '../../components/Sidebar'; 
-import OrderTable from '../../components/OrderTable';
+
 import OrderList from '../../components/OrderList';
 import Header from '../../components/Header';
-import AgencyManagement from '../agencyManagement/AddAgency';
+import AgencyManagement from '../../pages-components/agencyManagement/AddAgency';
 import DashboardMain from './DashboardMain';
 import { useSelector } from 'react-redux';
 
@@ -104,7 +104,7 @@ const AppDashboard= ()=>  {
           
         
           <DashboardMain/>
-          {/* <OrderTable /> */}
+          {/* <ViewAgencyTable /> */}
           {/* <OrderList />  */}
         </Box>
       </Box>

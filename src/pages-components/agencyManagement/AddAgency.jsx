@@ -14,8 +14,9 @@ const AddAgency = () => {
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
     const [timeZones, setTimeZones] = useState([]);
-    const [languages, setLanguages] = useState(["English", "Spanish", "French", "German","Urdu","Hindi","Punjabi"]);
+    const [languages, setLanguages] = useState(["English", "Spanish", "French", "German", "Urdu", "Hindi", "Punjabi"]);
     const [errors, setErrors] = useState({});
+    const [images, setImages] = useState([]);
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
@@ -24,8 +25,15 @@ const AddAgency = () => {
     }, []);
 
     const handleInputChange = useCallback((event) => {
-        const { name, value } = event.target;
-        agencyDetailsRef.current[name] = value;
+        const { name, value, files } = event.target;
+        
+        if (files) {
+            // Handle file upload for images
+            const selectedFiles = Array.from(files);
+            setImages(selectedFiles);
+        } else {
+            agencyDetailsRef.current[name] = value;
+        }
 
         if (name === "country") {
             const selectedCountry = countries.find(c => c.name === value);
@@ -40,9 +48,9 @@ const AddAgency = () => {
     const validateForm = () => {
         const newErrors = {};
         const requiredFields = [
-            "affiliateName","personName"
+            "affiliateName", "personName"
         ];
-        console.log("Form values:", agencyDetailsRef.current); 
+
         requiredFields.forEach(field => {
             if (!agencyDetailsRef.current[field]) {
                 newErrors[field] = true;
@@ -51,13 +59,23 @@ const AddAgency = () => {
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-    }
+    };
 
     const handleAddAgency = async () => {
         if (!validateForm()) {
             enqueueSnackbar("Please fill in all required fields.", { variant: 'error' });
             return;
         }
+
+        // Convert files to base64 or keep as blobs
+        const imagesBase64 = await Promise.all(images.map(file => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }));
 
         const body = {
             affiliateName: agencyDetailsRef.current.affiliateName,
@@ -75,19 +93,19 @@ const AddAgency = () => {
             affiliateType: agencyDetailsRef.current.affiliateType,
             arCode: agencyDetailsRef.current.arCode,
             groupArCode: agencyDetailsRef.current.groupArCode,
-            address: agencyDetailsRef.current.address
+            address: agencyDetailsRef.current.address,
+            images: imagesBase64 // Add the images array to the request body
         };
 
         try {
             const res = await addTravelAgency(body);
-            console.log("Agency added successfully:", res);
             enqueueSnackbar("Agency added successfully!", { variant: 'success' });
             // Reset form or handle any post-submit actions
         } catch (error) {
             console.error("Error adding agency:", error);
             enqueueSnackbar("Error adding agency", { variant: 'error' });
         }
-    }
+    };
 
     const formFields = [
         { component: InputField, label: "Affiliate Name", name: "affiliateName", error: errors.affiliateName },
@@ -143,7 +161,7 @@ const AddAgency = () => {
                 error={errors.address}
             />
             <ComponentWrapper text="Affiliate Documents">
-                <AppButton text="Upload" type="file" />
+                <AppButton text="Upload" type="file" onChange={handleInputChange} multiple />
             </ComponentWrapper>
             <AppButton text="Add Agency" onClick={handleAddAgency} />
         </div>

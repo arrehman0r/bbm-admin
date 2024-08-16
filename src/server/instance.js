@@ -49,8 +49,7 @@ export const makeRequest = async (type, path, body, token, options = {}) => {
 
 instance.interceptors.request.use(
   (config) => {
-    // const username = "ck_b25676b8d09eb93723809e56bcc70767830ebbe4";
-    // const password = "cs_d70f7243406cc40887939eb2df4bb4bf0515ab4b";
+  
     config.auth = {
       // username,
       // password,

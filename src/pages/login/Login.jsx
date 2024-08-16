@@ -8,43 +8,90 @@ import Checkbox from '@mui/joy/Checkbox';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
-import IconButton, { IconButtonProps } from '@mui/joy/IconButton';
+// import IconButton, { IconButtonProps } from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
-import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
-import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-import { GoogleIcon } from '../../images';
+import { userLogin } from '../../server/api';
+import { useSnackbar } from 'notistack';
+import { useDispatch } from 'react-redux';
+import { setLoginUser } from '../../redux/reducer/userSlice';
+import { useNavigate } from 'react-router-dom';
+// import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
+// import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
+// import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
+// import { GoogleIcon } from '../../images';
+// function ColorSchemeToggle() {
+//     //   const { onClick, ...other } = props;
+    // const { mode, setMode } = useColorScheme();
+//     const [mounted, setMounted] = React.useState(false);
 
+//     React.useEffect(() => setMounted(true), []);
 
-
-function ColorSchemeToggle() {
-    //   const { onClick, ...other } = props;
-    const { mode, setMode } = useColorScheme();
-    const [mounted, setMounted] = React.useState(false);
-
-    React.useEffect(() => setMounted(true), []);
-
-    return (
-        <IconButton
-            aria-label="toggle light/dark mode"
-            size="sm"
-            variant="outlined"
-            disabled={!mounted}
-            onClick={(event) => {
-                setMode(mode === 'light' ? 'dark' : 'light');
-                // onClick?.(event);
-            }}
-        //   {...other}
-        >
-            {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-        </IconButton>
-    );
-}
+//     return (
+//         <IconButton
+//             aria-label="toggle light/dark mode"
+//             size="sm"
+//             variant="outlined"
+//             disabled={!mounted}
+//             onClick={(event) => {
+//                 setMode(mode === 'light' ? 'dark' : 'light');
+//                 // onClick?.(event);
+//             }}
+//         //   {...other}
+//         >
+//             {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+//         </IconButton>
+//     );
+// }
 
 export default function AppLogin() {
+const { enqueueSnackbar } = useSnackbar();
+const [formData, setFormData] = React.useState({
+    email: '',
+    password: '',
+
+  });
+  const dispatch = useDispatch()
+  const navigate  = useNavigate()
+    const validateForm = () => {
+        const { password, email } = formData;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!password || !email) {
+            enqueueSnackbar("Please fill in all required fields.", { variant: 'error' });
+          return false;
+        }
+        if (!emailRegex.test(email)) {
+            enqueueSnackbar("Please enter a valid email address", { variant: 'error' });
+       
+          return false;
+        }
+        return true;
+      };
+    
+      const handleUserLogin = async (event) => {
+        event.preventDefault();
+        if (validateForm()) {
+            try {
+                const res = await userLogin(formData);
+               
+                if (res.user.id) {
+                    enqueueSnackbar("Login successful!", { variant: 'success' });
+                  dispatch(setLoginUser(res?.user))
+                  navigate("/")
+                } else {
+                    enqueueSnackbar(res || "Login failed.", { variant: 'error' });
+                }
+            } catch (error) {
+                enqueueSnackbar("An error occurred during login.", { variant: 'error' });
+            }
+        }
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };  
     return (
         <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
             <CssBaseline />
@@ -90,12 +137,12 @@ export default function AppLogin() {
                         }}
                     >
                         <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-                            <IconButton variant="soft" color="primary" size="sm">
+                            {/* <IconButton variant="soft" color="primary" size="sm">
                                 <BadgeRoundedIcon />
-                            </IconButton>
+                            </IconButton> */}
                             <Typography level="title-lg">Alasam</Typography>
                         </Box>
-                        <ColorSchemeToggle />
+                        {/* <ColorSchemeToggle /> */}
                     </Box>
                     <Box
                         component="main"
@@ -126,21 +173,21 @@ export default function AppLogin() {
                                     Login
                                 </Typography>
                                 <Typography level="body-sm">
-                                    New to alasam <Link href="/register" level="title-sm">
+                                    New to alasam? <Link href="/register" level="title-sm">
                                         Regsiter
                                     </Link>
                                 </Typography>
                             </Stack>
-                            <Button
+                            {/* <Button
                                 variant="soft"
                                 color="neutral"
                                 fullWidth
                                 startDecorator={<GoogleIcon />}
                             >
                                 Continue with Google
-                            </Button>
+                            </Button> */}
                         </Stack>
-                        <Divider
+                        {/* <Divider
                             sx={(theme) => ({
                                 [theme.getColorSchemeSelector('light')]: {
                                     color: { xs: '#FFF', md: 'text.tertiary' },
@@ -148,27 +195,16 @@ export default function AppLogin() {
                             })}
                         >
                             or
-                        </Divider>
+                        </Divider> */}
                         <Stack gap={4} sx={{ mt: 2 }}>
-                            <form
-                            // onSubmit={(event: React.FormEvent<SignInFormElement>) => {
-                            //   event.preventDefault();
-                            //   const formElements = event.currentTarget.elements;
-                            //   const data = {
-                            //     email: formElements.email.value,
-                            //     password: formElements.password.value,
-                            //     persistent: formElements.persistent.checked,
-                            //   };
-                            //   alert(JSON.stringify(data, null, 2));
-                            // }}
-                            >
+                            <form onSubmit={handleUserLogin}>
                                 <FormControl required>
                                     <FormLabel>Email</FormLabel>
-                                    <Input type="email" name="email" />
+                                    <Input type="email" name="email" value={formData.email} onChange={handleChange} />
                                 </FormControl>
                                 <FormControl required>
                                     <FormLabel>Password</FormLabel>
-                                    <Input type="password" name="password" />
+                                    <Input type="password" name="password" value={formData.password} onChange={handleChange} />
                                 </FormControl>
                                 <Stack gap={4} sx={{ mt: 2 }}>
                                     <Box
@@ -178,7 +214,6 @@ export default function AppLogin() {
                                             alignItems: 'center',
                                         }}
                                     >
-                                        <Checkbox size="sm" label="Remember me" name="persistent" />
                                         <Link level="title-sm" href="#replace-with-a-link">
                                             Forgot your password?
                                         </Link>

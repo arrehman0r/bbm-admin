@@ -20,29 +20,29 @@ import { GoogleIcon } from '../../images';
 
 
 
-function ColorSchemeToggle() {
-//   const { onClick, ...other } = props;
-  const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
+// function ColorSchemeToggle() {
+// //   const { onClick, ...other } = props;
+//   const { mode, setMode } = useColorScheme();
+//   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => setMounted(true), []);
+//   React.useEffect(() => setMounted(true), []);
 
-  return (
-    <IconButton
-      aria-label="toggle light/dark mode"
-      size="sm"
-      variant="outlined"
-      disabled={!mounted}
-      onClick={(event) => {
-        setMode(mode === 'light' ? 'dark' : 'light');
-        // onClick?.(event);
-      }}
-    //   {...other}
-    >
-      {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-    </IconButton>
-  );
-}
+//   return (
+//     <IconButton
+//       aria-label="toggle light/dark mode"
+//       size="sm"
+//       variant="outlined"
+//       disabled={!mounted}
+//       onClick={(event) => {
+//         setMode(mode === 'light' ? 'dark' : 'light');
+//         // onClick?.(event);
+//       }}
+//     //   {...other}
+//     >
+//       {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+//     </IconButton>
+//   );
+// }
 
 export default function AppRegister() {
   return (
@@ -90,12 +90,12 @@ export default function AppRegister() {
             }}
           >
             <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-              <IconButton variant="soft" color="primary" size="sm">
+              {/* <IconButton variant="soft" color="primary" size="sm">
                 <BadgeRoundedIcon />
-              </IconButton>
+              </IconButton> */}
               <Typography level="title-lg">Alasam</Typography>
             </Box>
-            <ColorSchemeToggle />
+            {/* <ColorSchemeToggle /> */}
           </Box>
           <Box
             component="main"
@@ -132,16 +132,16 @@ export default function AppRegister() {
                   </Link>
                 </Typography>
               </Stack>
-              <Button
+              {/* <Button
                 variant="soft"
                 color="neutral"
                 fullWidth
                 startDecorator={<GoogleIcon />}
               >
                 Continue with Google
-              </Button>
+              </Button> */}
             </Stack>
-            <Divider
+            {/* <Divider
               sx={(theme) => ({
                 [theme.getColorSchemeSelector('light')]: {
                   color: { xs: '#FFF', md: 'text.tertiary' },
@@ -149,7 +149,7 @@ export default function AppRegister() {
               })}
             >
               or
-            </Divider>
+            </Divider> */}
             <Stack gap={4} sx={{ mt: 2 }}>
               <form
                 // onSubmit={(event: React.FormEvent<SignInFormElement>) => {

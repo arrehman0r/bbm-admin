@@ -5,9 +5,14 @@ export const addTravelAgency = (body) => {
   return makeRequest("post", "agency", body);
 };
 
-
-export const getAllCoutriesName = () => {
-  return makeRequest("get", "https://restcountries.com/v3.1/all");
+export const getTravelAgency = () => {
+  return makeRequest("get", "agency");
 };
 
+export const userLogin = (body)=>{
+  return makeRequest("post" , "auth/login", body)
+};
 
+export const userRegister = (body)=>{
+  return makeRequest("post" , "auth/register", body)
+}

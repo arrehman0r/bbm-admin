@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { ColorPaletteProp } from '@mui/joy/styles';
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
@@ -33,6 +33,7 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
+import { getTravelAgency } from '../server/api';
 
 const rows = [
   {
@@ -277,10 +278,12 @@ function RowMenu() {
   );
 }
 
-export default function OrderTable() {
+export default function ViewAgencyTable() {
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+
+
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">
