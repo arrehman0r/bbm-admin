@@ -9,6 +9,10 @@ export const getTravelAgency = () => {
   return makeRequest("get", "agency");
 };
 
+export const getUsers = () => {
+  return makeRequest("get", "users");
+};
+
 export const userLogin = (body)=>{
   return makeRequest("post" , "auth/login", body)
 };

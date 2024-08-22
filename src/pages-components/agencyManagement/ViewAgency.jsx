@@ -133,27 +133,27 @@ export default function ViewAgency() {
         name="agencyCategory" 
         options={["Category1", "Category2"]} 
       /> */}
-      
-      <InputField 
-        label="Code" 
-        name="code" 
-        placeholder="Code" 
+
+      <InputField
+        label="Code"
+        name="code"
+        placeholder="Code"
       />
-      
-      <InputField 
-        label="Email ID" 
-        name="email" 
-        placeholder="Email ID" 
+
+      <InputField
+        label="Email ID"
+        name="email"
+        placeholder="Email ID"
       />
-      
-      <InputField 
-        label="Agency Name" 
-        name="agencyName" 
-        placeholder="Agency Name" 
+
+      <InputField
+        label="Agency Name"
+        name="agencyName"
+        placeholder="Agency Name"
       />
     </React.Fragment>
   );
-  
+
   return (
     <React.Fragment>
       <Sheet className="SearchAndFilters-mobile" sx={{ display: { xs: 'flex', sm: 'none' }, my: 1, gap: 1 }}>
@@ -192,7 +192,7 @@ export default function ViewAgency() {
           flexShrink: 1,
           overflow: 'auto',
           minHeight: 0,
-        
+
         }}
       >
         <Table
@@ -205,7 +205,7 @@ export default function ViewAgency() {
             '--TableRow-hoverBackground': 'var(--joy-palette-background-level1)',
             '--TableCell-paddingY': '4px',
             '--TableCell-paddingX': '8px',
-           
+
           }}
         >
           <thead>
@@ -221,24 +221,25 @@ export default function ViewAgency() {
               <th />
             </tr>
           </thead>
-          <tbody>
-            {stableSort(agencies, getComparator(order, 'agencyName')).map((row) => (
-              <tr key={row.agencyName}>
-                <td><Checkbox size="sm" checked={selected.includes(row.agencyName)} onChange={(event) => setSelected(event.target.checked ? [...selected, row.agencyName] : selected.filter((name) => name !== row.agencyName))} /></td>
-                <td>{row.personName}</td>
-                <td>Active</td>
-                <td>{row?.availableLimit}</td>
-                <td>{row.country}</td>
-                <td>{row.groupArCode}</td>
-                <td>{row.agencyType}</td>
-                <td>{row.arCode}</td>
-                <td><RowMenu /></td>
-              </tr>
-            ))}
-          </tbody>
+          {agencies.length > 0 &&
+            <tbody>
+              {stableSort(agencies, getComparator(order, 'agencyName')).map((row) => (
+                <tr key={row.agencyName}>
+                  <td><Checkbox size="sm" checked={selected.includes(row.agencyName)} onChange={(event) => setSelected(event.target.checked ? [...selected, row.agencyName] : selected.filter((name) => name !== row.agencyName))} /></td>
+                  <td>{row.personName}</td>
+                  <td>Active</td>
+                  <td>{row?.availableLimit}</td>
+                  <td>{row.country}</td>
+                  <td>{row.groupArCode}</td>
+                  <td>{row.agencyType}</td>
+                  <td>{row.arCode}</td>
+                  <td><RowMenu /></td>
+                </tr>
+              ))}
+            </tbody>}
         </Table>
       </Sheet>
-      
+
       <Box className="Pagination-laptopUp" sx={{ pt: 2, display: { xs: 'none', md: 'flex' } }}>
         <Button size="sm" variant="outlined" color="neutral" startDecorator={<KeyboardArrowLeftIcon />}>Previous</Button>
         <Box sx={{ flex: 1 }} />

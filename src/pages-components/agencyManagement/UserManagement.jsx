@@ -36,7 +36,8 @@ import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { Country, City } from 'country-state-city';
 import InputField from "../../components/common/InputField";
 import FormSelect from '../../components/common/FormSelect';
-import { getTravelAgency } from '../../server/api';
+import { getTravelAgency, getUsers } from '../../server/api';
+import AppButton from '../../components/common/AppButton';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -93,8 +94,11 @@ export default function UserManagement() {
   //   setCountries(Country.getAllCountries());
   // }, []);
   const fetchAgencies = async () => {
-    const res = await getTravelAgency();
-    setAgencies(res)
+    const res = await getUsers();
+    if (res) { setAgencies(res) }
+    else {
+      setAgencies([])
+    }
     console.log("res of agencies", res)
   }
 
@@ -133,27 +137,27 @@ export default function UserManagement() {
         name="agencyCategory" 
         options={["Category1", "Category2"]} 
       /> */}
-      
-      <InputField 
-        label="Code" 
-        name="code" 
-        placeholder="Code" 
+
+      <InputField
+        label="Code"
+        name="code"
+        placeholder="Code"
       />
-      
-      <InputField 
-        label="Email ID" 
-        name="email" 
-        placeholder="Email ID" 
+
+      <InputField
+        label="Email ID"
+        name="email"
+        placeholder="Email ID"
       />
-      
-      <InputField 
-        label="User Name" 
-        name="userName" 
-        placeholder="User Name" 
+
+      <InputField
+        label="User Name"
+        name="userName"
+        placeholder="User Name"
       />
     </React.Fragment>
   );
-  
+
   return (
     <React.Fragment>
       <Sheet className="SearchAndFilters-mobile" sx={{ display: { xs: 'flex', sm: 'none' }, my: 1, gap: 1 }}>
@@ -161,13 +165,31 @@ export default function UserManagement() {
         <IconButton size="sm" variant="outlined" color="neutral" onClick={() => setOpen(true)}>
           <FilterAltIcon />
         </IconButton>
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <ModalDialog aria-labelledby="filter-modal" layout="fullscreen">
+        <Modal open={open} onClose={() => setOpen(false)}  >
+          <ModalDialog  >
             <ModalClose />
-            <Typography id="filter-modal" level="h2">Filters</Typography>
+            <Typography id="filter-modal" level="h2">Add User</Typography>
             <Divider sx={{ my: 2 }} />
             <Sheet sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {renderFilters()}
+              <InputField
+                label="User Name"
+                name="user_name"
+                placeholder="User Name"
+              />
+
+              <FormSelect label="select role" options={["Role", "Manager"]} />
+
+              <InputField
+                label="Email Address"
+                name="user_email"
+                placeholder="Email Address"
+              />
+
+              <InputField
+                label="Password"
+                name="password"
+                placeholder="Password"
+              />
               <Button color="primary" onClick={() => setOpen(false)}>Submit</Button>
             </Sheet>
           </ModalDialog>
@@ -181,7 +203,10 @@ export default function UserManagement() {
         </FormControl>
         {renderFilters()}
       </Box>
-
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <div></div>
+        <AppButton text="Add User" onClick={() => setOpen(true)} />
+      </Box>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -192,7 +217,7 @@ export default function UserManagement() {
           flexShrink: 1,
           overflow: 'auto',
           minHeight: 0,
-        
+
         }}
       >
         <Table
@@ -205,7 +230,7 @@ export default function UserManagement() {
             '--TableRow-hoverBackground': 'var(--joy-palette-background-level1)',
             '--TableCell-paddingY': '4px',
             '--TableCell-paddingX': '8px',
-           
+
           }}
         >
           <thead>
@@ -221,24 +246,25 @@ export default function UserManagement() {
               <th />
             </tr>
           </thead>
-          <tbody>
-            {stableSort(agencies, getComparator(order, 'userName')).map((row) => (
-              <tr key={row.agencyName}>
-                <td><Checkbox size="sm" checked={selected.includes(row.userName)} onChange={(event) => setSelected(event.target.checked ? [...selected, row.userName] : selected.filter((name) => name !== row.userName))} /></td>
-                <td>{row.personName}</td>
-                <td>Active</td>
-                <td>{row?.availableLimit}</td>
-                <td>{row.country}</td>
-                <td>{row.groupArCode}</td>
-                <td>{row.agencyType}</td>
-                <td>{row.arCode}</td>
-                <td><RowMenu /></td>
-              </tr>
-            ))}
-          </tbody>
+          {agencies.length > 0 &&
+            <tbody>
+              {stableSort(agencies, getComparator(order, 'userName'))?.map((row) => (
+                <tr key={row.agencyName}>
+                  <td><Checkbox size="sm" checked={selected.includes(row.userName)} onChange={(event) => setSelected(event.target.checked ? [...selected, row.userName] : selected.filter((name) => name !== row.userName))} /></td>
+                  <td>{row.personName}</td>
+                  <td>Active</td>
+                  <td>{row?.availableLimit}</td>
+                  <td>{row.country}</td>
+                  <td>{row.groupArCode}</td>
+                  <td>{row.agencyType}</td>
+                  <td>{row.arCode}</td>
+                  <td><RowMenu /></td>
+                </tr>
+              ))}
+            </tbody>}
         </Table>
       </Sheet>
-      
+
       <Box className="Pagination-laptopUp" sx={{ pt: 2, display: { xs: 'none', md: 'flex' } }}>
         <Button size="sm" variant="outlined" color="neutral" startDecorator={<KeyboardArrowLeftIcon />}>Previous</Button>
         <Box sx={{ flex: 1 }} />

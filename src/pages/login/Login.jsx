@@ -172,11 +172,11 @@ const [formData, setFormData] = React.useState({
                                 <Typography component="h1" level="h3">
                                     Login
                                 </Typography>
-                                <Typography level="body-sm">
+                                {/* <Typography level="body-sm">
                                     New to alasam? <Link href="/register" level="title-sm">
                                         Regsiter
                                     </Link>
-                                </Typography>
+                                </Typography> */}
                             </Stack>
                             {/* <Button
                                 variant="soft"
