@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
@@ -36,8 +36,12 @@ import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { Country, City } from 'country-state-city';
 import InputField from "../../components/common/InputField";
 import FormSelect from '../../components/common/FormSelect';
-import { getTravelAgency, getUsers } from '../../server/api';
+import { addAgencyUser, getTravelAgency, getAgencyUsers, deleteAgencyUser, getAgencyUserRoles, updateAgencyUserStatus } from '../../server/api';
 import AppButton from '../../components/common/AppButton';
+import { useSnackbar } from 'notistack';
+import ConfirmDeleteUser from '../../components/modals/ConfirmDeleteUser';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../../redux/reducer/loaderSlice';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -62,82 +66,164 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RowMenu() {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Deactivate</MenuItem>
-        <MenuItem>Move</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
 
 export default function UserManagement() {
+  const userManagementRef = useRef({});
   const [order, setOrder] = useState('desc');
   const [selected, setSelected] = useState([]);
   const [agencies, setAgencies] = useState([])
   const [open, setOpen] = useState(false);
   const [cities, setCities] = useState([]);
   const [countries, setCountries] = useState([]);
-
-  // useEffect(() => {
-  //   setCountries(Country.getAllCountries());
-  // }, []);
-  const fetchAgencies = async () => {
-    const res = await getUsers();
-    if (res) { setAgencies(res) }
-    else {
-      setAgencies([])
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [openDeleteUser, setOpenDeleteUser] = useState(false)
+  const [usersRoles, setUsersRoles] = useState([])
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch()
+  useEffect(() => {
+    fetchAgencyUserRoles()
+  }, []);
+  const fetchAgencyUserRoles = async () => {
+    try {
+      const res = await getAgencyUserRoles()
+      if (res.length > 0) {
+        setUsersRoles(res)
+        console.log("Res of user roles::", res)
+      }
     }
-    console.log("res of agencies", res)
+    catch (error) {
+
+    }
+
+  }
+  function RowMenu({ userId, openDeleteModal, status }) {
+    return (
+      <Dropdown>
+        <MenuButton
+          slots={{ root: IconButton }}
+          slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
+        >
+          <MoreHorizRoundedIcon />
+        </MenuButton>
+        <Menu size="sm" sx={{ minWidth: 140 }}>
+          {/* <MenuItem>Edit</MenuItem> */}
+          <MenuItem onClick={() => handleAgencyUserStatus(userId, status)}>{status === "INACTIVE" ? "ACTIVE" : "INACTIVE"}</MenuItem>
+          {/* <MenuItem>Move</MenuItem> */}
+          <Divider />
+          <MenuItem color="danger" onClick={() => openDeleteModal(userId)}>Delete</MenuItem>
+        </Menu>
+      </Dropdown>
+    );
+  }
+
+  const handleAgencyUserStatus = async (userId, status) => {
+    const userStatus = status === "INACTIVE" ? "ACTIVE" : "INACTIVE"
+    const body = {
+      status: userStatus
+    }
+    try {
+      const res = await updateAgencyUserStatus(userId, body)
+      console.log("res of activate user is ", res)
+      fetchAgencyUsers()
+    }
+    catch (error) {
+      console.log("error fetching user status", error)
+    }
+
+
+
+  }
+
+
+  const fetchAgencyUsers = async () => {
+    try {
+      dispatch(setLoading(true))
+      const res = await getAgencyUsers();
+      console.log("users data=-----------------", res)
+      if (res.body.data) {
+        setAgencies(res.body.data)
+        dispatch(setLoading(false))
+      }
+      else {
+        setAgencies([])
+        dispatch(setLoading(false))
+        enqueueSnackbar("Error in fetching users.", { variant: 'error' });
+      }
+    }
+    catch (error) {
+      dispatch(setLoading(false))
+      console.log("error in fetching users", error)
+      enqueueSnackbar("Error in fetching users.", { variant: 'error' });
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+
   }
 
   useEffect(() => {
-    fetchAgencies()
+    fetchAgencyUsers()
+
+    console.log("agencis fetched")
   }, [])
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
-    if (name === "country") {
-      const selectedCountry = countries.find(c => c.name === value);
-      if (selectedCountry) {
-        setCities(City.getCitiesOfCountry(selectedCountry.isoCode).map(city => city.name));
-      } else {
-        setCities([]);
+    userManagementRef.current[name] = value;
+  }, []);
+
+  const handleAddUser = async () => {
+    const body = {
+      firstName: userManagementRef.current.userName,
+      email: userManagementRef.current.userEmail,
+      password: userManagementRef.current.password,
+      role: userManagementRef.current.role
+    }
+    try {
+      dispatch(setLoading(true))
+      const res = await addAgencyUser(body)
+      console.log("add user response", res)
+      if (res.body?._id) {
+        dispatch(setLoading(true))
+        enqueueSnackbar("User addes successfully.", { variant: 'success' });
+        fetchAgencyUsers()
       }
     }
-  }, [countries]);
+    catch (error) {
+      dispatch(setLoading(true))
+      enqueueSnackbar("Error in adding user.", { variant: 'error' });
+    }
+    finally {
+      dispatch(setLoading(true))
+    }
+  }
 
+  const handleDeleteAgencyUser = async () => {
+    try {
+      dispatch(setLoading(true))
+      const res = await deleteAgencyUser(userIdToDelete);
+      if (res) {
+        enqueueSnackbar('User deleted successfully', { variant: 'success' });
+        fetchAgencyUsers(); // Refresh the list after deletion
+        setOpenDeleteUser(false); // Close the modal after deletion
+        dispatch(setLoading(false))
+        dispatch(setLoading(false))
+      }
+    } catch (error) {
+      enqueueSnackbar('Error deleting user.', { variant: 'error' });
+      dispatch(setLoading(false))
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+  };
+
+  const openDeleteModal = (id) => {
+    setUserIdToDelete(id); // Set the ID of the user to be deleted
+    setOpenDeleteUser(true); // Open the modal
+  }
   const renderFilters = () => (
     <React.Fragment>
-      {/* <FormSelect 
-        label="Agency Type" 
-        name="agencyType" 
-        options={["Type1", "Type2"]} 
-      />
-      
-      <FormSelect 
-        label="Status" 
-        name="status" 
-        options={["Active", "Inactive"]} 
-      />
-      
-        <FormSelect 
-        label="Agency Category" 
-        name="agencyCategory" 
-        options={["Category1", "Category2"]} 
-      /> */}
-
       <InputField
         label="Code"
         name="code"
@@ -173,24 +259,30 @@ export default function UserManagement() {
             <Sheet sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <InputField
                 label="User Name"
-                name="user_name"
+                name="userName"
                 placeholder="User Name"
+                onChange={handleInputChange}
               />
-
-              <FormSelect label="select role" options={["Role", "Manager"]} />
-
+              <FormSelect
+                label="Select Role"
+                name="role"
+                options={usersRoles.map((role) => role.name)}
+                onChange={handleInputChange}
+              />
               <InputField
                 label="Email Address"
-                name="user_email"
+                name="userEmail"
                 placeholder="Email Address"
+                onChange={handleInputChange}
               />
 
               <InputField
                 label="Password"
                 name="password"
                 placeholder="Password"
+                onChange={handleInputChange}
               />
-              <Button color="primary" onClick={() => setOpen(false)}>Submit</Button>
+              <Button color="primary" onClick={handleAddUser}>Submit</Button>
             </Sheet>
           </ModalDialog>
         </Modal>
@@ -237,10 +329,7 @@ export default function UserManagement() {
             <tr>
               <th><Checkbox size="sm" indeterminate={selected.length > 0 && selected.length !== agencies.length} checked={selected.length === agencies.length} onChange={(event) => setSelected(event.target.checked ? agencies.map((row) => row.id) : [])} /></th>
               <th><Link underline="none" color="primary" onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')}>User Name</Link></th>
-              <th>User Id</th>
-              <th>User Name</th>
               <th>User Email</th>
-              <th>Code</th>
               <th>Role</th>
               <th>Status</th>
               <th />
@@ -251,14 +340,11 @@ export default function UserManagement() {
               {stableSort(agencies, getComparator(order, 'userName'))?.map((row) => (
                 <tr key={row.agencyName}>
                   <td><Checkbox size="sm" checked={selected.includes(row.userName)} onChange={(event) => setSelected(event.target.checked ? [...selected, row.userName] : selected.filter((name) => name !== row.userName))} /></td>
-                  <td>{row.personName}</td>
-                  <td>Active</td>
-                  <td>{row?.availableLimit}</td>
-                  <td>{row.country}</td>
-                  <td>{row.groupArCode}</td>
-                  <td>{row.agencyType}</td>
-                  <td>{row.arCode}</td>
-                  <td><RowMenu /></td>
+                  <td>{row.firstName}</td>
+                  <td>{row?.email}</td>
+                  <td>{row.role}</td>
+                  <td>{row.status}</td>
+                  <td>  <RowMenu userId={row._id} status={row.status} openDeleteModal={openDeleteModal} /></td>
                 </tr>
               ))}
             </tbody>}
@@ -274,6 +360,12 @@ export default function UserManagement() {
         <Box sx={{ flex: 1 }} />
         <Button size="sm" variant="outlined" color="neutral" endDecorator={<KeyboardArrowRightIcon />}>Next</Button>
       </Box>
+      <ConfirmDeleteUser
+        openDeleteUser={openDeleteUser}
+        setOpenDeleteUser={setOpenDeleteUser}
+        handleDeleteAgencyUser={handleDeleteAgencyUser}
+      />
+
     </React.Fragment>
   );
 }
