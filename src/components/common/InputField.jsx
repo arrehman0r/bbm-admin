@@ -1,14 +1,32 @@
-import * as React from 'react';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import FormHelperText from '@mui/joy/FormHelperText';
-import Input from '@mui/joy/Input';
+import * as React from "react";
+import FormControl from "@mui/joy/FormControl";
+import FormLabel from "@mui/joy/FormLabel";
+import FormHelperText from "@mui/joy/FormHelperText";
+import Input from "@mui/joy/Input";
 
-export default function InputField({ label, placeholder, helpertext, error, onChange, ...props }) {
+export default function InputField({
+  label,
+  placeholder,
+  helpertext,
+  size,
+  width,
+  error,
+  onChange,
+  ...props
+}) {
   return (
-    <FormControl size="sm">
+    <FormControl size={size || "sm"}>
       <FormLabel>{label}</FormLabel>
-      <Input placeholder={placeholder} onChange={onChange} {...props} error={error} />
+      <Input
+        placeholder={placeholder}
+        onChange={onChange}
+        error={error}
+        sx={{
+          ...(width && { width: width }), // Apply width only if it exists
+        }}
+        {...props}
+      />
       {helpertext && <FormHelperText>{helpertext}</FormHelperText>}
-    </FormControl>)
+    </FormControl>
+  );
 }

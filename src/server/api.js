@@ -20,3 +20,11 @@ export const userLogin = (body)=>{
 export const userRegister = (body)=>{
   return makeRequest("post" , "auth/register", body)
 }
+
+export const getFlightBooking = (body) => {
+  return makeRequest("post", "agency", body);
+};
+
+export const get = (body) => {
+  return makeRequest("post", "agency", body);
+};
