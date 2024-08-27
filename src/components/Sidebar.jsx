@@ -35,6 +35,7 @@ import { closeSidebar } from '../utils';
 import { leftBarTabs } from './utils';
 import { useDispatch } from 'react-redux';
 import { setDashboardOption } from '../redux/reducer/dashboardSlice';
+import { setLoginUser } from '../redux/reducer/userSlice';
 
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
@@ -57,7 +58,12 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
   );
 }
 
+
 export default function Sidebar() {
+
+  const handleLogout = () =>{
+    dispatch(setLoginUser(null))
+  }
 
   const dispatch = useDispatch()
 
@@ -202,7 +208,7 @@ export default function Sidebar() {
 
       </Box>
       <Divider />
-      {/* <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
         <Avatar
           variant="outlined"
           size="sm"
@@ -212,10 +218,10 @@ export default function Sidebar() {
           <Typography level="title-sm">Abdul Rehman.</Typography>
           <Typography level="body-xs">arrehman0r@gmail.com</Typography>
         </Box>
-        <IconButton size="sm" variant="plain" color="neutral">
+        <IconButton size="sm" variant="plain" color="neutral" onClick={handleLogout}>
           <LogoutRoundedIcon />
         </IconButton>
-      </Box> */}
+      </Box>
     </Sheet>
   );
 }
