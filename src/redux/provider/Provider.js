@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import Store, { persistor } from "../store/store";
 import { SnackbarProvider } from "notistack";
+import AppLoader from "../../components/common/AppLoader";
 
 
 export function StoreProviders({ children }) {
@@ -14,13 +15,10 @@ export function StoreProviders({ children }) {
   return (
     <Provider store={Store}>
       <PersistGate loading={null} persistor={persistor}>
-       
-          <SnackbarProvider anchorOrigin={snackbarAnchorOrigin}   autoHideDuration={3000}>
-            {/* <AppLoader /> */}
-            
+          <SnackbarProvider anchorOrigin={snackbarAnchorOrigin} autoHideDuration={3000}>
+            <AppLoader />  
             {children}
           </SnackbarProvider>
-       
       </PersistGate>
     </Provider>
   );
