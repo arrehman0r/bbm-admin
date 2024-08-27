@@ -152,113 +152,120 @@ const AddAgency = () => {
     }
   };
 
-  const formFields = useMemo(
-    () => [
-      {
-        component: InputField,
-        label: "Affiliate Name",
-        name: "affiliateName",
-        error: errors.affiliateName,
-        placeholder: "Enter Affiliate Name",
-      },
-      {
-        component: InputField,
-        label: "Person Name",
-        name: "personName",
-        error: errors.personName,
-        placeholder: "Enter Person Name",
-      },
-      {
-        component: InputField,
-        label: "Designation",
-        name: "designation",
-        error: errors.designation,
-        placeholder: "Enter Designation",
-      },
-      {
-        component: InputField,
-        label: "Phone Number",
-        name: "phoneNumber",
-        error: errors.phoneNumber,
-        placeholder: "Enter Phone Number",
-      },
-      {
-        component: FormSelect,
-        label: "Country",
-        name: "country",
-        options: countries.map((country) => country.name),
-        error: errors.country,
-        placeholder: "Select Country",
-      },
-      {
-        component: FormSelect,
-        label: "City",
-        name: "city",
-        options: cities,
-        error: errors.city,
-        placeholder: "Select City",
-      },
-      {
-        component: FormSelect,
-        label: "Time Zone",
-        name: "timeZone",
-        options: timeZones,
-        error: errors.timeZone,
-        placeholder: "Select Time Zone",
-      },
-      {
-        component: InputField,
-        label: "Currency",
-        name: "currency",
-        error: errors.currency,
-        placeholder: "Enter Currency",
-      },
-      {
-        component: FormSelect,
-        label: "Language",
-        name: "defaultLanguage",
-        options: languages,
-        error: errors.defaultLanguage,
-        placeholder: "Select Language",
-      },
-      {
-        component: InputField,
-        label: "Sales Channel",
-        name: "salesChannel",
-        error: errors.salesChannel,
-        placeholder: "Enter Sales Channel",
-      },
-      {
-        component: InputField,
-        label: "PO Box Number",
-        name: "poBoxNumber",
-        error: errors.poBoxNumber,
-        placeholder: "Enter PO Box Number",
-      },
-      {
-        component: InputField,
-        label: "Affiliate Type",
-        name: "affiliateType",
-        error: errors.affiliateType,
-        placeholder: "Enter Affiliate Type",
-      },
-      {
-        component: InputField,
-        label: "AR Code",
-        name: "arCode",
-        error: errors.arCode,
-        placeholder: "Enter AR Code",
-      },
-      {
-        component: InputField,
-        label: "Group AR Code",
-        name: "groupArCode",
-        error: errors.groupArCode,
-        placeholder: "Enter Group AR Code",
-      },
-    ],
-    [errors, countries, cities, timeZones, languages]
-  );
+  const formFields = [
+    {
+      component: InputField,
+      label: "Affiliate Name",
+      name: "affiliateName",
+      error: errors.affiliateName,
+    },
+    {
+      component: InputField,
+      label: "Person Name",
+      name: "personName",
+      error: errors.personName,
+    },
+    {
+      component: InputField,
+      label: "Designation",
+      name: "designation",
+      error: errors.designation,
+    },
+    {
+      component: FormSelect,
+      label: "Country",
+      name: "country",
+      options: countries.map((c) => c.name),
+      error: errors.country,
+    },
+    {
+      component: FormSelect,
+      label: "City",
+      name: "city",
+      options: cities,
+      error: errors.city,
+    },
+    {
+      component: InputField,
+      label: "Phone",
+      name: "phoneNumber",
+      error: errors.phoneNumber,
+    },
+    {
+      component: FormSelect,
+      label: "TimeZone",
+      name: "timeZone",
+      options: timeZones,
+      error: errors.timeZone,
+    },
+    {
+      component: FormSelect,
+      label: "Default Currency",
+      name: "defaultCurrency",
+      options: ["USD", "EUR", "PKR", "RMB"],
+      error: errors.defaultCurrency,
+    },
+    {
+      component: FormSelect,
+      label: "Currency",
+      name: "currency",
+      options: ["USD", "EUR", "PKR", "RMB"],
+      error: errors.currency,
+    },
+    {
+      component: FormSelect,
+      label: "Default Language",
+      name: "defaultLanguage",
+      options: languages,
+      error: errors.defaultLanguage,
+    },
+    {
+      component: FormSelect,
+      label: "Sales Channel",
+      name: "salesChannel",
+      options: ["Online", "Offline"],
+      error: errors.salesChannel,
+    },
+    {
+      component: InputField,
+      label: "PO Box Number",
+      name: "poBoxNumber",
+      error: errors.poBoxNumber,
+    },
+    {
+      component: FormSelect,
+      label: "Affiliate Type",
+      name: "affiliateType",
+      options: ["B2B", "B2C"],
+      error: errors.affiliateType,
+    },
+    {
+      component: InputField,
+      label: "AR Code",
+      name: "arCode",
+      error: errors.arCode,
+    },
+    {
+      component: InputField,
+      label: "Group AR Code",
+      name: "groupArCode",
+      error: errors.groupArCode,
+    },
+    {
+      component: FormSelect,
+      label: "Markup Value",
+      name: "markupValue",
+      options: ["Fixed", "Percentage"],
+      placeholder: "Fixed",
+      error: errors.markupValue,
+    },
+    {
+      component: InputField,
+      label: "Add Markup",
+      name: "AddMarkup",
+      error: errors.addMarkup,
+    },
+  ];
 
   const renderAgencyForm = useMemo(
     () => (
@@ -355,12 +362,7 @@ const AddAgency = () => {
     [fileName, formFields, handleInputChange]
   );
 
-  return (
-    <Box sx={{ mt: 2 }}>
-      {renderAgencyForm}
-      
-    </Box>
-  );
+  return <Box sx={{ mt: 2 }}>{renderAgencyForm}</Box>;
 };
 
 export default AddAgency;
