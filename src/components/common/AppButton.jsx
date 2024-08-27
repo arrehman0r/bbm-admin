@@ -28,6 +28,7 @@ export default function AppButton({
   bgColor,
   width,
   borderColor,
+  height,
 }) {
   return (
     <Button
@@ -40,6 +41,7 @@ export default function AppButton({
         backgroundColor: variant === "outlined" ? "#fff" : bgColor,
         borderColor: variant === "outlined" ? bgColor : borderColor,
         ...(width && { width: width }), // Apply width only if it exists
+        ...(height && { height: height }), // Apply width only if it exists
         "&:hover": {
           backgroundColor: bgColor,
           color: variant === "outlined" ? "#fff" : color,

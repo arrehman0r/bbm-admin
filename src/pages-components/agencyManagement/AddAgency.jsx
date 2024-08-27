@@ -9,13 +9,13 @@ import Box from "@mui/joy/Box";
 import InputField from "../../components/common/InputField";
 import FormSelect from "../../components/common/FormSelect";
 import AppTextArea from "../../components/common/AppTextArea";
-import ButtonGroup from "@mui/joy/ButtonGroup";
 import AppButton from "../../components/common/AppButton";
-import ComponentWrapper from "../../components/common/ComponentWrapper";
-import { addTravelAgency } from "../../server/api";
 import { Country, City } from "country-state-city";
 import { useSnackbar } from "notistack";
-import { Button } from "@mui/joy";
+import TextHeading from "../../components/common/TextHeading";
+import { addTravelAgency } from "../../server/api";
+import { Divider } from "@mui/joy";
+import AddIcon from "@mui/icons-material/Add"; // Import the Add icon
 
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
@@ -33,6 +33,7 @@ const AddAgency = () => {
   ]);
   const [errors, setErrors] = useState({});
   const [images, setImages] = useState([]);
+  const [fileName, setFileName] = useState(["Upload File"]); // State to manage multiple file upload buttons
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -41,13 +42,28 @@ const AddAgency = () => {
   }, []);
 
   const handleInputChange = useCallback(
-    (event) => {
+    (event, index) => {
       const { name, value, files } = event.target;
 
       if (files) {
-        // Handle file upload for images
+        // Handle multiple file uploads for images
         const selectedFiles = Array.from(files);
-        setImages(selectedFiles);
+        setImages((prevImages) => {
+          const updatedImages = [...prevImages];
+          updatedImages[index] = selectedFiles;
+          return updatedImages;
+        });
+
+        const newFileName =
+          selectedFiles.length > 1
+            ? `${selectedFiles.length} files selected`
+            : selectedFiles[0]?.name || "Upload File";
+
+        setFileName((prevFileNames) => {
+          const updatedFileNames = [...prevFileNames];
+          updatedFileNames[index] = newFileName;
+          return updatedFileNames;
+        });
       } else {
         agencyDetailsRef.current[name] = value;
       }
@@ -67,6 +83,11 @@ const AddAgency = () => {
     },
     [countries]
   );
+
+  const addFileUploadField = () => {
+    setFileName((prevFileNames) => [...prevFileNames, "Upload File"]);
+    setImages((prevImages) => [...prevImages, []]);
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -90,9 +111,8 @@ const AddAgency = () => {
       return;
     }
 
-    // Convert files to base64 or keep as blobs
     const imagesBase64 = await Promise.all(
-      images.map((file) => {
+      images.flat().map((file) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => resolve(reader.result);
@@ -132,120 +152,113 @@ const AddAgency = () => {
     }
   };
 
-  const formFields = [
-    {
-      component: InputField,
-      label: "Affiliate Name",
-      name: "affiliateName",
-      error: errors.affiliateName,
-    },
-    {
-      component: InputField,
-      label: "Person Name",
-      name: "personName",
-      error: errors.personName,
-    },
-    {
-      component: InputField,
-      label: "Designation",
-      name: "designation",
-      error: errors.designation,
-    },
-    {
-      component: FormSelect,
-      label: "Country",
-      name: "country",
-      options: countries.map((c) => c.name),
-      error: errors.country,
-    },
-    {
-      component: FormSelect,
-      label: "City",
-      name: "city",
-      options: cities,
-      error: errors.city,
-    },
-    {
-      component: InputField,
-      label: "Phone",
-      name: "phoneNumber",
-      error: errors.phoneNumber,
-    },
-    {
-      component: FormSelect,
-      label: "TimeZone",
-      name: "timeZone",
-      options: timeZones,
-      error: errors.timeZone,
-    },
-    {
-      component: FormSelect,
-      label: "Default Currency",
-      name: "defaultCurrency",
-      options: ["USD", "EUR", "PKR", "RMB"],
-      error: errors.defaultCurrency,
-    },
-    {
-      component: FormSelect,
-      label: "Currency",
-      name: "currency",
-      options: ["USD", "EUR", "PKR", "RMB"],
-      error: errors.currency,
-    },
-    {
-      component: FormSelect,
-      label: "Default Language",
-      name: "defaultLanguage",
-      options: languages,
-      error: errors.defaultLanguage,
-    },
-    {
-      component: FormSelect,
-      label: "Sales Channel",
-      name: "salesChannel",
-      options: ["Online", "Offline"],
-      error: errors.salesChannel,
-    },
-    {
-      component: InputField,
-      label: "PO Box Number",
-      name: "poBoxNumber",
-      error: errors.poBoxNumber,
-    },
-    {
-      component: FormSelect,
-      label: "Affiliate Type",
-      name: "affiliateType",
-      options: ["B2B", "B2C"],
-      error: errors.affiliateType,
-    },
-    {
-      component: InputField,
-      label: "AR Code",
-      name: "arCode",
-      error: errors.arCode,
-    },
-    {
-      component: InputField,
-      label: "Group AR Code",
-      name: "groupArCode",
-      error: errors.groupArCode,
-    },
-    {
-      component: FormSelect,
-      label: "Markup Value",
-      name: "markupValue",
-      options: ["Fixed", "Percentage"],
-      placeholder: "Fixed",
-      error: errors.markupValue,
-    },
-    {
-      component: InputField,
-      label: "Add Markup",
-      name: "AddMarkup",
-      error: errors.addMarkup,
-    },
-  ];
+  const formFields = useMemo(
+    () => [
+      {
+        component: InputField,
+        label: "Affiliate Name",
+        name: "affiliateName",
+        error: errors.affiliateName,
+        placeholder: "Enter Affiliate Name",
+      },
+      {
+        component: InputField,
+        label: "Person Name",
+        name: "personName",
+        error: errors.personName,
+        placeholder: "Enter Person Name",
+      },
+      {
+        component: InputField,
+        label: "Designation",
+        name: "designation",
+        error: errors.designation,
+        placeholder: "Enter Designation",
+      },
+      {
+        component: InputField,
+        label: "Phone Number",
+        name: "phoneNumber",
+        error: errors.phoneNumber,
+        placeholder: "Enter Phone Number",
+      },
+      {
+        component: FormSelect,
+        label: "Country",
+        name: "country",
+        options: countries.map((country) => country.name),
+        error: errors.country,
+        placeholder: "Select Country",
+      },
+      {
+        component: FormSelect,
+        label: "City",
+        name: "city",
+        options: cities,
+        error: errors.city,
+        placeholder: "Select City",
+      },
+      {
+        component: FormSelect,
+        label: "Time Zone",
+        name: "timeZone",
+        options: timeZones,
+        error: errors.timeZone,
+        placeholder: "Select Time Zone",
+      },
+      {
+        component: InputField,
+        label: "Currency",
+        name: "currency",
+        error: errors.currency,
+        placeholder: "Enter Currency",
+      },
+      {
+        component: FormSelect,
+        label: "Language",
+        name: "defaultLanguage",
+        options: languages,
+        error: errors.defaultLanguage,
+        placeholder: "Select Language",
+      },
+      {
+        component: InputField,
+        label: "Sales Channel",
+        name: "salesChannel",
+        error: errors.salesChannel,
+        placeholder: "Enter Sales Channel",
+      },
+      {
+        component: InputField,
+        label: "PO Box Number",
+        name: "poBoxNumber",
+        error: errors.poBoxNumber,
+        placeholder: "Enter PO Box Number",
+      },
+      {
+        component: InputField,
+        label: "Affiliate Type",
+        name: "affiliateType",
+        error: errors.affiliateType,
+        placeholder: "Enter Affiliate Type",
+      },
+      {
+        component: InputField,
+        label: "AR Code",
+        name: "arCode",
+        error: errors.arCode,
+        placeholder: "Enter AR Code",
+      },
+      {
+        component: InputField,
+        label: "Group AR Code",
+        name: "groupArCode",
+        error: errors.groupArCode,
+        placeholder: "Enter Group AR Code",
+      },
+    ],
+    [errors, countries, cities, timeZones, languages]
+  );
 
   const renderAgencyForm = useMemo(
     () => (
@@ -259,7 +272,10 @@ const AddAgency = () => {
           }}
         >
           {formFields.map(
-            ({ component: Field, label, name, options, error, placeholder }, index) => (
+            (
+              { component: Field, label, name, options, error, placeholder },
+              index
+            ) => (
               <Box
                 key={index}
                 sx={{
@@ -275,7 +291,7 @@ const AddAgency = () => {
                   fullWidth
                   onChange={handleInputChange}
                   error={error}
-                  placeholder ={placeholder}
+                  placeholder={placeholder}
                 />
               </Box>
             )
@@ -287,21 +303,64 @@ const AddAgency = () => {
           onChange={handleInputChange}
           error={errors.address}
         />
-        <ComponentWrapper text="Affiliate Documents">
-          <AppButton
-            text="Upload"
-            type="file"
-            onChange={handleInputChange}
-            multiple
-          />
-        </ComponentWrapper>
-        <AppButton text="Add Agency" onClick={handleAddAgency} />
+        <Box mt={3}>
+          <TextHeading text="Affiliate Documents" level="h5" />
+
+          <Divider sx={{ mt: 2, mb: 2 }} />
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+          >
+            <Box display="flex" flexDirection="column" gap={2}>
+              {fileName.map((name, index) => (
+                <Box key={index} display="flex" gap={2}>
+                  <AppButton
+                    text={name || "Upload File"} // Display file name or default text
+                    type="file"
+                    variant="outlined"
+                    color="#581E47"
+                    bgColor="#581E47"
+                    onChange={(e) => handleInputChange(e, index)}
+                    component="label"
+                    width="250px"
+                    multiple
+                  />
+                </Box>
+              ))}
+              <Box display="flex" alignItems="center" mt={2}>
+                <AppButton
+                  text="Add Another File"
+                  onClick={addFileUploadField}
+                  variant="outlined"
+                  width="250px"
+                  color="#581E47"
+                  bgColor="#581E47"
+                  endIcon={<AddIcon />} // Add "+" icon
+                />
+              </Box>
+            </Box>
+            <AppButton
+              text="Add Agency"
+              onClick={handleAddAgency}
+              variant="contained"
+              color="#fff"
+              bgColor="#581E47"
+              height="30px"
+            />
+          </Box>
+        </Box>
       </div>
     ),
-    [handleInputChange, countries, cities, timeZones, languages, errors]
+    [fileName, formFields, handleInputChange]
   );
 
-  return renderAgencyForm;
+  return (
+    <Box sx={{ mt: 2 }}>
+      {renderAgencyForm}
+      
+    </Box>
+  );
 };
 
 export default AddAgency;
