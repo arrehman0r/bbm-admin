@@ -13,24 +13,42 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 
-const ProductList = () => {
+const CommandBuilder = () => {
   const flightBookingRef = useRef({});
   const [selected, setSelected] = useState([]);
-  const [productList, setProductList] = useState([]);
+  const [commandBuilder, setCommandBuilder] = useState([]);
   const [errors, setErrors] = useState({});
 
   const formFields = [
     {
-      component: FormSelect,
-      label: "Product Type",
-      name: "productType",
-      error: errors.productType,
+      component: InputField,
+      label: "Rule Name",
+      name: "ruleName",
+      error: errors.ruleName,
     },
     {
-      component: InputField,
-      label: "Product Name",
-      name: "productName",
-      error: errors.productName,
+      component: FormSelect,
+      label: "Company",
+      name: "company",
+      error: errors.company,
+    },
+    {
+      component: FormSelect,
+      label: "Branch",
+      name: "branch",
+      error: errors.branch,
+    },
+    {
+      component: FormSelect,
+      label: "Agent Category",
+      name: "agentCategory",
+      error: errors.agentCategory,
+    },
+    {
+      component: FormSelect,
+      label: "Affiliate Type",
+      name: "affiliateType",
+      error: errors.affiliateType,
     },
     {
       component: FormSelect,
@@ -41,67 +59,32 @@ const ProductList = () => {
     },
   ];
 
+  //   const validateForm = () => {
+
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
     flightBookingRef.current[name] = value;
   }, []);
 
-  //   const validateForm = () => {
-  //     const newErrors = {};
-  //     const requiredFields = ["tripID", "bookingID"];
-
-  //     requiredFields.forEach((field) => {
-  //       if (!flightBookingRef.current[field]) {
-  //         newErrors[field] = true;
-  //       }
-  //     });
-
-  //     setErrors(newErrors);
-  //     return Object.keys(newErrors).length === 0;
-  //   };
-
-  //   const handleFlightBookingSearch = async () => {
-  //     if (!validateForm()) {
-  //       enqueueSnackbar("Please fill in all required fields.", {
-  //         variant: "error",
-  //       });
-  //       return;
-  //     }
-
-  //     const body = {
-  //       // agent_ID: agentID
-  //     };
-
-  //     try {
-  //       const res = await getFlightBooking(body);
-  //       enqueueSnackbar("Flight Search Successful!", { variant: "success" });
-  //       // Reset form or handle any post-submit actions
-  //     } catch (error) {
-  //       console.error("Error searching flight:", error);
-  //       enqueueSnackbar("Error searching flight", { variant: "error" });
-  //     }
-  //   };
-
   return (
     <>
-      <Box px={2} mt={5}>
+      <Box display="flex" flexDirection="column" gap={3} px={2} mt={5}>
         <Box display="flex" justifyContent="space-between">
-          <TextHeading text="Search Product Master" level="h4" />
+          <TextHeading text="Command Builder" level="h4" />
           <AppButton
-            text="Add Product"
+            text="Add Command Builder Rule"
             variant="solid"
             color="#fff"
             bgColor="#581E47"
             // onClick={handleFlightBookingSearch}
           />
         </Box>
-
-        <Divider sx={{ mt: 3 }} />
-
+        <Divider />
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
+            flexWrap: "wrap",
             gap: 2,
             mt: 3,
           }}
@@ -128,7 +111,6 @@ const ProductList = () => {
             )
           )}
         </Box>
-
         <Box display="flex" justifyContent="space-between" mt={3}>
           <Box display="flex" gap={1}>
             <AppButton
@@ -151,17 +133,9 @@ const ProductList = () => {
               color="#fff"
               bgColor="#581E47"
             />
-            <AppButton
-              text="Save Sequence"
-              variant="solid"
-              color="#fff"
-              bgColor="#581E47"
-            />
           </Box>
         </Box>
-
-        <Divider sx={{ mt: 3 }} />
-
+        <Divider />
         <Box display="flex" justifyContent="space-between" mt={3}>
           <Box display="flex" gap={1}>
             <AppButton
@@ -187,7 +161,6 @@ const ProductList = () => {
             <InputField placeholder="Search" size="sm" width="300px" />
           </Box>
         </Box>
-
         <Sheet
           className="OrderTableContainer"
           variant="outlined"
@@ -220,13 +193,14 @@ const ProductList = () => {
                   <Checkbox
                     size="sm"
                     indeterminate={
-                      selected.length > 0 && selected.length !== productList.length
+                      selected.length > 0 &&
+                      selected.length !== commandBuilder.length
                     }
-                    checked={selected.length === productList.length}
+                    checked={selected.length === commandBuilder.length}
                     onChange={(event) =>
                       setSelected(
                         event.target.checked
-                          ? productList.map((row) => row.id)
+                          ? commandBuilder.map((row) => row.id)
                           : []
                       )
                     }
@@ -253,9 +227,9 @@ const ProductList = () => {
                 <th />
               </tr>
             </thead>
-            {productList.length > 0 && (
+            {commandBuilder.length > 0 && (
               <tbody>
-                {stableSort(productList, getComparator(order, "userName"))?.map(
+                {stableSort(commandBuilder, getComparator(order, "userName"))?.map(
                   (row) => (
                     <tr key={row.agencyName}>
                       <td>
@@ -290,7 +264,6 @@ const ProductList = () => {
             )}
           </Table>
         </Sheet>
-
         <Box
           className="Pagination-laptopUp"
           sx={{ pt: 2, display: { xs: "none", md: "flex" } }}
@@ -346,4 +319,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default CommandBuilder;
