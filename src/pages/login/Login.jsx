@@ -8,7 +8,7 @@ import Checkbox from '@mui/joy/Checkbox';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
-// import IconButton, { IconButtonProps } from '@mui/joy/IconButton';
+import IconButton, { IconButtonProps } from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
@@ -18,10 +18,11 @@ import { useSnackbar } from 'notistack';
 import { useDispatch } from 'react-redux';
 import { setLoginUser } from '../../redux/reducer/userSlice';
 import { useNavigate } from 'react-router-dom';
-// import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
-// import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
-// import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-// import { GoogleIcon } from '../../images';
+import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
+import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
+import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
+import { GoogleIcon } from '../../images';
+import Alasam from "./../../images/alasamLogo.png"
 // function ColorSchemeToggle() {
 //     //   const { onClick, ...other } = props;
     // const { mode, setMode } = useColorScheme();
@@ -137,10 +138,11 @@ const [formData, setFormData] = React.useState({
                         }}
                     >
                         <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-                            {/* <IconButton variant="soft" color="primary" size="sm">
-                                <BadgeRoundedIcon />
-                            </IconButton> */}
-                            <Typography level="title-lg">Alasam</Typography>
+                            {/* <IconButton variant="soft" color="primary" size="sm"> */}
+                                <img src={Alasam}/>
+                                {/* <BadgeRoundedIcon /> */}
+                            {/* </IconButton> */}
+                            {/* <Typography level="title-lg"></Typography> */}
                         </Box>
                         {/* <ColorSchemeToggle /> */}
                     </Box>
@@ -248,10 +250,10 @@ const [formData, setFormData] = React.useState({
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundImage:
-                        'url(https://images.unsplash.com/photo-1527181152855-fc03fc7949c8?auto=format&w=1000&dpr=2)',
+                        'url(https://images.pexels.com/photos/1443894/pexels-photo-1443894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
                     [theme.getColorSchemeSelector('dark')]: {
                         backgroundImage:
-                            'url(https://images.unsplash.com/photo-1572072393749-3ca9c8ea0831?auto=format&w=1000&dpr=2)',
+                            'url(https://images.pexels.com/photos/1443894/pexels-photo-1443894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
                     },
                 })}
             />

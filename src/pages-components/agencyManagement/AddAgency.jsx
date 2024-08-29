@@ -16,6 +16,8 @@ import TextHeading from "../../components/common/TextHeading";
 import { addTravelAgency } from "../../server/api";
 import { Divider } from "@mui/joy";
 import AddIcon from "@mui/icons-material/Add"; // Import the Add icon
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../redux/reducer/loaderSlice";
 
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
@@ -35,7 +37,8 @@ const AddAgency = () => {
   const [images, setImages] = useState([]);
   const [fileName, setFileName] = useState(["Upload File"]); // State to manage multiple file upload buttons
   const { enqueueSnackbar } = useSnackbar();
-
+  const loading  = useSelector((state)=> state.loading.loading)
+const dispatch = useDispatch()
   useEffect(() => {
     setCountries(Country.getAllCountries());
     setTimeZones([Intl.DateTimeFormat().resolvedOptions().timeZone]); // Wrap in array
@@ -143,71 +146,76 @@ const AddAgency = () => {
     };
 
     try {
+      dispatch(setLoading(true))
       const res = await addTravelAgency(body);
       enqueueSnackbar("Agency added successfully!", { variant: "success" });
-      // Reset form or handle any post-submit actions
+      dispatch(setLoading(false))
     } catch (error) {
+      dispatch(setLoading(false))
       console.error("Error adding agency:", error);
       enqueueSnackbar("Error adding agency", { variant: "error" });
+    }
+    finally{
+      dispatch(setLoading(false))
     }
   };
 
   const formFields = [
     {
       component: InputField,
-      label: "Affiliate Name",
+      label: "Affiliate Name *",
       name: "affiliateName",
       error: errors.affiliateName,
     },
     {
       component: InputField,
-      label: "Person Name",
+      label: "Person Name *",
       name: "personName",
       error: errors.personName,
     },
     {
       component: InputField,
-      label: "Designation",
+      label: "Designation *",
       name: "designation",
       error: errors.designation,
     },
     {
       component: FormSelect,
-      label: "Country",
+      label: "Country *",
       name: "country",
       options: countries.map((c) => c.name),
       error: errors.country,
     },
     {
       component: FormSelect,
-      label: "City",
+      label: "City *",
       name: "city",
       options: cities,
       error: errors.city,
     },
     {
       component: InputField,
-      label: "Phone",
+      label: "Phone *",
       name: "phoneNumber",
       error: errors.phoneNumber,
     },
     {
       component: FormSelect,
-      label: "TimeZone",
+      label: "TimeZone *",
       name: "timeZone",
       options: timeZones,
       error: errors.timeZone,
     },
     {
       component: FormSelect,
-      label: "Default Currency",
+      label: "Default Currency *",
       name: "defaultCurrency",
       options: ["USD", "EUR", "PKR", "RMB"],
       error: errors.defaultCurrency,
     },
     {
       component: FormSelect,
-      label: "Currency",
+      label: "Currency *",
       name: "currency",
       options: ["USD", "EUR", "PKR", "RMB"],
       error: errors.currency,
@@ -221,7 +229,7 @@ const AddAgency = () => {
     },
     {
       component: FormSelect,
-      label: "Sales Channel",
+      label: "Sales Channel *",
       name: "salesChannel",
       options: ["Online", "Offline"],
       error: errors.salesChannel,
@@ -251,17 +259,23 @@ const AddAgency = () => {
       name: "groupArCode",
       error: errors.groupArCode,
     },
+    // {
+    //   component: FormSelect,
+    //   label: "email",
+    //   name: "markupValue",
+    //   options: ["Fixed", "Percentage"],
+    //   placeholder: "Fixed",
+    //   error: errors.markupValue,
+    // },
     {
-      component: FormSelect,
-      label: "Markup Value",
-      name: "markupValue",
-      options: ["Fixed", "Percentage"],
-      placeholder: "Fixed",
-      error: errors.markupValue,
+      component: InputField,
+      label: "Email",
+      name: "AddMarkup",
+      error: errors.addMarkup,
     },
     {
       component: InputField,
-      label: "Add Markup",
+      label: "Password",
       name: "AddMarkup",
       error: errors.addMarkup,
     },
@@ -354,6 +368,7 @@ const AddAgency = () => {
               color="#fff"
               bgColor="#581E47"
               height="30px"
+              disabled={loading}
             />
           </Box>
         </Box>

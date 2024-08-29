@@ -114,10 +114,10 @@ export default function UserManagement() {
             {status === "INACTIVE" ? "ACTIVE" : "INACTIVE"}
           </MenuItem>
           {/* <MenuItem>Move</MenuItem> */}
-          <Divider />
+          {/* <Divider />
           <MenuItem color="danger" onClick={() => openDeleteModal(userId)}>
             Delete
-          </MenuItem>
+          </MenuItem> */}
         </Menu>
       </Dropdown>
     );

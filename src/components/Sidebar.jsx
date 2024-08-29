@@ -29,7 +29,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-
+import AlasamLogo from "./../images/alasamLogo.png"
 import ColorSchemeToggle from "./ColorSchemeToggle";
 import { closeSidebar } from "../utils";
 import { leftBarTabs } from "./utils";
@@ -127,7 +127,8 @@ export default function Sidebar() {
         {/* <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton> */}
-        <Typography level="title-lg">Alasam.</Typography>
+        <img src={AlasamLogo}/>
+        {/* <Typography level="title-lg">Alasam.</Typography> */}
         {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
       {/* <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" /> */}

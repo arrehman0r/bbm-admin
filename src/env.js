@@ -1,1 +1,1 @@
-export const NEXT_PUBLIC_PROD_URL = "http://192.168.18.155:3002/api/"
+export const NEXT_PUBLIC_PROD_URL = "http://192.168.100.26:3002/api/"
