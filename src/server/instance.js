@@ -1,8 +1,6 @@
 import axios from "axios";
 import { NEXT_PUBLIC_PROD_URL } from "../env";
 // import { ToastNotification } from "../Utils/ToastNotifications";
-
-
 export const baseURL = NEXT_PUBLIC_PROD_URL;
 
 export const instance = axios.create({

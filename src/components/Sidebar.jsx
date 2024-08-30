@@ -32,7 +32,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AlasamLogo from "./../images/alasamLogo.png"
 import ColorSchemeToggle from "./ColorSchemeToggle";
 import { closeSidebar } from "../utils";
-import { leftBarTabs } from "./utils";
+import { agencyTabs, leftBarTabs, superAdminTabs } from "./utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardOption } from "../redux/reducer/dashboardSlice";
 import { setLoginUser } from "../redux/reducer/userSlice";
@@ -60,6 +60,7 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 
 export default function Sidebar() {
   const selectedOption = useSelector((state) => state.dashboard.option);
+  const userData = useSelector((state) => state.user.loginUser)
   const handleLogout = () => {
     dispatch(setLoginUser(null));
   };
@@ -127,7 +128,7 @@ export default function Sidebar() {
         {/* <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton> */}
-        <img src={AlasamLogo}/>
+        <img src={AlasamLogo} />
         {/* <Typography level="title-lg">Alasam.</Typography> */}
         {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
@@ -152,45 +153,48 @@ export default function Sidebar() {
             "--ListItem-radius": (theme) => theme.vars.radius.sm,
           }}
         >
-          {leftBarTabs.map((item, index) => (
-            <ListItem nested>
-              <Toggler
-                renderToggle={({ open, setOpen }) => (
-                  <ListItemButton onClick={() => setOpen(!open)}>
-                    <AssignmentRoundedIcon />
-                    <ListItemContent>
-                      <Typography level="title-sm">{item.heading}</Typography>
-                    </ListItemContent>
-                    <KeyboardArrowDownIcon
-                      sx={{ transform: open ? "rotate(180deg)" : "none" }}
-                    />
-                  </ListItemButton>
-                )}
-              >
-                <List sx={{ gap: 0.5 }}>
-                  {item.subheading.map((subitem, index) => (
-                    <ListItem
-                      key={index}
-                      sx={{
-                        mt: 0.5, // margin-top
-                        backgroundColor:
-                          selectedOption === subitem ? "#581E47" : "", // Conditional background color
-                      }}
-                    >
-                      <ListItemButton
-                        onClick={() => handleOptionClick(subitem)}
+          {userData && (
+            (userData.role === "admin" ? superAdminTabs : agencyTabs).map((item, index) => (
+              <ListItem nested key={index}>
+                <Toggler
+                  renderToggle={({ open, setOpen }) => (
+                    <ListItemButton onClick={() => setOpen(!open)}>
+                      <AssignmentRoundedIcon />
+                      <ListItemContent>
+                        <Typography level="title-sm">{item.heading}</Typography>
+                      </ListItemContent>
+                      <KeyboardArrowDownIcon
+                        sx={{ transform: open ? "rotate(180deg)" : "none" }}
+                      />
+                    </ListItemButton>
+                  )}
+                >
+                  <List sx={{ gap: 0.5 }}>
+                    {item.subheading.map((subitem, index) => (
+                      <ListItem
+                        key={index}
                         sx={{
-                          color: selectedOption === subitem ? "white" : "", // Text color set to white
+                          mt: 0.5,
+                          backgroundColor:
+                            selectedOption === subitem ? "#581E47" : "",
                         }}
                       >
-                        {subitem}
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              </Toggler>
-            </ListItem>
-          ))}
+                        <ListItemButton
+                          onClick={() => handleOptionClick(subitem)}
+                          sx={{
+                            color: selectedOption === subitem ? "white" : "",
+                          }}
+                        >
+                          {subitem}
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Toggler>
+              </ListItem>
+            ))
+          )}
+
         </List>
 
         {/* <List

@@ -11,10 +11,10 @@ import CommandBuilder from "../../pages-components/Administration/CommandBuilder
 
 const DashboardMain = () => {
     const selectedOption = useSelector((state) => state.dashboard.option);
-
+const userData  =  useSelector((state)=> state.user.loginUser)
     return (
         <div>
-            {selectedOption === "Add Agency" && <AddAgency/>}
+            {selectedOption === "Add Agency" && userData.role === "admin" && <AddAgency/>}
             {selectedOption === "View Agency" && <ViewAgency/>}
             {selectedOption === "User Management" && <UserManagement/>}
             {selectedOption === "Flight Booking" && <FlightBooking/>}

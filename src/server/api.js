@@ -9,8 +9,8 @@ export const getTravelAgency = () => {
   return makeRequest("get", "agency");
 };
 
-export const getAgencyUsers = () => {
-  return makeRequest("get", "users");
+export const getAgencyUsers = (id) => {
+  return makeRequest("get", `users/${id}`);
 };
 
 export const addAgencyUser = (body) => {

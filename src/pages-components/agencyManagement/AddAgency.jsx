@@ -142,7 +142,11 @@ const dispatch = useDispatch()
       arCode: agencyDetailsRef.current.arCode,
       groupArCode: agencyDetailsRef.current.groupArCode,
       address: agencyDetailsRef.current.address,
-      images: imagesBase64, // Add the images array to the request body
+      images: imagesBase64, 
+      agencyEmail:  agencyDetailsRef.current.agencyEmail,
+      agencyPassword:  agencyDetailsRef.current.agencyPassword,
+      markupType: agencyDetailsRef.current.markupType,
+      markupRate: agencyDetailsRef.current.markupValue,
     };
 
     try {
@@ -248,6 +252,19 @@ const dispatch = useDispatch()
       error: errors.affiliateType,
     },
     {
+      component: FormSelect,
+      label: "Markup Type",
+      name: "markupType",
+      options: ["FIXED", "PERCENTAGE"],
+      error: errors.affiliateType,
+    },
+    {
+      component: InputField,
+      label: "Markup Value",
+      name: "markupValue",
+      error: errors.arCode,
+    },
+    {
       component: InputField,
       label: "AR Code",
       name: "arCode",
@@ -270,13 +287,13 @@ const dispatch = useDispatch()
     {
       component: InputField,
       label: "Email",
-      name: "AddMarkup",
+      name: "agencyEmail",
       error: errors.addMarkup,
     },
     {
       component: InputField,
       label: "Password",
-      name: "AddMarkup",
+      name: "agencyPassword",
       error: errors.addMarkup,
     },
   ];
@@ -377,7 +394,7 @@ const dispatch = useDispatch()
     [fileName, formFields, handleInputChange]
   );
 
-  return <Box sx={{ mt: 2 }}>{renderAgencyForm}</Box>;
+  return <Box sx={{ mt: 2, mb: 5 }}>{renderAgencyForm}</Box>;
 };
 
 export default AddAgency;

@@ -47,7 +47,7 @@ import {
 import AppButton from "../../components/common/AppButton";
 import { useSnackbar } from "notistack";
 import ConfirmDeleteUser from "../../components/modals/ConfirmDeleteUser";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
 
 function descendingComparator(a, b, orderBy) {
@@ -85,6 +85,7 @@ export default function UserManagement() {
   const [usersRoles, setUsersRoles] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user.loginUser)
   useEffect(() => {
     fetchAgencyUserRoles();
   }, []);
@@ -140,7 +141,7 @@ export default function UserManagement() {
   const fetchAgencyUsers = async () => {
     try {
       dispatch(setLoading(true));
-      const res = await getAgencyUsers();
+      const res = await getAgencyUsers(userData?.id);
       console.log("users data=-----------------", res);
       if (res.body.data) {
         setAgencies(res.body.data);
