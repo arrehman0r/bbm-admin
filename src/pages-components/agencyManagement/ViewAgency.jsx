@@ -39,6 +39,8 @@ import FormSelect from "../../components/common/FormSelect";
 import { getTravelAgency } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 
+import { useSelector } from "react-redux";
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
   if (b[orderBy] > a[orderBy]) return 1;
@@ -88,14 +90,20 @@ export default function ViewAgency() {
   const [open, setOpen] = useState(false);
   const [cities, setCities] = useState([]);
   const [countries, setCountries] = useState([]);
-
+ 
   // useEffect(() => {
   //   setCountries(Country.getAllCountries());
   // }, []);
   const fetchAgencies = async () => {
-    const res = await getTravelAgency();
-    setAgencies(res);
-    console.log("res of agencies", res);
+       try {
+      const res = await getTravelAgency();
+      setAgencies(res);
+      console.log("res of agencies", res);
+    }
+
+    catch (error) {
+      console.log("error ---", error)
+    }
   };
 
   useEffect(() => {
@@ -279,8 +287,8 @@ export default function ViewAgency() {
                             event.target.checked
                               ? [...selected, row.agencyName]
                               : selected.filter(
-                                  (name) => name !== row.agencyName
-                                )
+                                (name) => name !== row.agencyName
+                              )
                           )
                         }
                       />

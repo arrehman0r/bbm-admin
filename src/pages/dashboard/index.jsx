@@ -46,6 +46,7 @@ const AppDashboard= ()=>  {
             minWidth: 0,
             height: '100dvh',
             gap: 1,
+             overflowY: 'auto'
           }}
         >
    <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -66,7 +67,7 @@ const AppDashboard= ()=>  {
               <Link
                 underline="hover"
                 color="neutral"
-                href="#some-link"
+                // href="#some-link"
                 fontSize={12}
                 fontWeight={500}
               >

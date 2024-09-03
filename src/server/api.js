@@ -10,7 +10,7 @@ export const getTravelAgency = () => {
 };
 
 export const getAgencyUsers = (id) => {
-  return makeRequest("get", `users/${id}`);
+  return makeRequest("get", `users/agency/${id}`);
 };
 
 export const addAgencyUser = (body) => {
@@ -21,8 +21,8 @@ export const deleteAgencyUser = (id) => {
   return makeRequest("delete", `users/${id}`);
 };
 
-export const getAgencyUserRoles = (id) => {
-  return makeRequest("get", `roles/daily/66bf3676d528f7523c8ecf78`);
+export const getAgencyUserRoles = () => {
+  return makeRequest("get", `roles/roleAgency`);
 };
 
 export const updateAgencyUserStatus = (id, body)=>{

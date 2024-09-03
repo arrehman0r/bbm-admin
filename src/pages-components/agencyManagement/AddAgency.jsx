@@ -114,16 +114,18 @@ const dispatch = useDispatch()
       return;
     }
 
-    const imagesBase64 = await Promise.all(
-      images.flat().map((file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      })
-    );
+    // const imagesBase64 = await Promise.all(
+    //   images.flat().map((file) => {
+    //     return new Promise((resolve, reject) => {
+    //       const reader = new FileReader();
+    //       reader.onload = () => resolve(reader.result);
+    //       reader.onerror = reject;
+    //       reader.readAsDataURL(file);
+    //     });
+    //   })
+    // );
+
+    console.log("images==", images)
 
     const body = {
       affiliateName: agencyDetailsRef.current.affiliateName,
@@ -142,7 +144,7 @@ const dispatch = useDispatch()
       arCode: agencyDetailsRef.current.arCode,
       groupArCode: agencyDetailsRef.current.groupArCode,
       address: agencyDetailsRef.current.address,
-      images: imagesBase64, 
+      images: images, 
       agencyEmail:  agencyDetailsRef.current.agencyEmail,
       agencyPassword:  agencyDetailsRef.current.agencyPassword,
       markupType: agencyDetailsRef.current.markupType,
@@ -150,6 +152,7 @@ const dispatch = useDispatch()
     };
 
     try {
+      console.log("body is", body)
       dispatch(setLoading(true))
       const res = await addTravelAgency(body);
       enqueueSnackbar("Agency added successfully!", { variant: "success" });

@@ -33,7 +33,8 @@ export default function ColorSchemeToggle(props: IconButtonProps) {
       {...other}
       onClick={(event) => {
         if (mode === 'light') {
-          setMode('dark');
+          setMode('light');
+          // setMode('dark');
         } else {
           setMode('light');
         }

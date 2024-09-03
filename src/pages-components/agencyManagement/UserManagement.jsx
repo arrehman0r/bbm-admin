@@ -92,8 +92,9 @@ export default function UserManagement() {
   const fetchAgencyUserRoles = async () => {
     try {
       const res = await getAgencyUserRoles();
-      if (res.length > 0) {
-        setUsersRoles(res);
+      console.log("res of roles", res)
+      if (res.result.length > 0) {
+        setUsersRoles(res.result);
         console.log("Res of user roles::", res);
       }
     } catch (error) {}
@@ -143,8 +144,8 @@ export default function UserManagement() {
       dispatch(setLoading(true));
       const res = await getAgencyUsers(userData?.id);
       console.log("users data=-----------------", res);
-      if (res.body.data) {
-        setAgencies(res.body.data);
+      if (res.body) {
+        setAgencies(res.body);
         dispatch(setLoading(false));
       } else {
         setAgencies([]);
@@ -177,6 +178,7 @@ export default function UserManagement() {
       email: userManagementRef.current.userEmail,
       password: userManagementRef.current.password,
       role: userManagementRef.current.role,
+      agencyId: userData?.id
     };
     try {
       dispatch(setLoading(true));

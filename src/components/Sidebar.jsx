@@ -63,6 +63,7 @@ export default function Sidebar() {
   const userData = useSelector((state) => state.user.loginUser)
   const handleLogout = () => {
     dispatch(setLoginUser(null));
+    dispatch(setDashboardOption(null))
   };
 
   const dispatch = useDispatch();
@@ -130,7 +131,7 @@ export default function Sidebar() {
         </IconButton> */}
         <img src={AlasamLogo} />
         {/* <Typography level="title-lg">Alasam.</Typography> */}
-        {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
+        <ColorSchemeToggle sx={{ ml: 'auto' }} />
       </Box>
       {/* <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" /> */}
       <Box
@@ -154,7 +155,7 @@ export default function Sidebar() {
           }}
         >
           {userData && (
-            (userData.role === "admin" ? superAdminTabs : agencyTabs).map((item, index) => (
+            (userData.role === "super_admin" ? superAdminTabs : agencyTabs).map((item, index) => (
               <ListItem nested key={index}>
                 <Toggler
                   renderToggle={({ open, setOpen }) => (
@@ -229,8 +230,8 @@ export default function Sidebar() {
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Abdul Rehman.</Typography>
-          <Typography level="body-xs">arrehman0r@gmail.com</Typography>
+          <Typography level="title-sm">{userData.firstName} {userData.lastName}.</Typography>
+          <Typography level="body-xs">{userData?.email}</Typography>
         </Box>
         <IconButton
           size="sm"

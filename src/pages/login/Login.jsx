@@ -16,16 +16,18 @@ import Stack from '@mui/joy/Stack';
 import { userLogin } from '../../server/api';
 import { useSnackbar } from 'notistack';
 import { useDispatch } from 'react-redux';
-import { setLoginUser } from '../../redux/reducer/userSlice';
+import { setLoginUser, setUserToken } from '../../redux/reducer/userSlice';
 import { useNavigate } from 'react-router-dom';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import { GoogleIcon } from '../../images';
 import Alasam from "./../../images/alasamLogo.png"
+import Cookies from 'js-cookie';
+import axios from 'axios';
 // function ColorSchemeToggle() {
 //     //   const { onClick, ...other } = props;
-    // const { mode, setMode } = useColorScheme();
+// const { mode, setMode } = useColorScheme();
 //     const [mounted, setMounted] = React.useState(false);
 
 //     React.useEffect(() => setMounted(true), []);
@@ -48,39 +50,41 @@ import Alasam from "./../../images/alasamLogo.png"
 // }
 
 export default function AppLogin() {
-const { enqueueSnackbar } = useSnackbar();
-const [formData, setFormData] = React.useState({
-    email: '',
-    password: '',
+    const { enqueueSnackbar } = useSnackbar();
+    const [formData, setFormData] = React.useState({
+        email: '',
+        password: '',
 
-  });
-  const dispatch = useDispatch()
-  const navigate  = useNavigate()
+    });
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const validateForm = () => {
         const { password, email } = formData;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!password || !email) {
             enqueueSnackbar("Please fill in all required fields.", { variant: 'error' });
-          return false;
+            return false;
         }
         if (!emailRegex.test(email)) {
             enqueueSnackbar("Please enter a valid email address", { variant: 'error' });
-       
-          return false;
+
+            return false;
         }
         return true;
-      };
-    
-      const handleUserLogin = async (event) => {
+    };
+
+    const handleUserLogin = async (event) => {
         event.preventDefault();
         if (validateForm()) {
+            console.log("form is valid")
             try {
                 const res = await userLogin(formData);
-               
+      
                 if (res.user.id) {
                     enqueueSnackbar("Login successful!", { variant: 'success' });
-                  dispatch(setLoginUser(res?.user))
-                  navigate("/")
+                    dispatch(setLoginUser(res?.user))
+                    Cookies.set('auth-token', res.token, { expires: 7 });
+                    navigate("/")
                 } else {
                     enqueueSnackbar(res || "Login failed.", { variant: 'error' });
                 }
@@ -92,9 +96,9 @@ const [formData, setFormData] = React.useState({
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    };  
+    };
     return (
-        <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
+        <CssVarsProvider defaultMode="light" disableTransitionOnChange>
             <CssBaseline />
             <GlobalStyles
                 styles={{
@@ -139,8 +143,8 @@ const [formData, setFormData] = React.useState({
                     >
                         <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
                             {/* <IconButton variant="soft" color="primary" size="sm"> */}
-                                <img src={Alasam}/>
-                                {/* <BadgeRoundedIcon /> */}
+                            <img src={Alasam} />
+                            {/* <BadgeRoundedIcon /> */}
                             {/* </IconButton> */}
                             {/* <Typography level="title-lg"></Typography> */}
                         </Box>

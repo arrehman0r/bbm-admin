@@ -10,6 +10,7 @@
     "@types/react-dom": "latest",
     "axios": "^1.7.3",
     "country-state-city": "^3.2.1",
+    "js-cookie": "^3.0.5",
     "notistack": "^3.0.1",
     "react": "latest",
     "react-dom": "latest",
