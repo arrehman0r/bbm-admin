@@ -14,7 +14,7 @@ const VisuallyHiddenInput = styled("input")`
   width: 1px;
 `;
 
-export default function AppButton({
+const AppButton = ({
   type = "button",
   disabled,
   text,
@@ -29,12 +29,12 @@ export default function AppButton({
   width,
   borderColor,
   height,
-}) {
+})=>  {
   return (
     <Button
       component={type === "file" ? "label" : "button"}
       disabled={disabled}
-      tabIndex={-1}
+      // tabIndex={-1}
       variant={variant || "outlined"}
       sx={{
         color: color,
@@ -58,3 +58,4 @@ export default function AppButton({
     </Button>
   );
 }
+export default AppButton
