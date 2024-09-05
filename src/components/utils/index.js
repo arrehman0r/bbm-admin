@@ -22,7 +22,7 @@ export const superAdminTabs = [
    },
    {
     heading : "Report",
-    subheading:["Transaction Report","Wallet statement","Customer Statement"]
+    subheading:["Transaction Reports","Wallet Statement","Customer Statement"]
    },
    {
     heading : "Account",
