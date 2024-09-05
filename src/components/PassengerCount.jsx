@@ -25,7 +25,7 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
                     // ref={clickMeButtonRef} 
                     content={({ position, childRect, popoverRect }) => (
 
-                        <Sheet variant="outlined" color="neutral" sx={{ p: 1 }}>
+                        <Sheet variant="outlined" color="neutral" sx={{ p: 1, borderRadius: 5 }}>
                             <Stack spacing={2} sx={{ alignItems: 'center' }}>
                                 <Box sx={{ display: 'flex', gap: 5, justifyContent: 'space-between', width: '100%' }}>
                                     <TextHeading text="Adults" />
