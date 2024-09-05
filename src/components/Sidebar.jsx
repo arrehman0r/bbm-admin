@@ -36,7 +36,8 @@ import { agencyTabs, leftBarTabs, superAdminTabs } from "./utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardOption } from "../redux/reducer/dashboardSlice";
 import { setLoginUser } from "../redux/reducer/userSlice";
-
+import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
   return (
@@ -131,7 +132,7 @@ export default function Sidebar() {
         </IconButton> */}
         <img src={AlasamLogo} />
         {/* <Typography level="title-lg">Alasam.</Typography> */}
-        <ColorSchemeToggle sx={{ ml: 'auto' }} />
+        {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
       {/* <Input size="sm" startDecorator={<SearchRoundedIcon />} placeholder="Search" /> */}
       <Box
@@ -154,13 +155,37 @@ export default function Sidebar() {
             "--ListItem-radius": (theme) => theme.vars.radius.sm,
           }}
         >
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{ backgroundColor: selectedOption === "Booking Engine" ? '#581E47' : "#fff" }} >
+            <AirplaneTicketIcon />
+            <ListItemContent>
+              <Typography level="title-sm" sx={{
+                color: selectedOption === "Booking Engine" ? "white" : "inherit",
+                '&:hover': {
+                  color: 'black',
+                },
+              }}>Booking Engine</Typography>
+            </ListItemContent>
+
+          </ListItemButton>
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashbord"))} sx={{ backgroundColor: selectedOption === "Dashbord" ? '#581E47' : "#fff" }} >
+            <DashboardIcon />
+            <ListItemContent>
+              <Typography level="title-sm" sx={{
+                color: selectedOption === "Dashbord" ? "white" : "inherit",
+                '&:hover': {
+                  color: 'black',
+                },
+              }}>Dashbord</Typography>
+            </ListItemContent>
+
+          </ListItemButton>
           {userData && (
             (userData.role === "super_admin" ? superAdminTabs : agencyTabs).map((item, index) => (
               <ListItem nested key={index}>
                 <Toggler
                   renderToggle={({ open, setOpen }) => (
                     <ListItemButton onClick={() => setOpen(!open)}>
-                      <AssignmentRoundedIcon />
+                      <AssignmentRoundedIcon color="#fff" />
                       <ListItemContent>
                         <Typography level="title-sm">{item.heading}</Typography>
                       </ListItemContent>

@@ -14,6 +14,7 @@ export const instance = axios.create({
 });
 
 export const makeRequest = async (type, path, body = null, options = {}) => {
+  console.log("path is ====", path)
   try {
     // Retrieve token from cookies
     const token = Cookies.get('auth-token');
@@ -23,6 +24,13 @@ export const makeRequest = async (type, path, body = null, options = {}) => {
       ...options.headers,
       'auth-token': token ? token : null,
     };
+
+    // If the body is an instance of FormData, set the appropriate Content-Type
+    if (body instanceof FormData) {
+      headers['Content-Type'] = 'multipart/form-data';
+    } else if (body) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     // Create the config object
     const config = {
@@ -67,6 +75,7 @@ export const makeRequest = async (type, path, body = null, options = {}) => {
     throw error; // Re-throw error after logging/handling
   }
 };
+
 
 // Optional: Request interceptor for adding authentication or other common headers
 instance.interceptors.request.use(

@@ -43,6 +43,9 @@ import {
   deleteAgencyUser,
   getAgencyUserRoles,
   updateAgencyUserStatus,
+  getAgencyAllUsers,
+  searchAgencySatff,
+  searchAgencySatffAdmin,
 } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 import { useSnackbar } from "notistack";
@@ -85,7 +88,11 @@ export default function UserManagement() {
   const [usersRoles, setUsersRoles] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.user.loginUser)
+  const userData = useSelector((state) => state.user.loginUser);
+  const searchStaffRef = useRef({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     fetchAgencyUserRoles();
   }, []);
@@ -97,8 +104,14 @@ export default function UserManagement() {
         setUsersRoles(res.result);
         console.log("Res of user roles::", res);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
+
+  const handleSearchInputChange = (event) => {
+    const { name, value } = event.target;
+    searchStaffRef.current[name] = value;
+  }
+
   function RowMenu({ userId, openDeleteModal, status }) {
     return (
       <Dropdown>
@@ -127,6 +140,7 @@ export default function UserManagement() {
 
   const handleAgencyUserStatus = async (userId, status) => {
     const userStatus = status === "INACTIVE" ? "ACTIVE" : "INACTIVE";
+    console.log("userStatus", userStatus)
     const body = {
       status: userStatus,
     };
@@ -139,37 +153,100 @@ export default function UserManagement() {
     }
   };
 
-  const fetchAgencyUsers = async () => {
+  const fetchAgencyUsers = async (page = 1) => {
     try {
       dispatch(setLoading(true));
-      const res = await getAgencyUsers(userData?.id);
-      console.log("users data=-----------------", res);
-      if (res.body) {
-        setAgencies(res.body);
-        dispatch(setLoading(false));
-      } else {
-        setAgencies([]);
-        dispatch(setLoading(false));
-        enqueueSnackbar("Error in fetching users.", { variant: "error" });
+      let res;
+      if (userData?.agency_id) {
+        res = await getAgencyUsers(userData?.agency_id, page);
+      } else if (userData.role === "super_admin") {
+        res = await getAgencyAllUsers(page);
+      }
+  
+      if (res?.result) {
+        setAgencies(res.result.staff);
+        console.log("agencies are . >>>", res.result.staff)
+        setTotalPages(res.result.totalPages); // Update totalPages based on response
       }
     } catch (error) {
+      enqueueSnackbar("Error fetching users.", { variant: "error" });
+    } finally {
       dispatch(setLoading(false));
-      console.log("error in fetching users", error);
-      enqueueSnackbar("Error in fetching users.", { variant: "error" });
+    }
+  };
+  
+
+
+  const handleInputChange = useCallback((event) => {
+    const { name, value } = event.target;
+    userManagementRef.current[name] = value;
+  }, []);
+
+  const handleStaffSearch = async () => {
+    const { cnic, staffEmail, staffName } = searchStaffRef.current;
+
+    // Validation checks
+    if (staffEmail && !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(staffEmail)) {
+      enqueueSnackbar("Please enter a valid email address.");
+      return;
+    }
+
+    if (cnic && !/^\d{13}$/.test(cnic)) {
+      enqueueSnackbar("Please enter a valid CNIC (13 digits).");
+      return;
+    }
+
+    if (staffName && staffName.length < 5) {
+      enqueueSnackbar("Staff name should be at least 5 characters long.");
+      return;
+    }
+
+    // Prepare the search parameters
+    const searchParams = {
+      CNIC: cnic,
+      email: staffEmail,
+      firstName: staffName,
+    };
+
+    // Remove empty fields
+    Object.keys(searchParams).forEach(key => {
+      if (!searchParams[key]) {
+        delete searchParams[key];
+      }
+    });
+
+    console.log("searchParams:", searchParams); // Check the searchParams
+
+    // Make the search API call
+    dispatch(setLoading(true));
+    try {
+      if (userData?.agency_id) {
+        const res = await searchAgencySatff(searchParams, userData?.agency_id);
+        setAgencies(res.result.staff);
+      }
+
+      if (userData?.role === "super_admin") {
+        console.log("search params are===", searchParams)
+        const adminRes = await searchAgencySatffAdmin(searchParams);
+        console.log("adminRes:", adminRes); // Check the response
+        setAgencies(adminRes.result.staff);
+      }
+
+    } catch (error) {
+      console.error("Error searching agencies:", error);
     } finally {
       dispatch(setLoading(false));
     }
   };
 
+  const handlePageChange = (page) => {
+    console.log("page number is ",page)
+    setCurrentPage(page);
+    fetchAgencyUsers(page);
+  };
+
   useEffect(() => {
-    fetchAgencyUsers();
-
-    console.log("agencis fetched");
-  }, []);
-
-  const handleInputChange = useCallback((event) => {
-    const { name, value } = event.target;
-    userManagementRef.current[name] = value;
+    fetchAgencyUsers(currentPage);
   }, []);
 
   const handleAddUser = async () => {
@@ -178,13 +255,13 @@ export default function UserManagement() {
       email: userManagementRef.current.userEmail,
       password: userManagementRef.current.password,
       role: userManagementRef.current.role,
-      agencyId: userData?.id
+      agencyId: userData?.agency_id
     };
     try {
       dispatch(setLoading(true));
       const res = await addAgencyUser(body);
       console.log("add user response", res);
-      if (res.body?._id) {
+      if (res.result) {
         dispatch(setLoading(true));
         enqueueSnackbar("User added successfully.", { variant: "success" });
         setOpen(false);
@@ -223,16 +300,24 @@ export default function UserManagement() {
   };
   const renderFilters = () => (
     <React.Fragment>
-      <InputField label="Code" name="code" placeholder="Code" />
+      <InputField label="CNIC" name="cnic" placeholder="CNIC Number" onChange={handleSearchInputChange} />
 
-      <InputField label="Email ID" name="email" placeholder="Email ID" />
+      <InputField label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} />
 
-      <InputField label="User Name" name="userName" placeholder="User Name" />
+      <InputField label="Staff Name" name="StaffName" placeholder="Satff Name" onChange={handleSearchInputChange} />
+      <AppButton text="Search" size="sm"
+        width="120px"
+        variant="filled"
+        color="#fff"
+        bgColor="#581E47"
+        onClick={handleStaffSearch}
+      />
     </React.Fragment>
   );
 
   return (
-    <React.Fragment>
+    <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height : '700px' }}>
+<Box>
       <Sheet
         className="SearchAndFilters-mobile"
         sx={{ display: { xs: "flex", sm: "none" }, my: 1, gap: 1 }}
@@ -251,7 +336,7 @@ export default function UserManagement() {
         >
           <FilterAltIcon />
         </IconButton>
-        <Modal open={open} onClose={() => setOpen(false)}>
+        <Modal open={open} onClose={() => setOpen(false)} >
           <ModalDialog>
             <ModalClose />
             <Typography id="filter-modal" level="h2">
@@ -294,16 +379,9 @@ export default function UserManagement() {
 
       <Box
         className="SearchAndFilters-tabletUp"
-        sx={{ display: { xs: "none", sm: "flex" }, flexWrap: "wrap", gap: 1.5 }}
+        sx={{ display: { xs: "none", sm: "flex" },alignItems: 'end',  flexWrap: "wrap", gap: 1.5 }}
       >
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for User</FormLabel>
-          <Input
-            size="sm"
-            placeholder="Search"
-            startDecorator={<SearchIcon />}
-          />
-        </FormControl>
+
         {renderFilters()}
       </Box>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
@@ -344,7 +422,7 @@ export default function UserManagement() {
         >
           <thead>
             <tr>
-              <th>
+              {/* <th>
                 <Checkbox
                   size="sm"
                   indeterminate={
@@ -357,7 +435,7 @@ export default function UserManagement() {
                     )
                   }
                 />
-              </th>
+              </th> */}
               <th>
                 <Link
                   underline="none"
@@ -374,11 +452,12 @@ export default function UserManagement() {
             </tr>
           </thead>
           {agencies.length > 0 && (
+
             <tbody>
               {stableSort(agencies, getComparator(order, "userName"))?.map(
                 (row) => (
                   <tr key={row.agencyName}>
-                    <td>
+                    {/* <td>
                       <Checkbox
                         size="sm"
                         checked={selected.includes(row.userName)}
@@ -390,7 +469,8 @@ export default function UserManagement() {
                           )
                         }
                       />
-                    </td>
+                    </td> */}
+
                     <td>{row.firstName}</td>
                     <td>{row?.email}</td>
                     <td>{row.role}</td>
@@ -410,62 +490,42 @@ export default function UserManagement() {
           )}
         </Table>
       </Sheet>
-
+      </Box>
+      {totalPages > 1  &&
       <Box
         className="Pagination-laptopUp"
-        sx={{ pt: 2, display: { xs: "none", md: "flex" } }}
+        sx={{ pt: 2, display: { xs: "none", md: "flex" }, justifyContent: 'center' }}
       >
-        <AppButton
-          size="sm"
-          width="120px"
-          text="Previous"
-          variant="outlined"
-          color="#581E47"
-          bgColor="#581E47"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        />
-
-        <Box sx={{ flex: 1 }} />
-
         <Box display="flex" gap={1}>
-          {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
             <IconButton
               key={page}
               size="sm"
-              variant={Number(page) ? "outlined" : "plain"}
+              variant={page === currentPage ? "contained" : "outlined"}
+              onClick={() => handlePageChange(page)}
               sx={{
-                color: "#581E47",
+                color: page === currentPage ? "#ffffff" : "#581E47",
                 borderColor: "#581E47",
                 borderWidth: 1,
+                backgroundColor: page === currentPage ? "#581E47" : "transparent",
                 "&:hover": {
                   backgroundColor: "#581E47",
                   color: "#ffffff",
                   borderColor: "#581E47",
                 },
-                backgroundColor: "transparent",
               }}
             >
               {page}
             </IconButton>
           ))}
         </Box>
-
-        <Box sx={{ flex: 1 }} />
-        <AppButton
-          size="sm"
-          width="120px"
-          text="Next"
-          variant="outlined"
-          color="#581E47"
-          bgColor="#581E47"
-          endDecorator={<KeyboardArrowRightIcon />}
-        />
       </Box>
+}
       <ConfirmDeleteUser
         openDeleteUser={openDeleteUser}
         setOpenDeleteUser={setOpenDeleteUser}
         handleDeleteAgencyUser={handleDeleteAgencyUser}
       />
-    </React.Fragment>
+    </Box>
   );
 }

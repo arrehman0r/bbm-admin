@@ -18,7 +18,7 @@ import { Divider } from "@mui/joy";
 import AddIcon from "@mui/icons-material/Add"; // Import the Add icon
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
   const [countries, setCountries] = useState([]);
@@ -37,13 +37,28 @@ const AddAgency = () => {
   const [images, setImages] = useState([]);
   const [fileName, setFileName] = useState(["Upload File"]); // State to manage multiple file upload buttons
   const { enqueueSnackbar } = useSnackbar();
-  const loading  = useSelector((state)=> state.loading.loading)
-const dispatch = useDispatch()
+  const loading = useSelector((state) => state.loading.loading);
+  const emailRegex = /^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const dispatch = useDispatch()
   useEffect(() => {
     setCountries(Country.getAllCountries());
     setTimeZones([Intl.DateTimeFormat().resolvedOptions().timeZone]); // Wrap in array
   }, []);
+  const handleFileDelete = (index) => {
+    setImages((prevImages) => {
+      const updatedImages = [...prevImages];
+      updatedImages.splice(index, 1); // Remove the file at the specified index
+      return updatedImages;
+    });
 
+    setFileName((prevFileNames) => {
+      const updatedFileNames = [...prevFileNames];
+      updatedFileNames.splice(index, 1); // Remove the file name at the specified index
+      return updatedFileNames;
+    });
+  };
   const handleInputChange = useCallback(
     (event, index) => {
       const { name, value, files } = event.target;
@@ -94,10 +109,16 @@ const dispatch = useDispatch()
 
   const validateForm = () => {
     const newErrors = {};
-    const requiredFields = ["affiliateName", "personName"];
-
+    const requiredFields = [
+      "affiliateName", "personName", "cnic", "designation", "phoneNumber",
+      "country", "city", "timeZone", "defaultCurrency", "currency",
+      "salesChannel", "poBoxNumber", "affiliateType",
+      "markupType", "markupValue", "arCode", "groupArCode",
+      "agencyEmail", "agencyPassword"
+    ];
     requiredFields.forEach((field) => {
       if (!agencyDetailsRef.current[field]) {
+        console.log("missing fiels", field)
         newErrors[field] = true;
       }
     });
@@ -114,60 +135,84 @@ const dispatch = useDispatch()
       return;
     }
 
-    // const imagesBase64 = await Promise.all(
-    //   images.flat().map((file) => {
-    //     return new Promise((resolve, reject) => {
-    //       const reader = new FileReader();
-    //       reader.onload = () => resolve(reader.result);
-    //       reader.onerror = reject;
-    //       reader.readAsDataURL(file);
-    //     });
-    //   })
-    // );
+    const agencyEmail = agencyDetailsRef.current.agencyEmail;
+    if (agencyEmail && !emailRegex.test(agencyEmail)) {
+      enqueueSnackbar("Invalid Email Format", {
+        variant: "error",
+      });
+      return
+    }
 
-    console.log("images==", images)
+    // Validate password
+    const agencyPassword = agencyDetailsRef.current.agencyPassword;
+    if (agencyPassword && !passwordRegex.test(agencyPassword)) {
+      enqueueSnackbar("Password must contain at least 8 characters, including uppercase, lowercase, number, and special character", {
+        variant: "error",
+      });
+      return
+    }
 
-    const body = {
-      affiliateName: agencyDetailsRef.current.affiliateName,
-      personName: agencyDetailsRef.current.personName,
-      designation: agencyDetailsRef.current.designation,
-      phoneNumber: agencyDetailsRef.current.phoneNumber,
-      country: agencyDetailsRef.current.country,
-      city: agencyDetailsRef.current.city,
-      timeZone: agencyDetailsRef.current.timeZone,
-      defaultCurrency: agencyDetailsRef.current.defaultCurrency,
-      currency: agencyDetailsRef.current.currency,
-      defaultLanguage: agencyDetailsRef.current.defaultLanguage,
-      salesChannel: agencyDetailsRef.current.salesChannel,
-      poBoxNumber: agencyDetailsRef.current.poBoxNumber,
-      affiliateType: agencyDetailsRef.current.affiliateType,
-      arCode: agencyDetailsRef.current.arCode,
-      groupArCode: agencyDetailsRef.current.groupArCode,
-      address: agencyDetailsRef.current.address,
-      images: images, 
-      agencyEmail:  agencyDetailsRef.current.agencyEmail,
-      agencyPassword:  agencyDetailsRef.current.agencyPassword,
-      markupType: agencyDetailsRef.current.markupType,
-      markupRate: agencyDetailsRef.current.markupValue,
-    };
+
+
+    const formData = new FormData();
+    formData.append("affiliateName", agencyDetailsRef.current.affiliateName);
+    formData.append("personName", agencyDetailsRef.current.personName);
+    formData.append("designation", agencyDetailsRef.current.designation);
+    formData.append("phoneNumber", agencyDetailsRef.current.phoneNumber);
+    formData.append("country", agencyDetailsRef.current.country);
+    formData.append("city", agencyDetailsRef.current.city);
+    formData.append("timeZone", agencyDetailsRef.current.timeZone);
+    formData.append("defaultCurrency", agencyDetailsRef.current.defaultCurrency);
+    formData.append("currency", agencyDetailsRef.current.currency);
+    formData.append("addStaff", agencyDetailsRef.current.staffNumber);
+    formData.append("salesChannel", agencyDetailsRef.current.salesChannel);
+    formData.append("poBoxNumber", agencyDetailsRef.current.poBoxNumber);
+    formData.append("affiliateType", agencyDetailsRef.current.affiliateType);
+    formData.append("arCode", agencyDetailsRef.current.arCode);
+    formData.append("groupArCode", agencyDetailsRef.current.groupArCode);
+    formData.append("address", agencyDetailsRef.current.address);
+    formData.append("agencyEmail", agencyDetailsRef.current.agencyEmail);
+    formData.append("agencyPassword", agencyDetailsRef.current.agencyPassword);
+    formData.append("markupType", agencyDetailsRef.current.markupType);
+    formData.append("markupRate", agencyDetailsRef.current.markupValue);
+    formData.append("agencyName", agencyDetailsRef.current.agencyName);
+    formData.append("CNIC", agencyDetailsRef.current.cnic);
+    formData.append("role", "agency");
+
+    // Create an array to hold all files
+    const allFiles = images.flat(); // Flatten nested arrays
+
+    // Append all files to FormData
+    allFiles.forEach((file) => {
+      formData.append('files', file); // Use the same key ''
+    });
+
 
     try {
-      console.log("body is", body)
-      dispatch(setLoading(true))
-      const res = await addTravelAgency(body);
+      dispatch(setLoading(true));
+      const res = await addTravelAgency(formData);
       enqueueSnackbar("Agency added successfully!", { variant: "success" });
-      dispatch(setLoading(false))
     } catch (error) {
-      dispatch(setLoading(false))
       console.error("Error adding agency:", error);
       enqueueSnackbar("Error adding agency", { variant: "error" });
-    }
-    finally{
-      dispatch(setLoading(false))
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
   const formFields = [
+    {
+      component: InputField,
+      label: "Agency Name *",
+      name: "agencyName",
+      error: errors.affiliateName,
+    },
+    {
+      component: InputField,
+      label: "CNIC *",
+      name: "cnic",
+      error: errors.affiliateName,
+    },
     {
       component: InputField,
       label: "Affiliate Name *",
@@ -228,11 +273,10 @@ const dispatch = useDispatch()
       error: errors.currency,
     },
     {
-      component: FormSelect,
-      label: "Default Language",
-      name: "defaultLanguage",
-      options: languages,
-      error: errors.defaultLanguage,
+      component: InputField,
+      label: "Number of staff can be added",
+      name: "staffNumber",
+      error: errors.staffNumber,
     },
     {
       component: FormSelect,
@@ -291,13 +335,13 @@ const dispatch = useDispatch()
       component: InputField,
       label: "Email",
       name: "agencyEmail",
-      error: errors.addMarkup,
+      error: errors.agencyEmail,
     },
     {
       component: InputField,
       label: "Password",
       name: "agencyPassword",
-      error: errors.addMarkup,
+      error: errors.agencyPassword,
     },
   ];
 
@@ -364,8 +408,9 @@ const dispatch = useDispatch()
                     bgColor="#581E47"
                     onChange={(e) => handleInputChange(e, index)}
                     component="label"
-                    width="250px"
+                    // width="250px"
                     multiple
+                    endDecorator={<DeleteIcon onClick={() => handleFileDelete(index)} />}
                   />
                 </Box>
               ))}

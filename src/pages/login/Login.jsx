@@ -25,6 +25,7 @@ import { GoogleIcon } from '../../images';
 import Alasam from "./../../images/alasamLogo.png"
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { setLoading } from '../../redux/reducer/loaderSlice';
 // function ColorSchemeToggle() {
 //     //   const { onClick, ...other } = props;
 // const { mode, setMode } = useColorScheme();
@@ -78,18 +79,25 @@ export default function AppLogin() {
         if (validateForm()) {
             console.log("form is valid")
             try {
+                dispatch(setLoading(true))
                 const res = await userLogin(formData);
-      
+
                 if (res.user.id) {
                     enqueueSnackbar("Login successful!", { variant: 'success' });
                     dispatch(setLoginUser(res?.user))
                     Cookies.set('auth-token', res.token, { expires: 7 });
+                    dispatch(setLoading(false))
                     navigate("/")
                 } else {
                     enqueueSnackbar(res || "Login failed.", { variant: 'error' });
+                    dispatch(setLoading(false))
                 }
             } catch (error) {
                 enqueueSnackbar("An error occurred during login.", { variant: 'error' });
+                dispatch(setLoading(false))
+            }
+            finally {
+                dispatch(setLoading(false))
             }
         }
     };
