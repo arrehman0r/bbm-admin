@@ -10,6 +10,9 @@ import Migration from "../../pages-components/Administration/Migration";
 import CommandBuilder from "../../pages-components/Administration/CommandBuilder";
 import BookingEngine from "../../pages-components/BookingEngine";
 import AnalyticsDashboard from "../../pages-components/AnalyticsDashboard";
+import CustomerStatement from "../../pages-components/Report/CustomerStatement";
+import WalletStatement from "../../pages-components/Report/WalletStatement";
+import TransactionReports from "../../pages-components/Report/TransactionReports";
 
 
 const DashboardMain = () => {
@@ -27,6 +30,9 @@ const DashboardMain = () => {
             {selectedOption === "Command Builder" && <CommandBuilder />}
             {selectedOption === "Booking Engine" && <BookingEngine />}
             {selectedOption === "Dashbord" && <AnalyticsDashboard />}
+            {selectedOption === "Customer Statement" && <CustomerStatement/>}
+            {selectedOption === "Wallet Statement" && <WalletStatement/>}
+            {selectedOption === "Transaction Reports" && <TransactionReports/>}
 
 
 
