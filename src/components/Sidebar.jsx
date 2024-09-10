@@ -167,15 +167,15 @@ export default function Sidebar() {
             </ListItemContent>
 
           </ListItemButton>
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashbord"))} sx={{ backgroundColor: selectedOption === "Dashbord" ? '#581E47' : "#fff" }} >
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{ backgroundColor: selectedOption === "Dashboard" ? '#581E47' : "#fff" }} >
             <DashboardIcon />
             <ListItemContent>
               <Typography level="title-sm" sx={{
-                color: selectedOption === "Dashbord" ? "white" : "inherit",
+                color: selectedOption === "Dashboard" ? "white" : "inherit",
                 '&:hover': {
                   color: 'black',
                 },
-              }}>Dashbord</Typography>
+              }}>Dashboard</Typography>
             </ListItemContent>
 
           </ListItemButton>

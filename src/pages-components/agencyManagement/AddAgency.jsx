@@ -40,7 +40,8 @@ const AddAgency = () => {
   const loading = useSelector((state) => state.loading.loading);
   const emailRegex = /^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+  const MAX_FILES = 5;
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
   const dispatch = useDispatch()
   useEffect(() => {
     setCountries(Country.getAllCountries());
@@ -367,6 +368,7 @@ const AddAgency = () => {
                   flexBasis: "calc(33.333% - 16px)",
                   flexGrow: 0,
                   flexShrink: 0,
+                 
                 }}
               >
                 <Field

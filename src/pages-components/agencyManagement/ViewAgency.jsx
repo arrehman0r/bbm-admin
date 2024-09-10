@@ -68,11 +68,11 @@ function RowMenu() {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
+        {/* <MenuItem>Edit</MenuItem> */}
         <MenuItem>Deactivate</MenuItem>
-        <MenuItem>Move</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
+        {/* <MenuItem>Move</MenuItem> */}
+        {/* <Divider /> */}
+        {/* <MenuItem color="danger">Delete</MenuItem> */}
       </Menu>
     </Dropdown>
   );
@@ -210,7 +210,7 @@ export default function ViewAgency() {
           />
         </FormControl> */}
 
-          <InputField label="CNIC" name="cnic" placeholder="CNIC" onChange={handleSearchInputChange} />
+          <InputField label="CNIC / NTN" name="cnic" placeholder="CNIC / NTN" onChange={handleSearchInputChange} />
 
           <InputField label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} />
 
@@ -247,48 +247,27 @@ export default function ViewAgency() {
             stickyHeader
             hoverRow
             sx={{
-              "--TableCell-headBackground":
-                "var(--joy-palette-background-level1)",
+              "--TableCell-headBackground": "var(--joy-palette-background-level1)",
               "--Table-headerUnderlineThickness": "1px",
-              "--TableRow-hoverBackground":
-                "var(--joy-palette-background-level1)",
+              "--TableRow-hoverBackground": "var(--joy-palette-background-level1)",
               "--TableCell-paddingY": "4px",
               "--TableCell-paddingX": "8px",
+              textAlign: "center", // This ensures all content is centered
             }}
           >
             <thead>
-              <tr>
-                {/* <th>
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== agencies.length
-                  }
-                  checked={selected.length === agencies.length}
-                  onChange={(event) =>
-                    setSelected(
-                      event.target.checked ? agencies.map((row) => row.id) : []
-                    )
-                  }
-                />
-              </th> */}
-                <th>
-                  {/* <Link
-                  underline="none"
-                  color="primary"
-                  onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
-                > */}
-                  Agency Name
-                  {/* </Link> */}
-                </th>
-                <th>Status</th>
-                <th>Available Limit</th>
-                <th>Country</th>
-                <th>Code</th>
-                <th>Agency Type</th>
-                <th>AR Code</th>
-                <th />
-              </tr>
+            <tr>
+      <th style={{ textAlign: 'center' }}>Agency Name</th>
+      <th style={{ textAlign: 'center' }}>Status</th>
+      <th style={{ textAlign: 'center' }}>Available Limit</th>
+      <th style={{ textAlign: 'center' }}>Country</th>
+      <th style={{ textAlign: 'center' }}>Code</th>
+      <th style={{ textAlign: 'center' }}>Agency Type</th>
+      <th style={{ textAlign: 'center' }}>AR Code</th>
+      <th style={{ textAlign: 'center' }}>Actions</th>
+
+      
+    </tr>
             </thead>
             {agencies.length > 0 && (
               <tbody>

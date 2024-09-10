@@ -418,6 +418,7 @@ export default function UserManagement() {
               "var(--joy-palette-background-level1)",
             "--TableCell-paddingY": "4px",
             "--TableCell-paddingX": "8px",
+            textAlign: "center",
           }}
         >
           <thead>
@@ -436,18 +437,18 @@ export default function UserManagement() {
                   }
                 />
               </th> */}
-              <th>
-                <Link
+              <th style={{ textAlign: 'center' }}>
+                {/* <Link
                   underline="none"
                   color="primary"
                   onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
-                >
+                > */}
                   User Name
-                </Link>
+                {/* </Link> */}
               </th>
-              <th>User Email</th>
-              <th>Role</th>
-              <th>Status</th>
+              <th style={{ textAlign: 'center' }}>User Email</th>
+              <th style={{ textAlign: 'center' }}>Role</th>
+              <th style={{ textAlign: 'center' }}>Status</th>
               <th />
             </tr>
           </thead>

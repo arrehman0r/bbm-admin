@@ -13,6 +13,7 @@ import AnalyticsDashboard from "../../pages-components/AnalyticsDashboard";
 import CustomerStatement from "../../pages-components/Report/CustomerStatement";
 import WalletStatement from "../../pages-components/Report/WalletStatement";
 import TransactionReports from "../../pages-components/Report/TransactionReports";
+import Ticket from "../../pages-components/CMS";
 
 
 const DashboardMain = () => {
@@ -29,11 +30,14 @@ const DashboardMain = () => {
             {selectedOption === "Migration" && <Migration />}
             {selectedOption === "Command Builder" && <CommandBuilder />}
             {selectedOption === "Booking Engine" && <BookingEngine />}
-            {selectedOption === "Dashbord" && <AnalyticsDashboard />}
+            {selectedOption === "Dashboard" && <AnalyticsDashboard />}
             {selectedOption === "Customer Statement" && <CustomerStatement/>}
             {selectedOption === "Wallet Statement" && <WalletStatement/>}
             {selectedOption === "Transaction Reports" && <TransactionReports/>}
 
+
+
+{selectedOption === "Email Trigger Settings" && <Ticket/>}
 
 
 
