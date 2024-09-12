@@ -169,7 +169,7 @@ export default function UserManagement() {
         setTotalPages(res.result.totalPages); // Update totalPages based on response
       }
     } catch (error) {
-      enqueueSnackbar("Error fetching users.", { variant: "error" });
+      // enqueueSnackbar("Error fetching users.", { variant: "error" });
     } finally {
       dispatch(setLoading(false));
     }
@@ -262,16 +262,16 @@ export default function UserManagement() {
       const res = await addAgencyUser(body);
       console.log("add user response", res);
       if (res.result) {
-        dispatch(setLoading(true));
+        dispatch(setLoading(false));
         enqueueSnackbar("User added successfully.", { variant: "success" });
         setOpen(false);
         fetchAgencyUsers();
       }
     } catch (error) {
-      dispatch(setLoading(true));
+      dispatch(setLoading(false));
       enqueueSnackbar("Error in adding user.", { variant: "error" });
     } finally {
-      dispatch(setLoading(true));
+      dispatch(setLoading(false));
     }
   };
 

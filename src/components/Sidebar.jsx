@@ -32,7 +32,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AlasamLogo from "./../images/alasamLogo.png"
 import ColorSchemeToggle from "./ColorSchemeToggle";
 import { closeSidebar } from "../utils";
-import { agencyTabs, leftBarTabs, superAdminTabs } from "./utils";
+import { agencyTabs, superAdminTabs } from "./utils/dashBoardTabs";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardOption } from "../redux/reducer/dashboardSlice";
 import { setLoginUser } from "../redux/reducer/userSlice";

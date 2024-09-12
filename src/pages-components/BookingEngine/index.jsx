@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import FormSelect from '../../components/common/FormSelect';
 import AppDatePicker from '../../components/common/AppDatePicker';
 import Box from "@mui/joy/Box";
@@ -8,46 +8,33 @@ import AppRadioButtons from '../../components/common/AppRadioButtons';
 import AppButton from '../../components/common/AppButton';
 import SearchIcon from '@mui/icons-material/Search';
 import PassengerCount from '../../components/PassengerCount';
-import { AspectRatio, Avatar, Card, Typography } from '@mui/joy';
-import { Opacity } from '@mui/icons-material';
+
+import SearchSelect from '../../components/common/SearchSelect';
+import { TripOptions } from '../../components/utils/constants';
+import BookingFooter from './BookingFooter';
+import { getFlightsData, searchCityCode } from '../../server/api';
+import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+import { formatDate } from '../../components/utils';
+import FlightTicket from './FlightTicket';
+import { setArrivalCity, setDepartureCity, setDepartureDate, setFlightTickets, setReturnDate } from '../../redux/reducer/ticketSlice';
+import { useNavigate } from 'react-router-dom';
+import { setLoading } from '../../redux/reducer/loaderSlice';
+
 
 const BookingEngine = () => {
     const [tripOption, setTripOption] = useState('One Way');
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-    const TripOptions = [
-        { label: 'One Way', value: 'One Way' },
-        { label: 'Round Trip', value: 'Round Trip' },
-
-    ];
-
-    const cards = [
-        {
-            title: 'Download Bookme App', src: "/static/images/avatar/1.jpg", description: 'Find the best deals on our mobile app', alt: 'a'
-        },
-        { title: 'Help Center', src: "/static/images/avatar/1.jpg", description: 'Contact with our support team', alt: 'a' },
-        { title: 'Manage Bookings', src: "/static/images/avatar/1.jpg", description: 'View and manage your bookings', alt: 'a' },
-    ]
-
-    const images = [
-        {
-            src: 'https://images.unsplash.com/photo-1502657877623-f66bf489d236',
-            title: 'Night view',
-            description: '4.21M views',
-        },
-        {
-            src: 'https://images.unsplash.com/photo-1527549993586-dff825b37782',
-            title: 'Lake view',
-            description: '4.74M views',
-        },
-        {
-            src: 'https://images.unsplash.com/photo-1532614338840-ab30cf10ed36',
-            title: 'Mountain view',
-            description: '3.98M views',
-        },
-    ];
-
-
-
+    // const [departureCity, setDepartureCity] = useState(null);
+    // const [arrivalCity, setArrivalCity] = useState(null);
+    // const [departureDate, setDepartureDate] = useState(null);
+    // const [returnDate, setReturnDate] = useState(null);
+    const dispatch  = useDispatch();
+    const navigate = useNavigate();
+  
+    // const [flightTickets, setFlightTickets] = useState([])
+    const { enqueueSnackbar } = useSnackbar();
+    const { adultsCount, childrenCount, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate } = useSelector(state => state.ticket);
     const handleTripChange = (event) => {
         setTripOption(event.target.value);
     };
@@ -55,6 +42,98 @@ const BookingEngine = () => {
     const handleOpenPassengerCount = () => {
         setIsPopoverOpen(!isPopoverOpen)
     }
+
+    const loadCityOptions = useCallback(async (inputValue) => {
+        if (inputValue.length < 3) return [];
+        try {
+            const response = await searchCityCode(inputValue);
+            console.log("res of city search ==", inputValue)
+            return response.result.map(city => ({
+                value: city.iataCode,
+                label: `${city.name} (${city.iataCode})`
+            }));
+        } catch (error) {
+            console.error('Error fetching city options:', error);
+            return [];
+        }
+    }, []);
+
+    const handleCityChange = (selectedOption, name) => {
+        if (name === 'departure') {
+          dispatch(setDepartureCity(selectedOption))
+           } else if (name === 'arrival') {
+            dispatch(setArrivalCity(selectedOption))
+        }
+    };
+
+    const handleDateChnage = (selectedDate, name)=> {
+        if (name === 'departureDate') {
+            dispatch(setDepartureDate(selectedDate))
+             } else if (name === 'returnDate') {
+              dispatch(setReturnDate(selectedDate))
+          }
+
+    }
+console.log("depaprtuer====", departureCity, arrivalCity)
+    const handleSearch = () => {
+        if (!departureCity || !arrivalCity || !departureDate || (tripOption === "Round Trip" && !returnDate)) {
+            enqueueSnackbar("Please fill in all required fields.", {
+                variant: "error",
+            });
+            return;
+        }
+
+        if (adultsCount === 0 ){
+            enqueueSnackbar("Please select travelers.", {
+                variant: "error",
+            });
+            return;
+        }
+
+        // If it's a "One Way" trip, set the return date to "00-00-00"
+        let finalReturnDate = returnDate;
+        if (tripOption === "One Way") {
+            finalReturnDate = null;
+        } else {
+            // Validate that the return date is not before the departure date
+            if (new Date(returnDate) < new Date(departureDate)) {
+                enqueueSnackbar("Return date cannot be before the departure date.", {
+                    variant: "error",
+                });
+                return;
+            }
+        }
+        if (tripOption === "Round Trip") {
+            finalReturnDate = formatDate(returnDate);
+        }
+      dispatch(setLoading(true))
+        getFlightsData({
+            startDate: formatDate(departureDate),
+            endDate: finalReturnDate,
+            arrival: arrivalCity?.value,
+            departure: departureCity?.value,
+            adultsCount,
+            childrenCount,
+            infantsCount,
+        })
+            .then(res => {
+                console.log('Flight search result:', res);
+              dispatch(setFlightTickets(res.result.ticket))
+              dispatch(setLoading(false))
+
+            })
+            .catch(err => {
+                console.error('Error fetching flights:', err);
+                dispatch(setLoading(false))
+            });
+    };
+
+
+    const handleTicketSelect = ({flight}) => {
+        console.log("selected flight is ........", flight)
+        navigate("/booking", { state: { flight } });
+    }
+
     return (
 
         <Box>
@@ -70,19 +149,32 @@ const BookingEngine = () => {
                 }}
             >
                 <Box sx={{ flex: 1 }}>
-                    <FormSelect placeholder="Departure" startDecorator={<FlightTakeoffIcon />} size="lg" />
+                    <SearchSelect
+                        placeholder="Departure"
+                        onChange={handleCityChange}
+                        _name="departure"
+                        loadOptions={loadCityOptions}
+                        value={departureCity}
+                      
+                    />
                 </Box>
 
                 <Box sx={{ flex: 1 }}>
-                    <FormSelect placeholder="Arrival" startDecorator={<FlightLandIcon />} size="lg" />
+                    <SearchSelect
+                        placeholder="Arrival"
+                        onChange={handleCityChange}
+                        _name="arrival"
+                        loadOptions={loadCityOptions}
+                        value={arrivalCity}
+                      
+                    />
                 </Box>
-
                 <Box sx={{ flex: 1 }}>
-                    <AppDatePicker startDecorator={<FlightLandIcon />} placeholder="Departure Date" />
+                    <AppDatePicker size='lg' startDecorator={<FlightLandIcon />} placeholder="Departure Date" name="departureDate" date={departureDate} handleChnage={handleDateChnage} />
                 </Box>
                 {tripOption === "Round Trip" &&
                     <Box sx={{ flex: 1 }}>
-                        <AppDatePicker startDecorator={<FlightLandIcon />} placeholder="Arrival Date" />
+                        <AppDatePicker size='lg' startDecorator={<FlightLandIcon />} placeholder="Arrival Date" name="returnDate" date={returnDate} handleChnage={handleDateChnage} />
                     </Box>}
                 <Box sx={{ flex: 1 }}>
                     <PassengerCount isPopoverOpen={isPopoverOpen} handleOpenPassengerCount={handleOpenPassengerCount} />
@@ -92,72 +184,26 @@ const BookingEngine = () => {
                         color="#fff"
                         bgColor="#581E47"
                         height="48px"
-                        width="10rem" />
+                        width="10rem"
+                        onClick={handleSearch}
+                    />
                 </Box>
 
             </Box>
 
-            <Box sx={{ marginTop: 10, display: 'flex', justifyContent: 'space-between', width: '95%' }}>
-                {cards.map((card, index) => (
-                    <Card sx={{ width: 400 }} key={index}>
-                        <div style={{ display: "flex", justifyContent: "space-around", gap: '10px' }}>
-                            <div>
-                                <Avatar src={card?.src} />
-                            </div>
-                            <div>
-                                <Typography variant="h6">{card.title}</Typography>
-                                <Typography variant="body2">{card.description}</Typography>
+            <Box sx={{ mt: 40 }}>
+                {flightTickets.length > 0 && flightTickets.map((flight) => (
 
-                            </div>
-                        </div>
-                    </Card>
-                ))}
+                    <div>   
+                       <FlightTicket flight={flight} handleTicketSelect={handleTicketSelect} />
+                    </div>))
+                }
 
 
-
-            </Box>
-
-            <Typography level='h2' style={{ marginTop: '50px' }}>Latest Offers</Typography>
-            <Typography level='h5' sx={{ fontSize: 'xl' }}>We provide the best and most affordable services in Pakistan.</Typography>
-
-            <div style={{ width: "95%", display: 'flex', justifyContent: 'space-between', marginTop: "80px" }}>
-                {images.map((image) => (
-                    <AspectRatio ratio="2" sx={{ minWidth: 400 }}>
-                        <img
-                            srcSet={image.src}
-                            src={image.src}
-                            style={{ borderRadius: '10px' }}
-                        />
-                    </AspectRatio>
-                ))}
+            </Box >
 
 
-            </div>
-
-
-            <Box style={{ backgroundColor: 'black', height: '350px', width: '100%', marginTop: '60px', padding: '25px' }}>
-                <div style={{ padding: '25px' }} >
-                    <Typography level='h2' style={{ color: "white" }}>Why Use Bookme?</Typography>
-                    <Typography level='h5' sx={{ fontSize: 'xl', color: "white" }}>We provide the best deals in Pakistan.</Typography>
-                </div>
-                <div style={{ display: "flex", marginTop: '20px' , justifyContent:"space-between" }}>
-                    {cards.map((card, index) => (
-                        <Card sx={{ width: 350, border: "none", backgroundColor: "transparent" }} key={index}>
-                            <div style={{ display: "flex", justifyContent: "space-around", gap: '10px' }}>
-                                <div>
-                                    <Avatar src={card?.src} />
-                                </div>
-                                <div>
-                                    <Typography variant="h6" level="h3">{card.title}</Typography>
-                                    <Typography variant="body2" level="h4">{card.description}</Typography>
-
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-
-                </div>
-            </Box>
+            <BookingFooter />
 
         </Box>
     );

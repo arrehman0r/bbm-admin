@@ -4,24 +4,25 @@ import DatePicker from "react-datepicker";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import "react-datepicker/dist/react-datepicker.css";
 
-const AppDatePicker = ({ label, size, placeholder, startDecorator }) => {
-  const [startDate, setStartDate] = useState(null);
+const AppDatePicker = ({ label, size, placeholder, name, date, setDate , handleChnage }) => {
+  // const [startDate, setStartDate] = useState(null);
 
   return (
     <FormControl size={size || "lg"}>
-
+      <FormLabel>{label}</FormLabel>
       <DatePicker
-      showIcon
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        placeholderText = {placeholder}
-        icon = {<CalendarTodayIcon/>}
+        // showIcon
+        selected={date}
+        onChange={(selectedDate) => handleChnage(selectedDate, name)}
+        placeholderText={placeholder}
+        // icon={<CalendarTodayIcon />}
+        name={name}
         customInput={
           <Input
-          // sx={{}}
             size={size || "lg"}
             placeholder={placeholder || "Choose a date"}
-            sx={{ height: "48px"}} 
+            sx={{ height: size === "lg" ? '48px' : '28px' }}
+
           />
         }
       />

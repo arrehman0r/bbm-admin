@@ -11,6 +11,7 @@ const FormSelect = ({ label, options, onChange, name, error, placeholder, startD
       <Select
         size={size ||"sm"}
         placeholder={placeholder || "Select"}
+      
         onChange={(_, newValue) =>
           onChange({ target: { name, value: newValue } })
         }

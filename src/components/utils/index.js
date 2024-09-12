@@ -1,95 +1,49 @@
 
-export const superAdminTabs = [
-    {
-   heading : "Agency Management",
-   subheading: ["Add Agency", "View Agency","User Management"],
-  },
-  {
-    heading : "CRM",
-    subheading: ["Flight Booking", "Lead Management"],
-   },
-   {
-    heading : "Administration",
-    subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Flight Rule Configuration","Command Builder","Location Setting","Security Management",],
-   },
-   {
-    heading : "Organization Management",
-    subheading:["Organization Staff"]
-   },
-   {
-    heading : "Role Management",
-    subheading:["Role Management","User Access Unmapping"]
-   },
-   {
-    heading : "Report",
-    subheading:["Transaction Reports","Wallet Statement","Customer Statement"]
-   },
-   {
-    heading : "Account",
-    subheading:["ROE","Payment Receipt","Wallet Adjustment"]
-   },
-   {
-    heading : "CMS",
-    subheading:["Content Pages"]
-   },
-   {
-    heading : "Language management",
-    subheading:["Languages List","Translation Manager"]
-   },
-   {
-    heading : "Theme",
-    subheading:["Theme Management"]
-   },
-   {
-    heading : "Notification",
-    subheading:["Email Trigger Settings"]
-   }, 
-]
+// export const formatDate = (date) => {
+  
+//   return date.toLocaleDateString("en-US", {
+//     day: "2-digit",
+//     month: "short",
+//     year: "numeric",
+//   });
+// };
 
-export const agencyTabs = [
- 
-  {
- heading : "Agency Management",
- subheading: ["View Agency","User Management"],
-},
-{
-  heading : "CRM",
-  subheading: ["Flight Booking", "Lead Management"],
- },
-//  {
-//   heading : "Administration",
-//   subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Flight Rule Configuration","Command Builder","Location Setting","Security Management",],
-//  },
-//  {
-//   heading : "Organization Management",
-//   subheading:["Organization Staff"]
-//  },
-//  {
-//   heading : "Role Management",
-//   subheading:["Role Management","User Access Unmapping"]
-//  },
- {
-  heading : "Report",
-  subheading:["Transaction Report","Wallet statement","Customer Statement"]
- },
- {
-  heading : "Account",
-  subheading:["ROE","Payment Receipt","Wallet Adjustment"]
- },
-//  {
-//   heading : "CMS",
-//   subheading:["Content Pages"]
-//  },
-//  {
-//   heading : "Language management",
-//   subheading:["Languages List","Translation Manager"]
-//  },
-//  {
-//   heading : "Theme",
-//   subheading:["Theme Management"]
-//  },
- {
-  heading : "Notification",
-  subheading:["Email Trigger Settings"]
- }, 
-]
+
+export const formatDate= (date)=> {
+  // Parse the provided date string
+  const parsedDate = new Date(date);
+
+  // Extract year, month, and day components
+  const year = parsedDate.getFullYear();
+  const month = parsedDate.getMonth() + 1; // Months are zero-based, so we add 1
+  const day = parsedDate.getDate();
+
+  // Ensure month and day are two digits
+  const formattedMonth = month < 10 ? `0${month}` : `${month}`;
+  const formattedDay = day < 10 ? `0${day}` : `${day}`;
+
+  // Construct the formatted date string
+  const formattedDate = `${year}-${formattedMonth}-${formattedDay}`;
+
+  return formattedDate;
+}
+
+
+
+export const formatDuration =(duration)=> {
+  // PT3H40M" to the desired format "3h 40m".
+  // Extract hours and minutes from the duration string
+  const hours = duration.match(/(\d+)H/i);
+  const minutes = duration.match(/(\d+)M/i);
+  
+  // Construct formatted duration string
+  let formattedDuration = '';
+  if (hours) {
+      formattedDuration += `${hours[1]}h `;
+  }
+  if (minutes) {
+      formattedDuration += `${minutes[1]}m`;
+  }
+  
+  return formattedDuration.trim();
+}

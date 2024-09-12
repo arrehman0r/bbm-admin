@@ -63,10 +63,25 @@ const AddAgency = () => {
   const handleInputChange = useCallback(
     (event, index) => {
       const { name, value, files } = event.target;
-
+      const selectedFiles = Array.from(files);
       if (files) {
+
+        if (images.flat().length + selectedFiles.length > MAX_FILES) {
+          enqueueSnackbar(`You can upload a maximum of ${MAX_FILES} files.`, { variant: "error" });
+          return;
+        }
+
+        // Check file sizes
+        const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE);
+        if (oversizedFiles.length > 0) {
+          enqueueSnackbar(`File(s) exceed the 5MB limit: ${oversizedFiles.map(f => f.name).join(', ')}`, { variant: "error" });
+          return;
+        }
+
+
+
         // Handle multiple file uploads for images
-        const selectedFiles = Array.from(files);
+     
         setImages((prevImages) => {
           const updatedImages = [...prevImages];
           updatedImages[index] = selectedFiles;

@@ -38,7 +38,9 @@ export const searchAgencySatff = ({ email, CNIC, firstName }, id) => {
   return makeRequest("get", `staff/getAll/${id}?${queryParams.toString()}`);
 };
 
-
+export const searchCityCode = (keyword) => {
+  return makeRequest("get", `flights/cityData?city=${keyword}`);
+};
 
 export const getAgencyUsers = (id, pageNumber) => {
   return makeRequest("get", `staff/getAll/${id}?page=${pageNumber}`);
@@ -82,4 +84,30 @@ export const get = (body) => {
 
 export const getAnalyticsData = () => {
   return makeRequest("get", "agency/EmployeeData");
+};
+
+
+export const getFlightsData = ({ startDate, endDate, arrival, departure, adultsCount, childrenCount, infantsCount }) => {
+  // Base URL with mandatory parameters
+  let url = `flights/flightData?start_date=${startDate}&arrival=${arrival}&dept=${departure}`;
+
+  // Conditionally append optional parameters if they exist
+  if (endDate) {
+      url += `&end_date=${endDate}`;
+  }
+  if (adultsCount) {
+      url += `&adult=${adultsCount}`;
+  }
+  if (childrenCount) {
+      url += `&children=${childrenCount}`;
+  }
+  if (infantsCount) {
+      url += `&infants=${infantsCount}`;
+  }
+  if (true) {
+    url += `&max=10`;
+}
+
+  // Make the request with the constructed URL
+  return makeRequest("get", url);
 };
