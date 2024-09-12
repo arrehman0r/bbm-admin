@@ -32,3 +32,7 @@ export const TripOptions = [
 
 ];
 
+export const TravelOptions = [
+
+    { label: "Economy", value: "ECONOMY" }, { label: "Premium", value: "PREMIUM_ECONOMY" }, { label: "Business", value: "BUSINESS" }, { label: 'Fist Class', value: "FIRST" }
+]

@@ -20,6 +20,7 @@ import FlightTicket from './FlightTicket';
 import { setArrivalCity, setDepartureCity, setDepartureDate, setFlightTickets, setReturnDate } from '../../redux/reducer/ticketSlice';
 import { useNavigate } from 'react-router-dom';
 import { setLoading } from '../../redux/reducer/loaderSlice';
+import BookingFilters from './BookingFilters';
 
 
 const BookingEngine = () => {
@@ -29,9 +30,9 @@ const BookingEngine = () => {
     // const [arrivalCity, setArrivalCity] = useState(null);
     // const [departureDate, setDepartureDate] = useState(null);
     // const [returnDate, setReturnDate] = useState(null);
-    const dispatch  = useDispatch();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-  
+
     // const [flightTickets, setFlightTickets] = useState([])
     const { enqueueSnackbar } = useSnackbar();
     const { adultsCount, childrenCount, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate } = useSelector(state => state.ticket);
@@ -60,21 +61,21 @@ const BookingEngine = () => {
 
     const handleCityChange = (selectedOption, name) => {
         if (name === 'departure') {
-          dispatch(setDepartureCity(selectedOption))
-           } else if (name === 'arrival') {
+            dispatch(setDepartureCity(selectedOption))
+        } else if (name === 'arrival') {
             dispatch(setArrivalCity(selectedOption))
         }
     };
 
-    const handleDateChnage = (selectedDate, name)=> {
+    const handleDateChnage = (selectedDate, name) => {
         if (name === 'departureDate') {
             dispatch(setDepartureDate(selectedDate))
-             } else if (name === 'returnDate') {
-              dispatch(setReturnDate(selectedDate))
-          }
+        } else if (name === 'returnDate') {
+            dispatch(setReturnDate(selectedDate))
+        }
 
     }
-console.log("depaprtuer====", departureCity, arrivalCity)
+    console.log("depaprtuer====", departureCity, arrivalCity)
     const handleSearch = () => {
         if (!departureCity || !arrivalCity || !departureDate || (tripOption === "Round Trip" && !returnDate)) {
             enqueueSnackbar("Please fill in all required fields.", {
@@ -83,7 +84,7 @@ console.log("depaprtuer====", departureCity, arrivalCity)
             return;
         }
 
-        if (adultsCount === 0 ){
+        if (adultsCount === 0) {
             enqueueSnackbar("Please select travelers.", {
                 variant: "error",
             });
@@ -106,7 +107,7 @@ console.log("depaprtuer====", departureCity, arrivalCity)
         if (tripOption === "Round Trip") {
             finalReturnDate = formatDate(returnDate);
         }
-      dispatch(setLoading(true))
+        dispatch(setLoading(true))
         getFlightsData({
             startDate: formatDate(departureDate),
             endDate: finalReturnDate,
@@ -118,8 +119,8 @@ console.log("depaprtuer====", departureCity, arrivalCity)
         })
             .then(res => {
                 console.log('Flight search result:', res);
-              dispatch(setFlightTickets(res.result.ticket))
-              dispatch(setLoading(false))
+                dispatch(setFlightTickets(res.result.ticket))
+                dispatch(setLoading(false))
 
             })
             .catch(err => {
@@ -129,7 +130,7 @@ console.log("depaprtuer====", departureCity, arrivalCity)
     };
 
 
-    const handleTicketSelect = ({flight}) => {
+    const handleTicketSelect = ({ flight }) => {
         console.log("selected flight is ........", flight)
         navigate("/booking", { state: { flight } });
     }
@@ -155,7 +156,7 @@ console.log("depaprtuer====", departureCity, arrivalCity)
                         _name="departure"
                         loadOptions={loadCityOptions}
                         value={departureCity}
-                      
+
                     />
                 </Box>
 
@@ -166,7 +167,7 @@ console.log("depaprtuer====", departureCity, arrivalCity)
                         _name="arrival"
                         loadOptions={loadCityOptions}
                         value={arrivalCity}
-                      
+
                     />
                 </Box>
                 <Box sx={{ flex: 1 }}>
@@ -190,18 +191,29 @@ console.log("depaprtuer====", departureCity, arrivalCity)
                 </Box>
 
             </Box>
+            <Box sx={{ display: 'flex', mt: 10, gap: 3 }}
+            >
 
-            <Box sx={{ mt: 40 }}>
-                {flightTickets.length > 0 && flightTickets.map((flight) => (
-
-                    <div>   
-                       <FlightTicket flight={flight} handleTicketSelect={handleTicketSelect} />
-                    </div>))
-                }
+                <BookingFilters />
 
 
-            </Box >
 
+
+
+                <Box  sx={{width: '100%'}}>
+                    {flightTickets.length > 0 && flightTickets.map((flight) => (
+
+                        <div>
+                            <FlightTicket flight={flight} handleTicketSelect={handleTicketSelect} />
+                        </div>))
+                    }
+
+
+
+
+                </Box>
+
+            </Box>
 
             <BookingFooter />
 
