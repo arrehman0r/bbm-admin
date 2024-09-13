@@ -4,13 +4,32 @@ import { formatDate, formatDuration } from "../../components/utils";
 import AppButton from "../../components/common/AppButton";
 
 const FlightTicket = ({ flight, handleTicketSelect }) => {
+
+
+
   return (
     <Card variant="outlined" sx={{ width: '100%', mb: 2, borderRadius: 'lg' }}>
       <CardContent>
         <Stack spacing={2}>
-          {/* Departure Flight Information */}
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
               <Typography level="h6">Departure</Typography>
               <Typography level="body1">
                 {flight.departure.departureLocation} at{" "}
@@ -20,7 +39,8 @@ const FlightTicket = ({ flight, handleTicketSelect }) => {
                 {formatDate(flight.departure.departureTime)}
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+
+            <Grid item xs={4}>
               <Typography level="h6">Arrival</Typography>
               <Typography level="body1">
                 {flight.departure.arrivalLocation} at{" "}
@@ -33,11 +53,20 @@ const FlightTicket = ({ flight, handleTicketSelect }) => {
                 {new Date(flight.departure.arrivalTime).toLocaleDateString()}
               </Typography>
             </Grid>
+
+            <Grid item xs={4}>
+              <AppButton text={flight.api}
+              //  color="#fff"
+              //   bgColor="#581E47"
+                height="48px"
+                width="10rem" />
+            </Grid>
           </Grid>
+
 
           <Divider />
 
-          {/* Departure Flight Details */}
+        
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Typography level="body2">
@@ -109,7 +138,7 @@ const FlightTicket = ({ flight, handleTicketSelect }) => {
           }
           <Divider />
 
-          {/* Fare Information */}
+        
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Typography level="body1">
@@ -130,7 +159,7 @@ const FlightTicket = ({ flight, handleTicketSelect }) => {
               </Typography>
             </Grid>
             <Grid item xs={6}>
-            <AppButton text="Select" onClick={() => handleTicketSelect({ flight })} />
+              <AppButton text="Select" onClick={() => handleTicketSelect({ flight })} />
             </Grid>
           </Grid>
         </Stack>

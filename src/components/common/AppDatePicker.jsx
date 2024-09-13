@@ -8,7 +8,7 @@ const AppDatePicker = ({ label, size, placeholder, name, date, setDate , handleC
   // const [startDate, setStartDate] = useState(null);
 
   return (
-    <FormControl size={size || "lg"}>
+    <FormControl size={size || "lg"} sx={{zIndex: 9999}}>
       <FormLabel>{label}</FormLabel>
       <DatePicker
         // showIcon

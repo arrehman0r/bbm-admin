@@ -61,6 +61,9 @@ export const getAgencyUserRoles = () => {
   return makeRequest("get", `roles/roleAgency`);
 };
 
+export const getAgencyTypes = () => {
+  return makeRequest("get", `type/getAll`);
+};
 
 export const updateAgencyUserStatus = (id, body) => {
   return makeRequest("put", `staff/status/${id}`, body)
@@ -86,28 +89,73 @@ export const getAnalyticsData = () => {
   return makeRequest("get", "agency/EmployeeData");
 };
 
-
-export const getFlightsData = ({ startDate, endDate, arrival, departure, adultsCount, childrenCount, infantsCount }) => {
+export const getFlightsData = ({ 
+  startDate, 
+  endDate, 
+  arrival, 
+  departure, 
+  adultsCount, 
+  childrenCount, 
+  infantsCount, 
+  currencyPreference, 
+  airLinePreference, 
+  excludedAirlines, 
+  ticketClass, 
+  ticketCount, 
+  flightPriceRange, 
+  flightStops 
+}) => {
   // Base URL with mandatory parameters
   let url = `flights/flightData?start_date=${startDate}&arrival=${arrival}&dept=${departure}`;
 
   // Conditionally append optional parameters if they exist
   if (endDate) {
-      url += `&end_date=${endDate}`;
+    url += `&end_date=${endDate}`;
   }
   if (adultsCount) {
-      url += `&adult=${adultsCount}`;
+    url += `&adult=${adultsCount}`;
   }
   if (childrenCount) {
-      url += `&children=${childrenCount}`;
+    url += `&children=${childrenCount}`;
   }
   if (infantsCount) {
-      url += `&infants=${infantsCount}`;
+    url += `&infants=${infantsCount}`;
   }
-  if (true) {
-    url += `&max=10`;
-}
-
+  if (currencyPreference) {
+    url += `&currencyCode=${currencyPreference}`;
+  }
+  if (ticketClass) {
+    url += `&travelClass=${ticketClass}`;
+  }
+  if (flightStops !== undefined) {
+    url += `&nonStop=${flightStops}`;
+  }
+  if (flightPriceRange) {
+    url += `&maxPrice=${flightPriceRange}`;
+  }
+  if (ticketCount) {
+    url += `&max=${ticketCount}`;
+  }
+  if (airLinePreference) {
+    url += `&includedAirlineCodes=${airLinePreference}`;
+  }
+  if (excludedAirlines) {
+    url += `&excludedAirlineCodes=${excludedAirlines}`;
+  }
+console.log("url is .......",  startDate, 
+  endDate, 
+  arrival, 
+  departure, 
+  adultsCount, 
+  childrenCount, 
+  infantsCount, 
+  currencyPreference, 
+  airLinePreference, 
+  excludedAirlines, 
+  ticketClass, 
+  ticketCount, 
+  flightPriceRange, 
+  flightStops)
   // Make the request with the constructed URL
   return makeRequest("get", url);
 };

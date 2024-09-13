@@ -2,32 +2,27 @@ import React, { useCallback, useState } from "react";
 import FormSelect from "../../components/common/FormSelect";
 import AppDatePicker from "../../components/common/AppDatePicker";
 import Box from "@mui/joy/Box";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import FlightLandIcon from "@mui/icons-material/FlightLand";
-import AppRadioButtons from "../../components/common/AppRadioButtons";
-import AppButton from "../../components/common/AppButton";
-import SearchIcon from "@mui/icons-material/Search";
-import PassengerCount from "../../components/PassengerCount";
-import { formatDate, formatDuration } from "../../components/utils";
-import CustomTypography from "../../components/common/CustomTyprography";
-import SearchSelect from "../../components/common/SearchSelect";
-import { TripOptions } from "../../components/utils/constants";
-import BookingFooter from "./BookingFooter";
-import { getFlightsData, searchCityCode } from "../../server/api";
-import { useSnackbar } from "notistack";
-import { useDispatch, useSelector } from "react-redux";
-import FlightTicket from "./FlightTicket";
-import {
-  setArrivalCity,
-  setDepartureCity,
-  setDepartureDate,
-  setFlightTickets,
-  setReturnDate,
-} from "../../redux/reducer/ticketSlice";
-import { useNavigate } from "react-router-dom";
-import { setLoading } from "../../redux/reducer/loaderSlice";
-import BookingFilters from "./BookingFilters";
-import Ticket from "./Ticket";
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import FlightLandIcon from '@mui/icons-material/FlightLand';
+import AppRadioButtons from '../../components/common/AppRadioButtons';
+import AppButton from '../../components/common/AppButton';
+import SearchIcon from '@mui/icons-material/Search';
+import PassengerCount from '../../components/PassengerCount';
+
+import SearchSelect from '../../components/common/SearchSelect';
+import { TripOptions } from '../../components/utils/constants';
+import BookingFooter from './BookingFooter';
+import { getFlightsData, searchCityCode } from '../../server/api';
+import { useSnackbar } from 'notistack';
+import { useDispatch, useSelector } from 'react-redux';
+import { formatDate } from '../../components/utils';
+import FlightTicket from './FlightTicket';
+import { setArrivalCity, setDepartureCity, setDepartureDate, setFlightTickets, setReturnDate } from '../../redux/reducer/ticketSlice';
+import { useNavigate } from 'react-router-dom';
+import { setLoading } from '../../redux/reducer/loaderSlice';
+import BookingFilters from './BookingFilters';
+import TicketsTopBar from './TicketsTopBar';
+
 
 const BookingEngine = () => {
   const [tripOption, setTripOption] = useState("One Way");
@@ -39,25 +34,16 @@ const BookingEngine = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const [flightTickets, setFlightTickets] = useState([])
-  const { enqueueSnackbar } = useSnackbar();
-  const {
-    adultsCount,
-    childrenCount,
-    infantsCount,
-    flightTickets,
-    departureCity,
-    arrivalCity,
-    departureDate,
-    returnDate,
-  } = useSelector((state) => state.ticket);
-  const handleTripChange = (event) => {
-    setTripOption(event.target.value);
-  };
-
-  const handleOpenPassengerCount = () => {
-    setIsPopoverOpen(!isPopoverOpen);
-  };
+    // const [flightTickets, setFlightTickets] = useState([])
+    const { enqueueSnackbar } = useSnackbar();
+    const { adultsCount, childrenCount, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate, currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops } = useSelector(state => state.ticket);
+    const handleTripChange = (event) => {
+        setTripOption(event.target.value);
+    };
+    console.log("filters are >>>>>>", currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops)
+    const handleOpenPassengerCount = () => {
+        setIsPopoverOpen(!isPopoverOpen)
+    }
 
   const loadCityOptions = useCallback(async (inputValue) => {
     if (inputValue.length < 3) return [];
@@ -110,42 +96,45 @@ const BookingEngine = () => {
       return;
     }
 
-    // If it's a "One Way" trip, set the return date to "00-00-00"
-    let finalReturnDate = returnDate;
-    if (tripOption === "One Way") {
-      finalReturnDate = null;
-    } else {
-      // Validate that the return date is not before the departure date
-      if (new Date(returnDate) < new Date(departureDate)) {
-        enqueueSnackbar("Return date cannot be before the departure date.", {
-          variant: "error",
-        });
-        return;
-      }
-    }
-    if (tripOption === "Round Trip") {
-      finalReturnDate = formatDate(returnDate);
-    }
-    dispatch(setLoading(true));
-    getFlightsData({
-      startDate: formatDate(departureDate),
-      endDate: finalReturnDate,
-      arrival: arrivalCity?.value,
-      departure: departureCity?.value,
-      adultsCount,
-      childrenCount,
-      infantsCount,
-    })
-      .then((res) => {
-        console.log("Flight search result:", res);
-        dispatch(setFlightTickets(res.result.ticket));
-        dispatch(setLoading(false));
-      })
-      .catch((err) => {
-        console.error("Error fetching flights:", err);
-        dispatch(setLoading(false));
-      });
-  };
+        // If it's a "One Way" trip, set the return date to "00-00-00"
+        let finalReturnDate = returnDate;
+        if (tripOption === "One Way") {
+            finalReturnDate = null;
+        } else {
+            // Validate that the return date is not before the departure date
+            if (new Date(returnDate) < new Date(departureDate)) {
+                enqueueSnackbar("Return date cannot be before the departure date.", {
+                    variant: "error",
+                });
+                return;
+            }
+        }
+        if (tripOption === "Round Trip") {
+            finalReturnDate = formatDate(returnDate);
+        }
+        dispatch(setLoading(true))
+        getFlightsData({
+            startDate: formatDate(departureDate),
+            endDate: finalReturnDate,
+            arrival: arrivalCity?.value,
+            departure: departureCity?.value,
+            adultsCount,
+            childrenCount,
+            infantsCount,
+            currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops
+        })
+            .then(res => {
+                console.log('Flight search result:', res);
+                dispatch(setFlightTickets(res.result.ticket))
+                dispatch(setLoading(false))
+
+            })
+            .catch(err => {
+                console.error('Error fetching flights:', err);
+                dispatch(setLoading(false))
+            });
+    };
+
 
   const handleTicketSelect = ({ flight }) => {
     console.log("selected flight is ........", flight);

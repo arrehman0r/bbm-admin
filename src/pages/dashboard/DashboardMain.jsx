@@ -14,6 +14,12 @@ import CustomerStatement from "../../pages-components/Report/CustomerStatement";
 import WalletStatement from "../../pages-components/Report/WalletStatement";
 import TransactionReports from "../../pages-components/Report/TransactionReports";
 import Ticket from "../../pages-components/CMS";
+import ROE from "../../pages-components/Accounts/ROE";
+import PaymentRecipt from "../../pages-components/Accounts/paymentReceipt";
+import WalletAdjustment from "../../pages-components/Accounts/walletAdjustment";
+import ContentPages from "../../pages-components/CMS/contentPages";
+import RoleManagement from "../../pages-components/RoleManagement/RoleManagement";
+import UserAccessUnmapping from "../../pages-components/RoleManagement/UserAccessUnmapping";
 
 
 const DashboardMain = () => {
@@ -34,6 +40,13 @@ const DashboardMain = () => {
             {selectedOption === "Customer Statement" && <CustomerStatement/>}
             {selectedOption === "Wallet Statement" && <WalletStatement/>}
             {selectedOption === "Transaction Reports" && <TransactionReports/>}
+            {selectedOption === "ROE" && <ROE/>}
+            {selectedOption === "Payment Receipt" && <PaymentRecipt/>}
+            {selectedOption === "Wallet Adjustment" && <WalletAdjustment/>}
+            {selectedOption === "Content Pages" && <ContentPages/>}
+            {selectedOption === "Role Management" && <RoleManagement/>}
+            {selectedOption === "User Access Unmapping" && <UserAccessUnmapping/>}
+
 
 
 
