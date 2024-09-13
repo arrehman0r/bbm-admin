@@ -47,3 +47,8 @@ export const formatDuration =(duration)=> {
   
   return formattedDuration.trim();
 }
+
+
+export const emailRegex = /^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/;
+
+export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

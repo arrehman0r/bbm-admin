@@ -21,6 +21,7 @@ import { setArrivalCity, setDepartureCity, setDepartureDate, setFlightTickets, s
 import { useNavigate } from 'react-router-dom';
 import { setLoading } from '../../redux/reducer/loaderSlice';
 import BookingFilters from './BookingFilters';
+import TicketsTopBar from './TicketsTopBar';
 
 
 const BookingEngine = () => {
@@ -35,11 +36,11 @@ const BookingEngine = () => {
 
     // const [flightTickets, setFlightTickets] = useState([])
     const { enqueueSnackbar } = useSnackbar();
-    const { adultsCount, childrenCount, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate } = useSelector(state => state.ticket);
+    const { adultsCount, childrenCount, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate, currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops } = useSelector(state => state.ticket);
     const handleTripChange = (event) => {
         setTripOption(event.target.value);
     };
-
+    console.log("filters are >>>>>>", currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops)
     const handleOpenPassengerCount = () => {
         setIsPopoverOpen(!isPopoverOpen)
     }
@@ -116,6 +117,7 @@ const BookingEngine = () => {
             adultsCount,
             childrenCount,
             infantsCount,
+            currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops
         })
             .then(res => {
                 console.log('Flight search result:', res);
@@ -191,19 +193,23 @@ const BookingEngine = () => {
                 </Box>
 
             </Box>
-            <Box sx={{ display: 'flex', mt: 10, gap: 3 }}
+            <Box sx={{ display: 'flex', mt: 30, gap: 3 }}
             >
 
-                <BookingFilters />
+                {flightTickets.length > 0 && <BookingFilters />}
 
 
 
 
 
-                <Box  sx={{width: '100%'}}>
+                <Box sx={{ width: '100%' }}>
+
+
+                    {flightTickets.length > 0 && <TicketsTopBar />}
                     {flightTickets.length > 0 && flightTickets.map((flight) => (
 
                         <div>
+                           
                             <FlightTicket flight={flight} handleTicketSelect={handleTicketSelect} />
                         </div>))
                     }

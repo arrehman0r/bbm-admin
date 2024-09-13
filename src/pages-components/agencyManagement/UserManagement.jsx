@@ -52,6 +52,7 @@ import { useSnackbar } from "notistack";
 import ConfirmDeleteUser from "../../components/modals/ConfirmDeleteUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
+import { passwordRegex } from "../../components/utils";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -162,7 +163,7 @@ export default function UserManagement() {
       } else if (userData.role === "super_admin") {
         res = await getAgencyAllUsers(page);
       }
-  
+
       if (res?.result) {
         setAgencies(res.result.staff);
         console.log("agencies are . >>>", res.result.staff)
@@ -174,7 +175,7 @@ export default function UserManagement() {
       dispatch(setLoading(false));
     }
   };
-  
+
 
 
   const handleInputChange = useCallback((event) => {
@@ -240,7 +241,7 @@ export default function UserManagement() {
   };
 
   const handlePageChange = (page) => {
-    console.log("page number is ",page)
+    console.log("page number is ", page)
     setCurrentPage(page);
     fetchAgencyUsers(page);
   };
@@ -250,31 +251,68 @@ export default function UserManagement() {
   }, []);
 
   const handleAddUser = async () => {
+    const { userCnic, userEmail, userName, role, password } = userManagementRef.current;
+  console.log("we are checking all ",userCnic, userEmail, userName, role, password)
+    // Validate email
+    if (!userEmail && !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(userEmail)) {
+      enqueueSnackbar("Please enter a valid email address.");
+      return;
+    }
+  
+    // Validate CNIC
+    if (!userCnic && !/^\d{13}$/.test(userCnic)) {
+      enqueueSnackbar("Please enter a valid CNIC (13 digits).");
+      return;
+    }
+
+      // Validate CNIC
+      if (!password && !passwordRegex.test(password)) {
+        enqueueSnackbar("Please enter a valid password.");
+        return;
+      }
+  
+    // Check for role
+    if (!role) {
+      enqueueSnackbar("Please enter staff role");
+      return;
+    }
+  
+    // Validate user name length
+    if (!userName ) {
+      enqueueSnackbar("Staff name should be at least 5 characters long.");
+      return;
+    }
+  
+    // Create request body
     const body = {
-      firstName: userManagementRef.current.userName,
-      email: userManagementRef.current.userEmail,
-      password: userManagementRef.current.password,
-      role: userManagementRef.current.role,
+      firstName: userName,
+      email: userEmail,
+      CNIC: userCnic,
+      password,  
+      role,
       agencyId: userData?.agency_id
     };
+  
     try {
       dispatch(setLoading(true));
       const res = await addAgencyUser(body);
-      console.log("add user response", res);
+     
+  
       if (res.result) {
-        dispatch(setLoading(false));
         enqueueSnackbar("User added successfully.", { variant: "success" });
         setOpen(false);
         fetchAgencyUsers();
+      } else {
+        enqueueSnackbar("Failed to add user.");
       }
     } catch (error) {
-      dispatch(setLoading(false));
       enqueueSnackbar("Error in adding user.", { variant: "error" });
+    
     } finally {
       dispatch(setLoading(false));
     }
   };
-
+  
   const handleDeleteAgencyUser = async () => {
     try {
       dispatch(setLoading(true));
@@ -316,114 +354,120 @@ export default function UserManagement() {
   );
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height : '700px' }}>
-<Box>
-      <Sheet
-        className="SearchAndFilters-mobile"
-        sx={{ display: { xs: "flex", sm: "none" }, my: 1, gap: 1 }}
-      >
-        <Input
-          size="sm"
-          placeholder="Search"
-          startDecorator={<SearchIcon />}
-          sx={{ flexGrow: 1 }}
-        />
-        <IconButton
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          onClick={() => setOpen(true)}
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '700px' }}>
+      <Box>
+        <Sheet
+          className="SearchAndFilters-mobile"
+          sx={{ display: { xs: "flex", sm: "none" }, my: 1, gap: 1 }}
         >
-          <FilterAltIcon />
-        </IconButton>
-        <Modal open={open} onClose={() => setOpen(false)} >
-          <ModalDialog>
-            <ModalClose />
-            <Typography id="filter-modal" level="h2">
-              Add User
-            </Typography>
-            <Divider sx={{ my: 2 }} />
-            <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <InputField
-                label="User Name"
-                name="userName"
-                placeholder="User Name"
-                onChange={handleInputChange}
-              />
-              <FormSelect
-                label="Select Role"
-                name="role"
-                options={usersRoles.map((role) => role.name)}
-                onChange={handleInputChange}
-              />
-              <InputField
-                label="Email Address"
-                name="userEmail"
-                placeholder="Email Address"
-                onChange={handleInputChange}
-              />
+          <Input
+            size="sm"
+            placeholder="Search"
+            startDecorator={<SearchIcon />}
+            sx={{ flexGrow: 1 }}
+          />
+          <IconButton
+            size="sm"
+            variant="outlined"
+            color="neutral"
+            onClick={() => setOpen(true)}
+          >
+            <FilterAltIcon />
+          </IconButton>
+          <Modal open={open} onClose={() => setOpen(false)} >
+            <ModalDialog>
+              <ModalClose />
+              <Typography id="filter-modal" level="h2">
+                Add Staff
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+              <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <InputField
+                  label="Staff Name"
+                  name="userName"
+                  placeholder="Staff Name"
+                  onChange={handleInputChange}
+                />
+                <FormSelect
+                  label="Select Role"
+                  name="role"
+                  options={usersRoles.map((role) => role.name)}
+                  onChange={handleInputChange}
+                />
+                <InputField
+                  label="CNIC"
+                  name="userCnic"
+                  placeholder="Staff CNIC"
+                  onChange={handleInputChange}
+                />
+                <InputField
+                  label="Email Address"
+                  name="userEmail"
+                  placeholder="Email Address"
+                  onChange={handleInputChange}
+                />
 
-              <InputField
-                label="Password"
-                name="password"
-                placeholder="Password"
-                onChange={handleInputChange}
-              />
-              <Button color="primary" onClick={handleAddUser}>
-                Submit
-              </Button>
-            </Sheet>
-          </ModalDialog>
-        </Modal>
-      </Sheet>
+                <InputField
+                  label="Password"
+                  name="password"
+                  placeholder="Password"
+                  onChange={handleInputChange}
+                />
+                <Button color="primary" onClick={handleAddUser}>
+                  Submit
+                </Button>
+              </Sheet>
+            </ModalDialog>
+          </Modal>
+        </Sheet>
 
-      <Box
-        className="SearchAndFilters-tabletUp"
-        sx={{ display: { xs: "none", sm: "flex" },alignItems: 'end',  flexWrap: "wrap", gap: 1.5 }}
-      >
+        <Box
+          className="SearchAndFilters-tabletUp"
+          sx={{ display: { xs: "none", sm: "flex" }, alignItems: 'end', flexWrap: "wrap", gap: 1.5 }}
+        >
 
-        {renderFilters()}
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-        <div></div>
-        <AppButton
-          text="Add User"
+          {renderFilters()}
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+          <div></div>
+          <AppButton
+            text="Add Staff"
+            variant="outlined"
+            color="#581E47"
+            bgColor="#581E47"
+            onClick={() => setOpen(true)}
+          />
+        </Box>
+        <Sheet
+          className="OrderTableContainer"
           variant="outlined"
-          color="#581E47"
-          bgColor="#581E47"
-          onClick={() => setOpen(true)}
-        />
-      </Box>
-      <Sheet
-        className="OrderTableContainer"
-        variant="outlined"
-        sx={{
-          display: { xs: "none", sm: "initial" },
-          width: "100%",
-          borderRadius: "sm",
-          flexShrink: 1,
-          overflow: "auto",
-          minHeight: 0,
-        }}
-      >
-        <Table
-          aria-labelledby="tableTitle"
-          stickyHeader
-          hoverRow
           sx={{
-            "--TableCell-headBackground":
-              "var(--joy-palette-background-level1)",
-            "--Table-headerUnderlineThickness": "1px",
-            "--TableRow-hoverBackground":
-              "var(--joy-palette-background-level1)",
-            "--TableCell-paddingY": "4px",
-            "--TableCell-paddingX": "8px",
-            textAlign: "center",
+            display: { xs: "none", sm: "initial" },
+            width: "100%",
+            borderRadius: "sm",
+            flexShrink: 1,
+            overflow: "auto",
+            minHeight: 0,
           }}
         >
-          <thead>
-            <tr>
-              {/* <th>
+          <Table
+            aria-labelledby="tableTitle"
+            stickyHeader
+            hoverRow
+            sx={{
+              "--TableCell-headBackground":
+                "var(--joy-palette-background-level1)",
+              "--Table-headerUnderlineThickness": "1px",
+              "--TableRow-hoverBackground":
+                "var(--joy-palette-background-level1)",
+              "--TableCell-paddingY": "4px",
+              "--TableCell-paddingX": "8px",
+              textAlign: "center",
+            }}
+          >
+            <thead>
+              <tr>
+                {/* <th>
                 <Checkbox
                   size="sm"
                   indeterminate={
@@ -437,28 +481,28 @@ export default function UserManagement() {
                   }
                 />
               </th> */}
-              <th style={{ textAlign: 'center' }}>
-                {/* <Link
+                <th style={{ textAlign: 'center' }}>
+                  {/* <Link
                   underline="none"
                   color="primary"
                   onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
                 > */}
                   User Name
-                {/* </Link> */}
-              </th>
-              <th style={{ textAlign: 'center' }}>User Email</th>
-              <th style={{ textAlign: 'center' }}>Role</th>
-              <th style={{ textAlign: 'center' }}>Status</th>
-              <th />
-            </tr>
-          </thead>
-          {agencies.length > 0 && (
+                  {/* </Link> */}
+                </th>
+                <th style={{ textAlign: 'center' }}>User Email</th>
+                <th style={{ textAlign: 'center' }}>Role</th>
+                <th style={{ textAlign: 'center' }}>Status</th>
+                <th />
+              </tr>
+            </thead>
+            {agencies.length > 0 && (
 
-            <tbody>
-              {stableSort(agencies, getComparator(order, "userName"))?.map(
-                (row) => (
-                  <tr key={row.agencyName}>
-                    {/* <td>
+              <tbody>
+                {stableSort(agencies, getComparator(order, "userName"))?.map(
+                  (row) => (
+                    <tr key={row.agencyName}>
+                      {/* <td>
                       <Checkbox
                         size="sm"
                         checked={selected.includes(row.userName)}
@@ -472,56 +516,56 @@ export default function UserManagement() {
                       />
                     </td> */}
 
-                    <td>{row.firstName}</td>
-                    <td>{row?.email}</td>
-                    <td>{row.role}</td>
-                    <td>{row.status}</td>
-                    <td>
-                      {" "}
-                      <RowMenu
-                        userId={row._id}
-                        status={row.status}
-                        openDeleteModal={openDeleteModal}
-                      />
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          )}
-        </Table>
-      </Sheet>
+                      <td>{row.firstName}</td>
+                      <td>{row?.email}</td>
+                      <td>{row.role}</td>
+                      <td>{row.status}</td>
+                      <td>
+                        {" "}
+                        <RowMenu
+                          userId={row._id}
+                          status={row.status}
+                          openDeleteModal={openDeleteModal}
+                        />
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            )}
+          </Table>
+        </Sheet>
       </Box>
-      {totalPages > 1  &&
-      <Box
-        className="Pagination-laptopUp"
-        sx={{ pt: 2, display: { xs: "none", md: "flex" }, justifyContent: 'center' }}
-      >
-        <Box display="flex" gap={1}>
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-            <IconButton
-              key={page}
-              size="sm"
-              variant={page === currentPage ? "contained" : "outlined"}
-              onClick={() => handlePageChange(page)}
-              sx={{
-                color: page === currentPage ? "#ffffff" : "#581E47",
-                borderColor: "#581E47",
-                borderWidth: 1,
-                backgroundColor: page === currentPage ? "#581E47" : "transparent",
-                "&:hover": {
-                  backgroundColor: "#581E47",
-                  color: "#ffffff",
+      {totalPages > 1 &&
+        <Box
+          className="Pagination-laptopUp"
+          sx={{ pt: 2, display: { xs: "none", md: "flex" }, justifyContent: 'center' }}
+        >
+          <Box display="flex" gap={1}>
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+              <IconButton
+                key={page}
+                size="sm"
+                variant={page === currentPage ? "contained" : "outlined"}
+                onClick={() => handlePageChange(page)}
+                sx={{
+                  color: page === currentPage ? "#ffffff" : "#581E47",
                   borderColor: "#581E47",
-                },
-              }}
-            >
-              {page}
-            </IconButton>
-          ))}
+                  borderWidth: 1,
+                  backgroundColor: page === currentPage ? "#581E47" : "transparent",
+                  "&:hover": {
+                    backgroundColor: "#581E47",
+                    color: "#ffffff",
+                    borderColor: "#581E47",
+                  },
+                }}
+              >
+                {page}
+              </IconButton>
+            ))}
+          </Box>
         </Box>
-      </Box>
-}
+      }
       <ConfirmDeleteUser
         openDeleteUser={openDeleteUser}
         setOpenDeleteUser={setOpenDeleteUser}

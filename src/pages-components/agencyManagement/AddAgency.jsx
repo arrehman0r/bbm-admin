@@ -13,7 +13,7 @@ import AppButton from "../../components/common/AppButton";
 import { Country, City } from "country-state-city";
 import { useSnackbar } from "notistack";
 import TextHeading from "../../components/common/TextHeading";
-import { addTravelAgency } from "../../server/api";
+import { addTravelAgency, getAgencyTypes } from "../../server/api";
 import { Divider } from "@mui/joy";
 import AddIcon from "@mui/icons-material/Add"; // Import the Add icon
 import { useDispatch, useSelector } from "react-redux";
@@ -36,6 +36,7 @@ const AddAgency = () => {
   const [errors, setErrors] = useState({});
   const [images, setImages] = useState([]);
   const [fileName, setFileName] = useState(["Upload File"]); // State to manage multiple file upload buttons
+  const [agencyTypes, setAgencyTypes] = useState([])
   const { enqueueSnackbar } = useSnackbar();
   const loading = useSelector((state) => state.loading.loading);
   const emailRegex = /^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/;
@@ -46,7 +47,23 @@ const AddAgency = () => {
   useEffect(() => {
     setCountries(Country.getAllCountries());
     setTimeZones([Intl.DateTimeFormat().resolvedOptions().timeZone]); // Wrap in array
+    fetchAgencyTypes()
   }, []);
+
+  const fetchAgencyTypes = async () => {
+    try {
+
+      const res = await getAgencyTypes()
+      console.log("res of agency types is ", res)
+      setAgencyTypes(res || []);
+    }
+    catch (error) {
+      console.log("error in fetching agnecy types", error)
+    }
+
+
+  }
+
   const handleFileDelete = (index) => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages];
@@ -62,9 +79,11 @@ const AddAgency = () => {
   };
   const handleInputChange = useCallback(
     (event, index) => {
+      console.log("handleInputChange called", index);
       const { name, value, files } = event.target;
-      const selectedFiles = Array.from(files);
-      if (files) {
+
+      if (files && files.length > 0) {
+        const selectedFiles = Array.from(files);
 
         if (images.flat().length + selectedFiles.length > MAX_FILES) {
           enqueueSnackbar(`You can upload a maximum of ${MAX_FILES} files.`, { variant: "error" });
@@ -78,10 +97,7 @@ const AddAgency = () => {
           return;
         }
 
-
-
         // Handle multiple file uploads for images
-     
         setImages((prevImages) => {
           const updatedImages = [...prevImages];
           updatedImages[index] = selectedFiles;
@@ -100,22 +116,22 @@ const AddAgency = () => {
         });
       } else {
         agencyDetailsRef.current[name] = value;
-      }
 
-      if (name === "country") {
-        const selectedCountry = countries.find((c) => c.name === value);
-        if (selectedCountry) {
-          setCities(
-            City.getCitiesOfCountry(selectedCountry.isoCode).map(
-              (city) => city.name
-            )
-          );
-        } else {
-          setCities([]);
+        if (name === "country") {
+          const selectedCountry = countries.find((c) => c.name === value);
+          if (selectedCountry) {
+            setCities(
+              City.getCitiesOfCountry(selectedCountry.isoCode).map(
+                (city) => city.name
+              )
+            );
+          } else {
+            setCities([]);
+          }
         }
       }
     },
-    [countries]
+    [countries, enqueueSnackbar, images, MAX_FILES, MAX_FILE_SIZE]
   );
 
   const addFileUploadField = () => {
@@ -129,7 +145,7 @@ const AddAgency = () => {
       "affiliateName", "personName", "cnic", "designation", "phoneNumber",
       "country", "city", "timeZone", "defaultCurrency", "currency",
       "salesChannel", "poBoxNumber", "affiliateType",
-      "markupType", "markupValue", "arCode", "groupArCode",
+      "agencyType", "markupValue", "arCode", "groupArCode",
       "agencyEmail", "agencyPassword"
     ];
     requiredFields.forEach((field) => {
@@ -189,8 +205,8 @@ const AddAgency = () => {
     formData.append("address", agencyDetailsRef.current.address);
     formData.append("agencyEmail", agencyDetailsRef.current.agencyEmail);
     formData.append("agencyPassword", agencyDetailsRef.current.agencyPassword);
-    formData.append("markupType", agencyDetailsRef.current.markupType);
-    formData.append("markupRate", agencyDetailsRef.current.markupValue);
+    formData.append("agencyType", agencyDetailsRef.current.agencyType);
+   
     formData.append("agencyName", agencyDetailsRef.current.agencyName);
     formData.append("CNIC", agencyDetailsRef.current.cnic);
     formData.append("role", "agency");
@@ -316,17 +332,12 @@ const AddAgency = () => {
     },
     {
       component: FormSelect,
-      label: "Markup Type",
-      name: "markupType",
-      options: ["FIXED", "PERCENTAGE"],
+      label: "Agency Type",
+      name: "agencyType",
+      options: agencyTypes.map((c, id) => c.type),
       error: errors.affiliateType,
     },
-    {
-      component: InputField,
-      label: "Markup Value",
-      name: "markupValue",
-      error: errors.arCode,
-    },
+ 
     {
       component: InputField,
       label: "AR Code",
@@ -383,7 +394,7 @@ const AddAgency = () => {
                   flexBasis: "calc(33.333% - 16px)",
                   flexGrow: 0,
                   flexShrink: 0,
-                 
+
                 }}
               >
                 <Field
