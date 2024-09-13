@@ -228,9 +228,33 @@ const BookingEngine = () => {
           />
         </Box>
       </Box>
-      <Box sx={{ display: "flex", mt: 10, gap: 3 }}>
+
+      <Box
+        style={{
+          width: "100%",
+          display: "flex",
+          marginTop: "40px",
+        }}
+      >
         <BookingFilters />
-        <Box >
+        <Box
+          sx={{
+            height: "auto",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+            padding: "10px",
+            width: {
+              xs: "100%",
+              sm: "100%",
+              md: "100%",
+              lg: "75%",
+              xl: "75%",
+            },
+          }}
+        >
           {flightTickets.length > 0 &&
             flightTickets.map((flight) => (
               <div>
@@ -242,7 +266,7 @@ const BookingEngine = () => {
             ))}
         </Box>
       </Box>
- <BookingFooter />
+      <BookingFooter />
     </Box>
   );
 };
