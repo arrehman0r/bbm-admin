@@ -14,6 +14,9 @@ import CustomerStatement from "../../pages-components/Report/CustomerStatement";
 import WalletStatement from "../../pages-components/Report/WalletStatement";
 import TransactionReports from "../../pages-components/Report/TransactionReports";
 import Ticket from "../../pages-components/CMS";
+import ROE from "../../pages-components/Accounts/ROE";
+import PaymentRecipt from "../../pages-components/Accounts/paymentReceipt";
+import WalletAdjustment from "../../pages-components/Accounts/walletAdjustment";
 
 
 const DashboardMain = () => {
@@ -34,6 +37,10 @@ const DashboardMain = () => {
             {selectedOption === "Customer Statement" && <CustomerStatement/>}
             {selectedOption === "Wallet Statement" && <WalletStatement/>}
             {selectedOption === "Transaction Reports" && <TransactionReports/>}
+            {selectedOption === "ROE" && <ROE/>}
+            {selectedOption === "Payment Receipt" && <PaymentRecipt/>}
+            {selectedOption === "Wallet Adjustment" && <WalletAdjustment/>}
+
 
 
 
