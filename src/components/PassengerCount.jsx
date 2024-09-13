@@ -37,11 +37,12 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
 
     return (
         <div>
-            <FormControl size="lg">
+            <FormControl size="lg" >
                 <Popover
                     isOpen={isPopoverOpen}
                     positions={['bottom', 'left']}
                     padding={10}
+                    containerStyle={{zIndex: 99999}}
                     onClickOutside={handleOpenPassengerCount}
                     content={({ position, childRect, popoverRect }) => (
                         <Sheet variant="outlined" color="neutral" sx={{ p: 1, borderRadius: 5 }}>

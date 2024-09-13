@@ -193,7 +193,7 @@ const BookingEngine = () => {
                 </Box>
 
             </Box>
-            <Box sx={{ display: 'flex', mt: 30, gap: 3 }}
+            <Box sx={{ display: 'flex', mt: 3, gap: 3 }}
             >
 
                 {flightTickets.length > 0 && <BookingFilters />}

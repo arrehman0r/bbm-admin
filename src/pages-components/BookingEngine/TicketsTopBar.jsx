@@ -9,7 +9,7 @@ import StarIcon from '@mui/icons-material/Star';
 
 const TicketsTopBar = () => {
     return (
-        <Stack spacing={2} sx={{ width: '100%', border: '1px solid #CCD6E0', borderRadius: 'md', mb: 5 }}>
+        <Stack spacing={2} sx={{ width: '100%', border: '1px solid #CCD6E0', borderRadius: 'md', mb: 3 }}>
             <Tabs aria-label="Flex one tabs" sx={{ minHeight: 80, borderRadius: 'md' }}>
                 <TabList tabFlex={1} sx={{ minHeight: 80, borderRadius: 'md' }}>
                     <Tab sx={{ borderRadius: 'md' }} disableIndicator={true}>
