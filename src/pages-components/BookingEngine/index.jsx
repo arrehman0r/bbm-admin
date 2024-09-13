@@ -242,8 +242,7 @@ const BookingEngine = () => {
             ))}
         </Box>
       </Box>
-
-      <BookingFooter />
+ <BookingFooter />
     </Box>
   );
 };
