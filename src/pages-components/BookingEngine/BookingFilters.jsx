@@ -81,6 +81,24 @@ export default function BookingFilters() {
   };
 
   return (
+    <Box
+    style={{
+      width: "30%",
+      height: "auto",
+      backgroundColor: "white",
+      borderRadius: "10px",
+      padding: "20px",
+    }}
+    sx={{
+      display: {
+        xs: 'none',
+        sm: 'none',
+        md: 'none',
+        lg: 'block',
+        xl:'block',
+      },
+    }}
+  >
     <AccordionGroup
       variant="plain"
       transition="0.2s"
@@ -265,5 +283,6 @@ export default function BookingFilters() {
         </AccordionDetails>
       </Accordion>
     </AccordionGroup>
+    </Box>
   );
 }
