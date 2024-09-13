@@ -13,7 +13,6 @@ import AnalyticsDashboard from "../../pages-components/AnalyticsDashboard";
 import CustomerStatement from "../../pages-components/Report/CustomerStatement";
 import WalletStatement from "../../pages-components/Report/WalletStatement";
 import TransactionReports from "../../pages-components/Report/TransactionReports";
-import Ticket from "../../pages-components/CMS";
 import ROE from "../../pages-components/Accounts/ROE";
 import PaymentRecipt from "../../pages-components/Accounts/paymentReceipt";
 import WalletAdjustment from "../../pages-components/Accounts/walletAdjustment";
@@ -47,10 +46,6 @@ const DashboardMain = () => {
             {selectedOption === "Role Management" && <RoleManagement/>}
             {selectedOption === "User Access Unmapping" && <UserAccessUnmapping/>}
 
-
-
-
-{selectedOption === "Email Trigger Settings" && <Ticket/>}
 
 
 

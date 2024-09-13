@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { setLoading } from '../../redux/reducer/loaderSlice';
 import BookingFilters from './BookingFilters';
 import TicketsTopBar from './TicketsTopBar';
-
+import Ticket from "./Ticket"; 
 
 const BookingEngine = () => {
   const [tripOption, setTripOption] = useState("One Way");
@@ -244,9 +244,11 @@ const BookingEngine = () => {
             },
           }}
         >
+            <TicketsTopBar/>
           {flightTickets.length > 0 &&
             flightTickets.map((flight) => (
               <div>
+              
                 <Ticket
                   flight={flight}
                   handleTicketSelect={handleTicketSelect}

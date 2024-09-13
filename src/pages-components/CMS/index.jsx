@@ -90,7 +90,7 @@ const FlightTicket = ({ ticketData }) => {
 
 
 
-const Ticket = () => {
+const AppTicket = () => {
     const [apiResponse, setApiResponse] = useState(null);
 
     useEffect(() => {
@@ -225,4 +225,4 @@ console.log("res======data", response)
     );
 };
 
-export default Ticket;
+export default AppTicket;
