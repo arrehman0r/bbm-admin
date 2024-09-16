@@ -19,6 +19,7 @@ import WalletAdjustment from "../../pages-components/Accounts/walletAdjustment";
 import ContentPages from "../../pages-components/CMS/contentPages";
 import RoleManagement from "../../pages-components/RoleManagement/RoleManagement";
 import UserAccessUnmapping from "../../pages-components/RoleManagement/UserAccessUnmapping";
+import DashboardAnalytics from "../../pages-components/AnalyticsDashboard/DashboardAnalytics";
 
 
 const DashboardMain = () => {
@@ -35,7 +36,7 @@ const DashboardMain = () => {
             {selectedOption === "Migration" && <Migration />}
             {selectedOption === "Command Builder" && <CommandBuilder />}
             {selectedOption === "Booking Engine" && <BookingEngine />}
-            {selectedOption === "Dashboard" && <AnalyticsDashboard />}
+            {/* {selectedOption === "Dashboard" && <AnalyticsDashboard />} */}
             {selectedOption === "Customer Statement" && <CustomerStatement/>}
             {selectedOption === "Wallet Statement" && <WalletStatement/>}
             {selectedOption === "Transaction Reports" && <TransactionReports/>}
@@ -45,6 +46,8 @@ const DashboardMain = () => {
             {selectedOption === "Content Pages" && <ContentPages/>}
             {selectedOption === "Role Management" && <RoleManagement/>}
             {selectedOption === "User Access Unmapping" && <UserAccessUnmapping/>}
+            {selectedOption === "Dashboard" && <DashboardAnalytics/>}
+
 
 
 

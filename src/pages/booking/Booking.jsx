@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/joy';
+import React, { useState, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Typography, Button } from "@mui/joy";
 import { Country, City } from "country-state-city";
-import { useSnackbar } from 'notistack';
-import InputField from '../../components/common/InputField';
-import FormSelect from '../../components/common/FormSelect';
-import AppDatePicker from '../../components/common/AppDatePicker';
+import { useSnackbar } from "notistack";
+import InputField from "../../components/common/InputField";
+import FormSelect from "../../components/common/FormSelect";
+import AppDatePicker from "../../components/common/AppDatePicker";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import AlasamLogo from "../../images/alasamLogo.png";
+import AppButton from "../../components/common/AppButton";
+import BookingFooter from "../../pages-components/BookingEngine/BookingFooter";
 
 const Booking = () => {
   const location = useLocation();
@@ -19,26 +23,35 @@ const Booking = () => {
   useEffect(() => {
     setCountries(Country.getAllCountries());
     if (flight) {
-      const totalTravelers = flight.totalAdults + flight.totalChildren + flight.totalInfants;
-      setTravelers(Array(totalTravelers).fill().map((_, index) => ({
-        type: index < flight.totalAdults ? 'Adult' : 
-              index < flight.totalAdults + flight.totalChildren ? 'Child' : 'Infant',
-        fullName: '',
-        lastName: '',
-     
-        country: '',
-        city: '',
-        phoneNumber: '',
-        email: '',
-        dob: null,
-        passportIssuanceDate: null,
-        passportExpiryDate: null
-      })));
+      const totalTravelers =
+        flight.totalAdults + flight.totalChildren + flight.totalInfants;
+      setTravelers(
+        Array(totalTravelers)
+          .fill()
+          .map((_, index) => ({
+            type:
+              index < flight.totalAdults
+                ? "Adult"
+                : index < flight.totalAdults + flight.totalChildren
+                ? "Child"
+                : "Infant",
+            fullName: "",
+            lastName: "",
+
+            country: "",
+            city: "",
+            phoneNumber: "",
+            email: "",
+            dob: null,
+            passportIssuanceDate: null,
+            passportExpiryDate: null,
+          }))
+      );
     }
   }, [flight]);
 
   const handleInputChange = (index, field, value) => {
-    setTravelers(prevTravelers => {
+    setTravelers((prevTravelers) => {
       const newTravelers = [...prevTravelers];
       newTravelers[index] = { ...newTravelers[index], [field]: value };
       return newTravelers;
@@ -47,7 +60,11 @@ const Booking = () => {
     if (field === "country") {
       const selectedCountry = countries.find((c) => c.name === value);
       if (selectedCountry) {
-        setCities(City.getCitiesOfCountry(selectedCountry.isoCode).map(city => city.name));
+        setCities(
+          City.getCitiesOfCountry(selectedCountry.isoCode).map(
+            (city) => city.name
+          )
+        );
       } else {
         setCities([]);
       }
@@ -55,76 +72,173 @@ const Booking = () => {
   };
 
   const handleDateChange = (index, field, date) => {
-    setTravelers(prevTravelers => {
+    setTravelers((prevTravelers) => {
       const newTravelers = [...prevTravelers];
       newTravelers[index] = { ...newTravelers[index], [field]: date };
       return newTravelers;
     });
   };
 
-  const formFields = [ { component: InputField, label: "CNIC *", name: "cnic" },
+  const formFields = [
+    { component: InputField, label: "CNIC *", name: "cnic" },
     { component: InputField, label: "First Name *", name: "fullName" },
     { component: InputField, label: "Last Name *", name: "lastName" },
-    { component: FormSelect, label: "Place of Birth *", name: "country", options: countries.map(c => c.name) },
-    { component: FormSelect, label: "Nationality *", name: "nationality", options: countries.map(c => c.name) },
+    {
+      component: FormSelect,
+      label: "Place of Birth *",
+      name: "country",
+      options: countries.map((c) => c.name),
+    },
+    {
+      component: FormSelect,
+      label: "Nationality *",
+      name: "nationality",
+      options: countries.map((c) => c.name),
+    },
     { component: FormSelect, label: "City *", name: "city", options: cities },
-    { component: FormSelect, label: "Gender *", name: "gender", options: ["Male", "Female"] },
-    { component: FormSelect, label: "Country Phone Code *", name: "countryPhoneCode", options: [] },
+    {
+      component: FormSelect,
+      label: "Gender *",
+      name: "gender",
+      options: ["Male", "Female"],
+    },
+    {
+      component: FormSelect,
+      label: "Country Phone Code *",
+      name: "countryPhoneCode",
+      options: [],
+    },
 
     { component: InputField, label: "Phone *", name: "phoneNumber" },
     { component: InputField, label: "Email *", name: "email" },
-    { component: AppDatePicker, name: "dob", size: "sm", label: "Date of Birth" },
-    { component: AppDatePicker, name: "passportIssuanceDate", size: "sm", label: "Passport Issuance Date" },
-    { component: AppDatePicker, name: "passportExpiryDate", size: "sm", label: "Passport Expiry Date" },
-    { component: FormSelect, label: "Passport Issuance Country *", name: "passportIssuanceCountry", options: countries.map(c => c.name) },
-    { component: FormSelect, label: "Passport Issuance City *", name: "passportIssuanceCity", options: countries.map(c => c.name) },
-
-
+    {
+      component: AppDatePicker,
+      name: "dob",
+      size: "sm",
+      label: "Date of Birth",
+    },
+    {
+      component: AppDatePicker,
+      name: "passportIssuanceDate",
+      size: "sm",
+      label: "Passport Issuance Date",
+    },
+    {
+      component: AppDatePicker,
+      name: "passportExpiryDate",
+      size: "sm",
+      label: "Passport Expiry Date",
+    },
+    {
+      component: FormSelect,
+      label: "Passport Issuance Country *",
+      name: "passportIssuanceCountry",
+      options: countries.map((c) => c.name),
+    },
+    {
+      component: FormSelect,
+      label: "Passport Issuance City *",
+      name: "passportIssuanceCity",
+      options: countries.map((c) => c.name),
+    },
   ];
 
   const renderTravelerForm = (traveler, index) => (
-    <Box key={index} sx={{ mb: 4, p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
-      <Typography level="h5" sx={{ mb: 2 }}>{`${traveler.type} ${index + 1}`}</Typography>
+    <Box
+      key={index}
+      sx={{ mb: 4, p: 2, border: "1px solid #ccc", borderRadius: 2 }}
+    >
+      <Typography level="h5" sx={{ mb: 2 }}>{`${traveler.type} ${
+        index + 1
+      }`}</Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        {formFields.map(({ component: Field, label, name, options, size }, fieldIndex) => (
-          <Box key={fieldIndex} sx={{ flexBasis: "calc(33.333% - 16px)", flexGrow: 0, flexShrink: 0 }}>
-            {Field === AppDatePicker ? (
-              <Field
-                label={label}
-                name={name}
-                size={size}
-                date={traveler[name]}
-                setDate={(date) => handleDateChange(index, name, date)}
-              />
-            ) : (
-              <Field
-                label={label}
-                name={name}
-                options={options}
-                fullWidth
-                value={traveler[name]}
-                onChange={(e) => handleInputChange(index, name, e.target.value)}
-                error={errors[`${index}-${name}`]}
-                size={size}
-              />
-            )}
-          </Box>
-        ))}
+        {formFields.map(
+          ({ component: Field, label, name, options, size }, fieldIndex) => (
+            <Box
+              key={fieldIndex}
+              sx={{
+                flexBasis: "calc(33.333% - 16px)",
+                flexGrow: 0,
+                flexShrink: 0,
+              }}
+            >
+              {Field === AppDatePicker ? (
+                <Field
+                  label={label}
+                  name={name}
+                  size={size}
+                  date={traveler[name]}
+                  setDate={(date) => handleDateChange(index, name, date)}
+                />
+              ) : (
+                <Field
+                  label={label}
+                  name={name}
+                  options={options}
+                  fullWidth
+                  value={traveler[name]}
+                  onChange={(e) =>
+                    handleInputChange(index, name, e.target.value)
+                  }
+                  error={errors[`${index}-${name}`]}
+                  size={size}
+                />
+              )}
+            </Box>
+          )
+        )}
       </Box>
     </Box>
   );
 
   const handleSubmit = () => {
-    // Implement form validation and submission logic here
     console.log(travelers);
-    enqueueSnackbar('Booking submitted successfully', { variant: 'success' });
+    enqueueSnackbar("Booking submitted successfully", { variant: "success" });
   };
 
+  const navigate = useNavigate();
+
   return (
-    <Box sx={{ px: 20, mt: 2, mb: 5 }}>
-      <Typography level="h4" sx={{ mb: 4 }}>Traveler Information</Typography>
-      {travelers.map(renderTravelerForm)}
-      <Button onClick={handleSubmit} sx={{ mt: 2 }}>Submit Booking</Button>
+    <Box>
+      <Box
+        sx={{
+          width: "100%",
+          height: "4rem",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Box style={{ width: "8.5%", textAlign: "center" }}>
+          <ArrowBackIosNewIcon
+            style={{ fontSize: "2.5rem", cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          />
+        </Box>
+        <Box style={{ width: "70%" }}>
+          <img src={AlasamLogo} />
+        </Box>
+        <Box style={{ width: "12.5%" }}>
+          <Button variant="text" sx={{ mx: "0.5rem" }}>
+            Support
+          </Button>
+          <AppButton text="My Bookings" bgColor="#581E47"  borderColor="#581E47"
+ color={"white"} />
+        </Box>
+      </Box>
+      <Box sx={{ px: 20, mt: 2, mb: 5 }}>
+        <Typography level="h4" sx={{ mb: 4 }}>
+          Traveler Information
+        </Typography>
+        {travelers.map(renderTravelerForm)}
+        <Button onClick={handleSubmit} sx={{ mt: 2 }}>
+          Submit Booking
+        </Button>
+      </Box>
+      <Box style={{width:"100%", height:"auto", display:"flex",justifyContent:"center" , alignItems:"center"}}>
+      <Box style={{width:"80%" , height:"auto"}}>
+      <BookingFooter/>
+      </Box>
+      </Box>
     </Box>
   );
 };

@@ -10,11 +10,11 @@ export default function CustomTypography({
   ...props
 }) {
   const responsiveFontSize = {
-    xs: fontSize?.xs || '0.75rem', 
-    sm: fontSize?.sm || '0.875rem', 
-    md: fontSize?.md || '1rem', 
-    lg: fontSize?.lg || '1.05rem', 
-    xl: fontSize?.xl || '1.25rem', 
+    xs: fontSize?.xs || '0.65rem', 
+    sm: fontSize?.sm || '0.775rem', 
+    md: fontSize?.md || '0.8rem', 
+    lg: fontSize?.lg || '0.9rem', 
+    xl: fontSize?.xl || '1.2rem', 
   };
 
   return (
