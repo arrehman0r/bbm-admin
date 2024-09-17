@@ -95,7 +95,7 @@ export default function Sidebar() {
         gap: 2,
         borderRight: "1px solid",
         borderColor: "divider",
-      
+
       }}
     >
       <GlobalStyles
@@ -257,7 +257,12 @@ export default function Sidebar() {
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography level="title-sm">{userData.firstName} {userData.lastName}.</Typography>
-          <Typography level="body-xs">{userData?.email}</Typography>
+          <Typography level="body-xs" sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '20ch',
+          }} >{userData?.email}asxcasdesdc</Typography>
         </Box>
         <IconButton
           size="sm"
@@ -271,3 +276,4 @@ export default function Sidebar() {
     </Sheet>
   );
 }
+

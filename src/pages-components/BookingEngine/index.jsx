@@ -17,7 +17,7 @@ import { useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
 import { formatDate } from '../../components/utils';
 import FlightTicket from './FlightTicket';
-import { setArrivalCity, setDepartureCity, setDepartureDate, setFlightTickets, setReturnDate } from '../../redux/reducer/ticketSlice';
+import { setArrivalCity, setDepartureCity, setDepartureDate, setFlightTickets, setReturnDate, setTripType } from '../../redux/reducer/ticketSlice';
 import { useNavigate } from 'react-router-dom';
 import { setLoading } from '../../redux/reducer/loaderSlice';
 import BookingFilters from './BookingFilters';
@@ -36,9 +36,11 @@ const BookingEngine = () => {
 
     // const [flightTickets, setFlightTickets] = useState([])
     const { enqueueSnackbar } = useSnackbar();
-    const { adultsCount, childrenCount, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate, currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops } = useSelector(state => state.ticket);
+    const { adultsCount, childrenCount, tripType, infantsCount, flightTickets, departureCity, arrivalCity, departureDate, returnDate, currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops } = useSelector(state => state.ticket);
     const handleTripChange = (event) => {
         setTripOption(event.target.value);
+        console.log("event.tagert", event.target)
+        dispatch(setTripType(event.target.value))
     };
     console.log("filters are >>>>>>", currencyPreference, airLinePreference, ticketClass, ticketCount, flightPriceRange, flightStops)
     const handleOpenPassengerCount = () => {
@@ -146,7 +148,7 @@ const BookingEngine = () => {
       <AppRadioButtons
         options={TripOptions}
         onChange={handleTripChange}
-        defaultValue={tripOption}
+        defaultValue={tripType}
       />
       <Box
         sx={{
@@ -186,7 +188,7 @@ const BookingEngine = () => {
             handleChnage={handleDateChnage}
           />
         </Box>
-        {tripOption === "Round Trip" && (
+        {tripType === "Round Trip" && (
           <Box sx={{ flex: 1 }}>
             <AppDatePicker
               size="lg"

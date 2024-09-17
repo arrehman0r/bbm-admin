@@ -26,6 +26,8 @@ import Alasam from "./../../images/alasamLogo.png"
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { setLoading } from '../../redux/reducer/loaderSlice';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 // function ColorSchemeToggle() {
 //     //   const { onClick, ...other } = props;
 // const { mode, setMode } = useColorScheme();
@@ -59,6 +61,7 @@ export default function AppLogin() {
     });
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [showPassword, setShowPassword] = React.useState(false);
     const validateForm = () => {
         const { password, email } = formData;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -104,6 +107,10 @@ export default function AppLogin() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
     return (
         <CssVarsProvider defaultMode="light" disableTransitionOnChange>
@@ -218,7 +225,8 @@ export default function AppLogin() {
                                 </FormControl>
                                 <FormControl required>
                                     <FormLabel>Password</FormLabel>
-                                    <Input type="password" name="password" value={formData.password} onChange={handleChange} />
+                                    <Input  type={showPassword ? "text" : "password"} name="password" endDecorator= {showPassword ?  <VisibilityIcon sx={{cursor: 'pointer'}} onClick={togglePasswordVisibility} /> : <VisibilityOffIcon sx={{cursor: 'pointer'}} onClick={togglePasswordVisibility} />}   value={formData.password} onChange={handleChange} />
+                                  
                                 </FormControl>
                                 <Stack gap={4} sx={{ mt: 2 }}>
                                     <Box
@@ -227,8 +235,10 @@ export default function AppLogin() {
                                             justifyContent: 'space-between',
                                             alignItems: 'center',
                                         }}
+                                     onClick = {()=>   enqueueSnackbar("Contact Aadministration for forget password", { variant: 'neutral' })}
+
                                     >
-                                        <Link level="title-sm" href="#replace-with-a-link">
+                                        <Link level="title-sm">
                                             Forgot your password?
                                         </Link>
                                     </Box>

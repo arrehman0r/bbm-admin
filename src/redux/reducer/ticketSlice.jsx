@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const ticketSlice = createSlice({
   name: "ticket",
   initialState: {
-    tripType:  { label: 'One Way', value: 'One Way' },
+    tripType:  "One Way",
     adultsCount: 1,
     childrenCount: 0,
     infantsCount: 0,
