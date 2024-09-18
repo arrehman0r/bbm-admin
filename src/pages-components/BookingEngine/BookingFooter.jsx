@@ -1,77 +1,168 @@
 import React from "react";
-import { AspectRatio, Avatar, Card, Typography } from '@mui/joy';
-import { cards, images } from '../../components/utils/constants';
+import { Typography } from "@mui/joy";
 import Box from "@mui/joy/Box";
-const BookingFooter = ()=>{
+import AppButton from "../../components/common/AppButton";
 
-    return(<div>
+const BookingFooter = () => {
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        backgroundColor: "black",
+        marginTop: "30px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: { lg: "32rem", xl: "32rem" },
+      }}
+    >
+      <Box sx={{ width: "70%", height: "90%" }}>
+        <Box sx={{ width: "100%", height: "50%", display: "flex" }}>
+          <Box
+            sx={{
+              width: "100%",
+              height: "50%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              pt: "1rem",
+              gap: "10px",
+            }}
+          >
+            <Typography level="h3" sx={{ color: "white" }}>
+              Products and services
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              Products and services
+            </Typography>
+          </Box>
 
-<Box sx={{ marginTop: 10, display: 'flex', justifyContent: 'space-between', width: '95%' }}>
-                {cards.map((card, index) => (
-                    <Card sx={{ width: 400 }} key={index}>
-                        <div style={{ display: "flex", justifyContent: "space-around", gap: '10px' }}>
-                            <div>
-                                <Avatar src={card?.src} />
-                            </div>
-                            <div>
-                                <Typography variant="h6">{card.title}</Typography>
-                                <Typography variant="body2">{card.description}</Typography>
+          <Box
+            sx={{
+              width: "100%",
+              height: "50%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              pt: "1rem",
+              gap: "10px",
+            }}
+          >
+            <Typography level="h3" sx={{ color: "white" }}>
+              About Us
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              About us
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              Terms and Conditions
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              Privacy Policy
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              Information on cookies
+            </Typography>
+          </Box>
 
-                            </div>
-                        </div>
-                    </Card>
-                ))}
+          <Box
+            sx={{
+              width: "100%",
+              height: "50%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              pt: "1rem",
+              gap: "10px",
+            }}
+          >
+            <Typography level="h3" sx={{ color: "white" }}>
+              Support
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              Contact us
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              FAQs
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              Airline Information
+            </Typography>
+            <Typography sx={{ color: "white", textDecoration: "underline" }}>
+              My Bookings
+            </Typography>
+          </Box>
 
+          <Box
+            sx={{
+              width: "100%",
+              height: "50%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              pt: "1rem",
+              gap: "10px",
+            }}
+          >
+            <Typography level="h3" sx={{ color: "white" }}>
+              Login
+            </Typography>
+            <AppButton
+              text="My Booking"
+              borderColor="white"
+              bgColor="transparent"
+              color="white"
+            />
+          </Box>
+        </Box>
 
+        <Box sx={{ width: "100%", height: "50%", display: "flex", flexDirection: "column" }}>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+            }}
+          >
+            <img src="Visa.png" height="60px" alt="Visa" />
+            <img src="Mastercard.png" height="60px" alt="Mastercard" />
+            <img src="Discover.png" height="60px" alt="Discover" />
+            <img src="Google.png" height="60px" alt="Google" />
+            <img src="Paypal.png" height="60px" alt="Paypal" />
+          </Box>
 
-            </Box>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mt: "10px",
+            }}
+          >
+            <img src="Amadeus.png" height="60px" alt="Amadeus" />
+            <img src="IATA.png" height="60px" alt="IATA" />
+            <img src="Amadeus.png" height="60px" alt="Amadeus" />
+          </Box>
 
-            <Typography level='h2' style={{ marginTop: '50px' }}>Latest Offers</Typography>
-            <Typography level='h5' sx={{ fontSize: 'xl' }}>We provide the best and most affordable services in Pakistan.</Typography>
+          <Box sx={{ width: "100%", textAlign: "center", pt: "10px" }}>
+            <Typography sx={{ color: "white" }}>
+              Al-Asam / Flight Network UK Ltd, Unit 112854, PO Box 6945, London, W1A 6US, United Kingdom
+            </Typography>
+            <Typography sx={{ color: "white", mt: "5px" }}>
+              © 2024 Al-Asam. All Rights Reserved.
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
-            <div style={{ width: "95%", display: 'flex', justifyContent: 'space-between', marginTop: "80px" }}>
-                {images.map((image) => (
-                    <AspectRatio ratio="2" sx={{ minWidth: 400 }}>
-                        <img
-                            srcSet={image.src}
-                            src={image.src}
-                            style={{ borderRadius: '10px' }}
-                        />
-                    </AspectRatio>
-                ))}
-
-
-            </div>
-
-
-            <Box style={{ backgroundColor: 'black', height: '350px', width: '100%', marginTop: '60px', padding: '25px' }}>
-                <div style={{ padding: '25px' }} >
-                    <Typography level='h2' style={{ color: "white" }}>Why Use Alasam?</Typography>
-                    <Typography level='h5' sx={{ fontSize: 'xl', color: "white" }}>We provide the best deals in Pakistan.</Typography>
-                </div>
-                <div style={{ display: "flex", marginTop: '20px' , justifyContent:"space-between" }}>
-                    {cards.map((card, index) => (
-                        <Card sx={{ width: 350, border: "none", backgroundColor: "transparent" }} key={index}>
-                            <div style={{ display: "flex", justifyContent: "space-around", gap: '10px' }}>
-                                <div>
-                                    <Avatar src={card?.src} />
-                                </div>
-                                <div>
-                                    <Typography variant="h6" level="h3">{card.title}</Typography>
-                                    <Typography variant="body2" level="h4">{card.description}</Typography>
-
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-
-                </div>
-            </Box>
-
-
-
-    </div>)
-}
-
-
-export default BookingFooter
+export default BookingFooter;
