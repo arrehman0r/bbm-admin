@@ -1,83 +1,81 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  tripType: "One Way",
+  adultsCount: 1,
+  childrenCount: 0,
+  infantsCount: 0,
+  flightTickets: [],
+  departureCity: null,
+  arrivalCity: null,
+  departureDate: null,
+  returnDate: null,
+  flightStops: false,
+  flightPriceRange: null,
+  ticketCount: null,
+  ticketClass: null,
+  airLinePreference: null,
+  currencyPreference: "PKR",
+};
+
 const ticketSlice = createSlice({
   name: "ticket",
-  initialState: {
-    tripType: "One Way",
-    adultsCount: 1,
-    childrenCount: 0,
-    infantsCount: 0,
-    flightTickets: [],
-    departureCity: null,
-    arrivalCity: null,
-    departureDate: null,
-    returnDate: null,
-    flightStops: false,
-    flightPriceRange: null,
-    ticketCount: null,
-    ticketClass: null,
-    airLinePreference: null,
-    currencyPreference: { label: "Pakistani Rupee", code: "PKR" },
-  },
+  initialState,
   reducers: {
     setTripType: (state, action) => {
-      return { ...state, tripType: action.payload };
+      state.tripType = action.payload;
     },
-
     setAdultsCount: (state, action) => {
-      return { ...state, adultsCount: action.payload };
+      state.adultsCount = action.payload;
     },
     setChildrenCount: (state, action) => {
-      return { ...state, childrenCount: action.payload };
+      state.childrenCount = action.payload;
     },
     setInfantCount: (state, action) => {
-      return { ...state, infantsCount: action.payload };
+      state.infantsCount = action.payload;
     },
     setFlightTickets: (state, action) => {
-      return { ...state, flightTickets: action.payload };
+      state.flightTickets = action.payload;
     },
     setDepartureCity: (state, action) => {
-      return { ...state, departureCity: action.payload };
+      state.departureCity = action.payload;
     },
     setArrivalCity: (state, action) => {
-      return { ...state, arrivalCity: action.payload };
+      state.arrivalCity = action.payload;
     },
     setReturnDate: (state, action) => {
-      return { ...state, returnDate: action.payload };
+      state.returnDate = action.payload;
     },
     setDepartureDate: (state, action) => {
-      return { ...state, departureDate: action.payload };
+      state.departureDate = action.payload;
     },
     setFlightStops: (state, action) => {
-      return { ...state, flightStops: action.payload };
+      state.flightStops = action.payload;
     },
     setFlightPriceRange: (state, action) => {
-      return { ...state, flightPriceRange: action.payload };
+      state.flightPriceRange = action.payload;
     },
     setTicketCount: (state, action) => {
-      return { ...state, ticketCount: action.payload };
+      state.ticketCount = action.payload;
     },
     setTicketClass: (state, action) => {
-      return { ...state, ticketClass: action.payload };
+      state.ticketClass = action.payload;
     },
     setAirlinePreference: (state, action) => {
-      return { ...state, airLinePreference: action.payload };
+      state.airLinePreference = action.payload;
     },
     setCurrencyPreference: (state, action) => {
-      return { ...state, currencyPreference: action.payload };
+      state.currencyPreference = action.payload;
     },
-
     resetFilters: (state) => {
-      return {
-        ...state,
-        flightStops: false,
-        flightPriceRange: null,
-        ticketCount: null,
-        ticketClass: null,
-        airLinePreference: null,
-        currencyPreference: { label: "Pakistani Rupee", code: "PKR" },
-      };
+      state.flightStops = false;
+      state.flightPriceRange = null;
+      state.ticketCount = null;
+      state.ticketClass = null;
+      state.airLinePreference = null;
+      state.currencyPreference = { label: "Pakistani Rupee", code: "PKR" };
     },
+    resetFiltersState: () => initialState,
   },
 });
 
@@ -97,7 +95,8 @@ export const {
   setAirlinePreference,
   setCurrencyPreference,
   resetFilters,
-  setTripType
+  setTripType,
+  resetFiltersState
 } = ticketSlice.actions;
 
 export default ticketSlice.reducer;

@@ -13,13 +13,15 @@ export default function InputField({
   error,
   onChange,
   type,
+  value,
   ...props
 }) {
   return (
     <FormControl size={size || "sm"}>
       <FormLabel>{label}</FormLabel>
       <Input
-      type={type}
+        value={value}
+        type={type}
         placeholder={placeholder}
         onChange={onChange}
         error={error}

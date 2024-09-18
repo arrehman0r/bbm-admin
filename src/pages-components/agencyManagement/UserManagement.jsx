@@ -525,6 +525,8 @@ export default function UserManagement() {
                   {/* </Link> */}
                 </th>
                 <th style={{ textAlign: 'center' }}>Staff Email</th>
+                <th style={{ textAlign: 'center' }}>Agency Name</th>
+
                 <th style={{ textAlign: 'center' }}>Role</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
                 <th />
@@ -552,8 +554,11 @@ export default function UserManagement() {
 
                       <td>{row.firstName}</td>
                       <td>{row?.email}</td>
+                      <td>{row?.agencyId.agencyName}</td>
+
                       <td>{row.role}</td>
                       <td>{row.status}</td>
+                   
                       <td>
                         {" "}
                         <RowMenu

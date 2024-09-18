@@ -82,7 +82,7 @@ const Booking = () => {
   };
 
   const formFields = [
-    { component: InputField, label: "CNIC *", name: "cnic" },
+    { component: InputField, label: "CNIC *", name: "cnic",type : "number" },
     { component: InputField, label: "First Name *", name: "fullName" },
     { component: InputField, label: "Last Name *", name: "lastName" },
     {
@@ -91,13 +91,14 @@ const Booking = () => {
       name: "country",
       options: countries.map((c) => c.name),
     },
+    { component: FormSelect, label: "City *", name: "city", options: cities },
     {
       component: FormSelect,
       label: "Nationality *",
       name: "nationality",
       options: countries.map((c) => c.name),
     },
-    { component: FormSelect, label: "City *", name: "city", options: cities },
+   
     {
       component: FormSelect,
       label: "Gender *",
@@ -111,9 +112,9 @@ const Booking = () => {
       options: [
         "+1", "+44", "+33", "+34", "+39", "+46", "+971", "+966", "+974", "+965", "+968", "+92", "+91"],
     },
-    { component: InputField, label: "Phone *", name: "phoneNumber" },
-    { component: InputField, label: "Email *", name: "email" },
-    { component: InputField, label: "Passport Number *", name: "passportNumber" },
+    { component: InputField, label: "Phone *", name: "phoneNumber", type : "number" },
+    { component: InputField, label: "Email *", name: "email", type: "email" },
+    { component: InputField, label: "Passport Number *", name: "passportNumber"},
     {
       component: AppDatePicker,
       name: "dob",
@@ -148,7 +149,7 @@ const Booking = () => {
 
 
 
-
+console.log("booking page..")
   const renderTravelerForm = (traveler, index) => (
     <Box
       key={index}
@@ -158,7 +159,7 @@ const Booking = () => {
         }`}</Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
         {formFields.map(
-          ({ component: Field, label, name, options, size }, fieldIndex) => (
+          ({ component: Field, label, name, options, size, type }, fieldIndex) => (
             <Box
               key={fieldIndex}
               sx={{
@@ -178,6 +179,7 @@ const Booking = () => {
                 />
               ) : (
                 <Field
+                type={type}
                   label={label}
                   name={name}
                   options={options}
@@ -197,6 +199,12 @@ const Booking = () => {
     </Box>
   );
   const handleSubmit = () => {
+    
+    
+    
+    
+    
+    
     // Transform the traveler data to match the required format
     const transformedTravelers = travelers.map((traveler, index) => ({
       id: (index + 1).toString(), // Generate an ID based on the index
