@@ -51,9 +51,9 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
                                 <Box sx={{ display: 'flex', gap: 5, justifyContent: 'space-between', width: '100%' }}>
                                     <TextHeading text="Adults" />
                                     <ButtonGroup size="sm">
-                                        <AppButton startDecorator={<RemoveIcon />} onClick={() => decrementCount('adult')} />
-                                        <AppButton text={String(adultsCount)} />
-                                        <AppButton startDecorator={<AddIcon />} onClick={() => incrementCount('adult')} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" startDecorator={<RemoveIcon />} onClick={() => decrementCount('adult')} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" text={String(adultsCount)} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" startDecorator={<AddIcon />} onClick={() => incrementCount('adult')} />
                                     </ButtonGroup>
                                 </Box>
 
@@ -61,9 +61,9 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
                                 <Box sx={{ display: 'flex', gap: 5, justifyContent: 'space-between', width: '100%' }}>
                                     <TextHeading text="Children" />
                                     <ButtonGroup size="sm">
-                                        <AppButton startDecorator={<RemoveIcon />} onClick={() => decrementCount('children')} />
-                                        <AppButton text={String(childrenCount)} />
-                                        <AppButton startDecorator={<AddIcon />} onClick={() => incrementCount('children')} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" startDecorator={<RemoveIcon />} onClick={() => decrementCount('children')} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" text={String(childrenCount)} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" startDecorator={<AddIcon />} onClick={() => incrementCount('children')} />
                                     </ButtonGroup>
                                 </Box>
 
@@ -71,9 +71,9 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
                                 <Box sx={{ display: 'flex', gap: 5, justifyContent: 'space-between', width: '100%' }}>
                                     <TextHeading text="Infants" />
                                     <ButtonGroup size="sm">
-                                        <AppButton startDecorator={<RemoveIcon />} onClick={() => decrementCount('infant')} />
-                                        <AppButton text={String(infantsCount)} />
-                                        <AppButton startDecorator={<AddIcon />} onClick={() => incrementCount('infant')} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" startDecorator={<RemoveIcon />} onClick={() => decrementCount('infant')} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" text={String(infantsCount)} />
+                                        <AppButton bgColor="#fff" color="#32383E" borderColor="#CDD7E1" startDecorator={<AddIcon />} onClick={() => incrementCount('infant')} />
                                     </ButtonGroup>
                                 </Box>
                             </Stack>
@@ -81,7 +81,7 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
                     )}
                 >
                     <div onClick={handleOpenPassengerCount} style={{ width: '100%' }}>
-                        <AppButton text={totalTravllers > 0 ? `Total Travellers ${totalTravllers}` : "Select Adults"} onClick={handleOpenPassengerCount} width="100%" height="48px" bgColor="#FBFCFE" color="#32383E" borderColor="#CDD7E1" />
+                        <AppButton text={totalTravllers > 0 ? `Total Travellers ${totalTravllers}` : "Select Adults"} onClick={handleOpenPassengerCount} width="100%" height="48px" bgColor="#fff" color="#32383E" borderColor="#CDD7E1" />
                     </div>
                 </Popover>
             </FormControl>

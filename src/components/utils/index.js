@@ -52,3 +52,7 @@ export const formatDuration =(duration)=> {
 export const emailRegex = /^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/;
 
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+export const cnicRegex = /^[0-9]{13}$/;
+
+export const phoneNumberRegex = /^[0-9]{11}$/;

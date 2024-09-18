@@ -106,7 +106,7 @@ export const getFlightsData = ({
   flightStops 
 }) => {
   // Base URL with mandatory parameters
-  let url = `flights/flightData?start_date=${startDate}&arrival=${arrival}&dept=${departure}`;
+  let url = `flights/flightData?start_date=${startDate}&arrival=KRK&dept=STN`;
 
   // Conditionally append optional parameters if they exist
   if (endDate) {
@@ -158,4 +158,9 @@ console.log("url is .......",  startDate,
   flightStops)
   // Make the request with the constructed URL
   return makeRequest("get", url);
+};
+
+
+export const submitBookingRequest = (body) => {
+  return makeRequest("post", "flights/createBooking", body);
 };

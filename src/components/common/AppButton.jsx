@@ -37,14 +37,14 @@ const AppButton = ({
       // tabIndex={-1}
       variant={variant || "outlined"}
       sx={{
-        color: color,
-        backgroundColor: variant === "outlined" ? "#fff" : bgColor,
-        borderColor: variant === "outlined" ? bgColor : borderColor,
+        color: color || "#fff" ,
+        backgroundColor: bgColor || "#581E47",
+        borderColor: borderColor || "#581E47",
         ...(width && { width: width }), // Apply width only if it exists
         ...(height && { height: height }), // Apply width only if it exists
         "&:hover": {
           backgroundColor: bgColor,
-          color: variant === "outlined" ? "#fff" : color,
+          color:  color || "#000" ,
         },
       }}
       startDecorator={startDecorator}

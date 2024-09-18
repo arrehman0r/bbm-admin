@@ -19,6 +19,9 @@ import AddIcon from "@mui/icons-material/Add"; // Import the Add icon
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { cnicRegex, emailRegex, passwordRegex, phoneNumberRegex } from "../../components/utils";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
   const [countries, setCountries] = useState([]);
@@ -39,10 +42,10 @@ const AddAgency = () => {
   const [agencyTypes, setAgencyTypes] = useState([])
   const { enqueueSnackbar } = useSnackbar();
   const loading = useSelector((state) => state.loading.loading);
-  const emailRegex = /^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const [showPassword, setShowPassword] = React.useState(false);
   const MAX_FILES = 5;
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
   const dispatch = useDispatch()
   useEffect(() => {
     setCountries(Country.getAllCountries());
@@ -50,6 +53,9 @@ const AddAgency = () => {
     fetchAgencyTypes()
   }, []);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+};
   const fetchAgencyTypes = async () => {
     try {
 
@@ -145,8 +151,8 @@ const AddAgency = () => {
       "affiliateName", "personName", "cnic", "designation", "phoneNumber",
       "country", "city", "timeZone", "defaultCurrency", "currency",
       "salesChannel", "poBoxNumber", "affiliateType",
-      "agencyType", "markupValue", "arCode", "groupArCode",
-      "agencyEmail", "agencyPassword"
+      "agencyType", "arCode", "groupArCode",
+      "agencyEmail", "agencyPassword", "agencyConfirmPassword"
     ];
     requiredFields.forEach((field) => {
       if (!agencyDetailsRef.current[field]) {
@@ -175,8 +181,32 @@ const AddAgency = () => {
       return
     }
 
+    const agencyCnic = agencyDetailsRef.current.cnic;
+    if (agencyCnic && !cnicRegex.test(agencyCnic)) {
+      enqueueSnackbar("Invalid CNIC Format", {
+        variant: "error",
+      });
+      return
+    }
+
+    const agencyPhone = agencyDetailsRef.current.phoneNumber;
+    if (agencyPhone && !phoneNumberRegex.test(agencyPhone)) {
+      enqueueSnackbar("Invalid Phone Format", {
+        variant: "error",
+      });
+      return
+    }
+
     // Validate password
     const agencyPassword = agencyDetailsRef.current.agencyPassword;
+    const agencyConfirmPassword = agencyDetailsRef.current.agencyConfirmPassword;
+
+    if (agencyPassword !== agencyConfirmPassword) {
+      enqueueSnackbar("Passwords do not match", { variant: "error" });
+      return; 
+    }
+
+
     if (agencyPassword && !passwordRegex.test(agencyPassword)) {
       enqueueSnackbar("Password must contain at least 8 characters, including uppercase, lowercase, number, and special character", {
         variant: "error",
@@ -206,7 +236,7 @@ const AddAgency = () => {
     formData.append("agencyEmail", agencyDetailsRef.current.agencyEmail);
     formData.append("agencyPassword", agencyDetailsRef.current.agencyPassword);
     formData.append("agencyType", agencyDetailsRef.current.agencyType);
-   
+
     formData.append("agencyName", agencyDetailsRef.current.agencyName);
     formData.append("CNIC", agencyDetailsRef.current.cnic);
     formData.append("role", "agency");
@@ -243,6 +273,7 @@ const AddAgency = () => {
       component: InputField,
       label: "CNIC *",
       name: "cnic",
+      type: "number",
       error: errors.affiliateName,
     },
     {
@@ -281,6 +312,7 @@ const AddAgency = () => {
       component: InputField,
       label: "Phone *",
       name: "phoneNumber",
+      type: "number",
       error: errors.phoneNumber,
     },
     {
@@ -308,6 +340,7 @@ const AddAgency = () => {
       component: InputField,
       label: "Number of staff can be added",
       name: "staffNumber",
+      type: "number",
       error: errors.staffNumber,
     },
     {
@@ -322,6 +355,7 @@ const AddAgency = () => {
       label: "PO Box Number",
       name: "poBoxNumber",
       error: errors.poBoxNumber,
+      type: "number",
     },
     {
       component: FormSelect,
@@ -337,12 +371,13 @@ const AddAgency = () => {
       options: agencyTypes.map((c, id) => c.type),
       error: errors.affiliateType,
     },
- 
+
     {
       component: InputField,
       label: "AR Code",
       name: "arCode",
       error: errors.arCode,
+
     },
     {
       component: InputField,
@@ -369,7 +404,26 @@ const AddAgency = () => {
       label: "Password",
       name: "agencyPassword",
       error: errors.agencyPassword,
+      type: showPassword ? "text" : "password",
+      endDecorator: showPassword ? (
+        <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+      ) : (
+        <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+      ),
     },
+    {
+      component: InputField,
+      label: "Confirm Password",
+      name: "agencyConfirmPassword",
+      error: errors.agencyPassword,
+      type: showPassword ? "text" : "password",
+      endDecorator: showPassword ? (
+        <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+      ) : (
+        <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+      ),
+    }
+    
   ];
 
   const renderAgencyForm = useMemo(
@@ -385,7 +439,7 @@ const AddAgency = () => {
         >
           {formFields.map(
             (
-              { component: Field, label, name, options, error, placeholder },
+              { component: Field, label, name, options, error, placeholder, type, endDecorator },
               index
             ) => (
               <Box
@@ -402,9 +456,11 @@ const AddAgency = () => {
                   name={name}
                   options={options}
                   fullWidth
+                  type={type}
                   onChange={handleInputChange}
                   error={error}
                   placeholder={placeholder}
+                  endDecorator = {endDecorator}
                 />
               </Box>
             )
@@ -432,7 +488,7 @@ const AddAgency = () => {
                     text={name || "Upload File"} // Display file name or default text
                     type="file"
                     variant="outlined"
-                    color="#581E47"
+                    color="#fff"
                     bgColor="#581E47"
                     onChange={(e) => handleInputChange(e, index)}
                     component="label"
@@ -448,7 +504,7 @@ const AddAgency = () => {
                   onClick={addFileUploadField}
                   variant="outlined"
                   width="250px"
-                  color="#581E47"
+                  color="#fff"
                   bgColor="#581E47"
                   endIcon={<AddIcon />} // Add "+" icon
                 />

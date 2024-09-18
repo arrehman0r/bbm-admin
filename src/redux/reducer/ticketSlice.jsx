@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const ticketSlice = createSlice({
   name: "ticket",
   initialState: {
-    tripType:  "One Way",
+    tripType: "One Way",
     adultsCount: 1,
     childrenCount: 0,
     infantsCount: 0,
@@ -17,7 +17,7 @@ const ticketSlice = createSlice({
     ticketCount: null,
     ticketClass: null,
     airLinePreference: null,
-    currencyPreference: null,
+    currencyPreference: { label: "Pakistani Rupee", code: "PKR" },
   },
   reducers: {
     setTripType: (state, action) => {
@@ -75,7 +75,7 @@ const ticketSlice = createSlice({
         ticketCount: null,
         ticketClass: null,
         airLinePreference: null,
-        currencyPreference: null,
+        currencyPreference: { label: "Pakistani Rupee", code: "PKR" },
       };
     },
   },
@@ -96,7 +96,7 @@ export const {
   setTicketClass,
   setAirlinePreference,
   setCurrencyPreference,
-  resetFilters, 
+  resetFilters,
   setTripType
 } = ticketSlice.actions;
 

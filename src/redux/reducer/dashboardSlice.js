@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const dashboardSlice = createSlice({
     name: "dashboard",
     initialState: {
-        option: null
+        option: "Dashboard"
     },
     reducers: {
         setDashboardOption: (state, action) => {

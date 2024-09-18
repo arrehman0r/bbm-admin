@@ -11,17 +11,19 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
-import Sidebar from '../../components/Sidebar'; 
+import Sidebar from '../../components/Sidebar';
 
 import OrderList from '../../components/OrderList';
 import Header from '../../components/Header';
 import AgencyManagement from '../../pages-components/agencyManagement/AddAgency';
 import DashboardMain from './DashboardMain';
 import { useSelector } from 'react-redux';
+import AppButton from '../../components/common/AppButton';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
-
-const AppDashboard= ()=>  {
+const AppDashboard = () => {
   const selectedOption = useSelector((state) => state.dashboard.option);
+  const userData = useSelector((state) => state.user.loginUser)
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -46,14 +48,14 @@ const AppDashboard= ()=>  {
             minWidth: 0,
             height: '100dvh',
             gap: 1,
-             overflowY: 'auto'
+            overflowY: 'auto'
           }}
         >
-   <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Breadcrumbs
               size="sm"
               aria-label="breadcrumbs"
-              separator={<ChevronRightRoundedIcon  />}
+              separator={<ChevronRightRoundedIcon />}
               sx={{ pl: 0 }}
             >
               <Link
@@ -77,6 +79,25 @@ const AppDashboard= ()=>  {
                 {selectedOption}
               </Typography>
             </Breadcrumbs>
+            <Box>
+        
+              <AppButton
+                text={
+                  userData?.role === "super_admin"
+                    ? "Admin Dashboard"
+                    : userData?.role === "agency"
+                      ? "Agency Dashboard"
+                      : userData?.role === "sale"
+                        ? "Sales Dashboard"
+                        : "Dashboard"
+                }
+                startDecorator={<AdminPanelSettingsIcon />}
+              />
+
+
+
+
+            </Box>
           </Box>
           <Box
             sx={{
@@ -90,7 +111,7 @@ const AppDashboard= ()=>  {
             }}
           >
             <Typography level="h2" component="h1">
-           {selectedOption}
+              {selectedOption}
             </Typography>
             {/* <Button
               color="primary"
@@ -102,8 +123,8 @@ const AppDashboard= ()=>  {
           </Box>
 
 
-         
-          <DashboardMain/>
+
+          <DashboardMain />
           {/* <ViewAgencyTable /> */}
           {/* <OrderList />  */}
         </Box>

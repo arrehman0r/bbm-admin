@@ -4,22 +4,28 @@ import FormLabel from "@mui/joy/FormLabel";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import { IconButton } from "@mui/joy";
-const FormSelect = ({ label, options, onChange, name, error, placeholder, startDecorator ,size }) => {
+
+const FormSelect = ({ label, options = [], onChange, name, error, placeholder, startDecorator, size }) => {
+  // Check if options is an array of objects with id and name
+  const isObjectArray = options.length > 0 && typeof options[0] === 'object' && options[0].hasOwnProperty('id') && options[0].hasOwnProperty('name');
+  
   return (
-    <FormControl size={size ||"sm"} error={error}>
+    <FormControl size={size || "sm"} error={error}>
       <FormLabel>{label}</FormLabel>
       <Select
-        size={size ||"sm"}
+        size={size || "sm"}
         placeholder={placeholder || "Select"}
-      
         onChange={(_, newValue) =>
           onChange({ target: { name, value: newValue } })
         }
         startDecorator={startDecorator && <IconButton>{startDecorator}</IconButton>}
       >
-        {options?.map((option, index) => (
-          <Option key={index} value={option}>
-            {option}
+        {options.map((option, index) => (
+          <Option
+            key={isObjectArray ? option.id : index} 
+            value={isObjectArray ? option.id : option}
+          >
+            {isObjectArray ? option.name : option}
           </Option>
         ))}
       </Select>

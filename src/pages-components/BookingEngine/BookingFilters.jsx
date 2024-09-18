@@ -269,7 +269,8 @@ export default function BookingFilters() {
           </ListItemContent>
         </AccordionSummary>
         <AccordionDetails>
-          <RadioGroup name="currency-options" onChange={handleCurrencyChange} value={currencyPreference} >
+          {console.log("currency prefrences", currencyPreference)}
+          <RadioGroup name="currency-options" onChange={handleCurrencyChange} value={currencyPreference.code}  >
             <Stack>
               {Currencies.map((option) => (
                 <FormControl key={option.code} orientation="horizontal" sx={{ gap: 1 }}>

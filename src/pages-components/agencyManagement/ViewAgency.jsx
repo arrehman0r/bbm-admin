@@ -210,7 +210,7 @@ export default function ViewAgency() {
           />
         </FormControl> */}
 
-          <InputField label="CNIC / NTN" name="cnic" placeholder="CNIC / NTN" onChange={handleSearchInputChange} />
+          <InputField type="number" label="CNIC / NTN" name="cnic" placeholder="CNIC / NTN" onChange={handleSearchInputChange} />
 
           <InputField label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} />
 

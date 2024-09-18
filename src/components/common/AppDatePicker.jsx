@@ -4,11 +4,11 @@ import DatePicker from "react-datepicker";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import "react-datepicker/dist/react-datepicker.css";
 
-const AppDatePicker = ({ label, size, placeholder, name, date, setDate , handleChnage }) => {
+const AppDatePicker = ({ label, size, placeholder, name, date, setDate , handleChnage , zIndex }) => {
   // const [startDate, setStartDate] = useState(null);
 
   return (
-    <FormControl size={size || "lg"} sx={{zIndex: 9999}}>
+    <FormControl size={size || "lg"} sx={{zIndex: zIndex || 9999}}>
       <FormLabel>{label}</FormLabel>
       <DatePicker
         // showIcon

@@ -27,9 +27,10 @@ const Ticket = ({ flight, handleTicketSelect }) => {
           style={{
             width: "100%",
             height: "auto",
-            padding: "20px 20px 0px 20px",
+            padding: "20px 10px 0px 10px",
             display: "flex",
             justifyContent: "space-around",
+            gap:"30px"
           }}
         >
           <Box
@@ -42,7 +43,7 @@ const Ticket = ({ flight, handleTicketSelect }) => {
               flexDirection: "column",
             }}
           >
-            <CustomTypography level="h2">Flight Number</CustomTypography>
+            <CustomTypography >Flight Number</CustomTypography>
             <CustomTypography>
               {flight.departure.marketingFlightNumber}
             </CustomTypography>
@@ -57,7 +58,7 @@ const Ticket = ({ flight, handleTicketSelect }) => {
               flexDirection: "column",
             }}
           >
-            <CustomTypography level="h2">Airline</CustomTypography>
+            <CustomTypography >Airline</CustomTypography>
 
             <CustomTypography>{flight.departure.marketing}</CustomTypography>
           </Box>
@@ -73,10 +74,10 @@ const Ticket = ({ flight, handleTicketSelect }) => {
                 flexDirection: "column",
               }}
             >
-              <CustomTypography level="h4">
+              <CustomTypography >
                 {flight.departure.departureLocation}
               </CustomTypography>{" "}
-              <CustomTypography level="h4">
+              <CustomTypography >
                 {flight.departure.departureTime}
               </CustomTypography>
             </Box>
@@ -132,10 +133,10 @@ const Ticket = ({ flight, handleTicketSelect }) => {
                 flexDirection: "column",
               }}
             >
-              <CustomTypography level="h4">
+              <CustomTypography >
                 {flight.departure.arrivalLocation}
               </CustomTypography>{" "}
-              <CustomTypography level="h4">
+              <CustomTypography >
                 {flight.departure.arrivalTime}
               </CustomTypography>
             </Box>
@@ -162,7 +163,7 @@ const Ticket = ({ flight, handleTicketSelect }) => {
                 flexDirection: "column",
               }}
             >
-              <CustomTypography level="h2">Flight Number</CustomTypography>
+              <CustomTypography >Flight Number</CustomTypography>
               <CustomTypography>
                 {flight.return.marketingFlightNumber}
               </CustomTypography>
@@ -177,7 +178,7 @@ const Ticket = ({ flight, handleTicketSelect }) => {
                 flexDirection: "column",
               }}
             >
-              <CustomTypography level="h2">Airline</CustomTypography>
+              <CustomTypography >Airline</CustomTypography>
 
               <CustomTypography>{flight.return.marketing}</CustomTypography>
             </Box>
@@ -193,10 +194,10 @@ const Ticket = ({ flight, handleTicketSelect }) => {
                   flexDirection: "column",
                 }}
               >
-                <CustomTypography level="h4">
+                <CustomTypography >
                   {flight.return.departureLocation}
                 </CustomTypography>{" "}
-                <CustomTypography level="h4">
+                <CustomTypography >
                   {flight.return.departureTime}
                 </CustomTypography>
               </Box>
@@ -252,10 +253,10 @@ const Ticket = ({ flight, handleTicketSelect }) => {
                   flexDirection: "column",
                 }}
               >
-                <CustomTypography level="h4">
+                <CustomTypography >
                   {flight.return.arrivalLocation}
                 </CustomTypography>{" "}
-                <CustomTypography level="h4">
+                <CustomTypography >
                   {flight.return.arrivalTime}
                 </CustomTypography>
               </Box>
@@ -276,7 +277,8 @@ const Ticket = ({ flight, handleTicketSelect }) => {
         }}
       >
         <AppButton
-          bgColor="black"
+          bgColor="#581E47"
+          borderColor="#581E47"
           color="white"
           text="Select"
           onClick={() => handleTicketSelect({ flight })}

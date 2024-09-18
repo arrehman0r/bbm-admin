@@ -63,8 +63,10 @@ export default function Sidebar() {
   const selectedOption = useSelector((state) => state.dashboard.option);
   const userData = useSelector((state) => state.user.loginUser)
   const handleLogout = () => {
+    localStorage.clear();
     dispatch(setLoginUser(null));
     dispatch(setDashboardOption(null))
+  
   };
 
   const dispatch = useDispatch();
@@ -156,18 +158,7 @@ export default function Sidebar() {
             "--ListItem-radius": (theme) => theme.vars.radius.sm,
           }}
         >
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{ backgroundColor: selectedOption === "Booking Engine" ? '#581E47' : "#fff" }} >
-            <AirplaneTicketIcon />
-            <ListItemContent>
-              <Typography level="title-sm" sx={{
-                color: selectedOption === "Booking Engine" ? "white" : "inherit",
-                '&:hover': {
-                  color: 'black',
-                },
-              }}>Booking Engine</Typography>
-            </ListItemContent>
-
-          </ListItemButton>
+        
           <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{ backgroundColor: selectedOption === "Dashboard" ? '#581E47' : "#fff" }} >
             <DashboardIcon />
             <ListItemContent>
@@ -177,6 +168,19 @@ export default function Sidebar() {
                   color: 'black',
                 },
               }}>Dashboard</Typography>
+            </ListItemContent>
+
+          </ListItemButton>
+
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{ backgroundColor: selectedOption === "Booking Engine" ? '#581E47' : "#fff" }} >
+            <AirplaneTicketIcon />
+            <ListItemContent>
+              <Typography level="title-sm" sx={{
+                color: selectedOption === "Booking Engine" ? "white" : "inherit",
+                '&:hover': {
+                  color: 'black',
+                },
+              }}>Booking Engine</Typography>
             </ListItemContent>
 
           </ListItemButton>

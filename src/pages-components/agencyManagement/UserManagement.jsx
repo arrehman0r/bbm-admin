@@ -93,7 +93,7 @@ export default function UserManagement() {
   const searchStaffRef = useRef({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [allAgencies, setAllAgencies] = useState([]);
   useEffect(() => {
     fetchAgencyUserRoles();
   }, []);
@@ -112,6 +112,19 @@ export default function UserManagement() {
     const { name, value } = event.target;
     searchStaffRef.current[name] = value;
   }
+  const fetchAgencies = async (page) => {
+    dispatch(setLoading(true));
+    try {
+      const res = await getTravelAgency(page);
+      setAllAgencies(res.result.agency);
+
+      console.log("res of agencies", res);
+    } catch (error) {
+      console.log("error ---", error);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
   function RowMenu({ userId, openDeleteModal, status }) {
     return (
@@ -158,7 +171,7 @@ export default function UserManagement() {
     try {
       dispatch(setLoading(true));
       let res;
-      if (userData?.agency_id) {
+      if (userData?.agency_id && userData.role !== "super_admin" ) {
         res = await getAgencyUsers(userData?.agency_id, page);
       } else if (userData.role === "super_admin") {
         res = await getAgencyAllUsers(page);
@@ -180,6 +193,7 @@ export default function UserManagement() {
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
+    console.log("value of agencykkkk", name, value)
     userManagementRef.current[name] = value;
   }, []);
 
@@ -251,53 +265,57 @@ export default function UserManagement() {
   }, []);
 
   const handleAddUser = async () => {
-    const { userCnic, userEmail, userName, role, password } = userManagementRef.current;
-  console.log("we are checking all ",userCnic, userEmail, userName, role, password)
+    const { userCnic, userEmail, userName, role, password, selectedAgency } = userManagementRef.current;
+    console.log("we are checking all ", userCnic, userEmail, userName, role, password)
     // Validate email
     if (!userEmail && !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(userEmail)) {
       enqueueSnackbar("Please enter a valid email address.");
       return;
     }
-  
+
     // Validate CNIC
     if (!userCnic && !/^\d{13}$/.test(userCnic)) {
       enqueueSnackbar("Please enter a valid CNIC (13 digits).");
       return;
     }
 
-      // Validate CNIC
-      if (!password && !passwordRegex.test(password)) {
-        enqueueSnackbar("Please enter a valid password.");
-        return;
-      }
-  
+    // Validate CNIC
+    if (!password && !passwordRegex.test(password)) {
+      enqueueSnackbar("Please enter a valid password.");
+      return;
+    }
+
     // Check for role
     if (!role) {
       enqueueSnackbar("Please enter staff role");
       return;
     }
-  
+    if (!selectedAgency) {
+      enqueueSnackbar("Please select agency");
+      return;
+    }
+
     // Validate user name length
-    if (!userName ) {
+    if (!userName) {
       enqueueSnackbar("Staff name should be at least 5 characters long.");
       return;
     }
-  
+
     // Create request body
     const body = {
       firstName: userName,
       email: userEmail,
       CNIC: userCnic,
-      password,  
+      password,
       role,
-      agencyId: userData?.agency_id
+      agencyId: selectedAgency || userData?.agency_id
     };
-  
+
     try {
       dispatch(setLoading(true));
       const res = await addAgencyUser(body);
-     
-  
+
+
       if (res.result) {
         enqueueSnackbar("User added successfully.", { variant: "success" });
         setOpen(false);
@@ -307,12 +325,12 @@ export default function UserManagement() {
       }
     } catch (error) {
       enqueueSnackbar("Error in adding user.", { variant: "error" });
-    
+
     } finally {
       dispatch(setLoading(false));
     }
   };
-  
+
   const handleDeleteAgencyUser = async () => {
     try {
       dispatch(setLoading(true));
@@ -336,11 +354,17 @@ export default function UserManagement() {
     setUserIdToDelete(id); // Set the ID of the user to be deleted
     setOpenDeleteUser(true); // Open the modal
   };
+
+  const handleAddStaff = () => {
+    fetchAgencies(1);
+    setOpen(true)
+  }
+
   const renderFilters = () => (
     <React.Fragment>
-      <InputField label="CNIC" name="cnic" placeholder="CNIC Number" onChange={handleSearchInputChange} />
+      <InputField type="number" label="CNIC" name="cnic" placeholder="CNIC Number" onChange={handleSearchInputChange} />
 
-      <InputField label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} />
+      <InputField type="email" label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} />
 
       <InputField label="Staff Name" name="StaffName" placeholder="Satff Name" onChange={handleSearchInputChange} />
       <AppButton text="Search" size="sm"
@@ -389,6 +413,16 @@ export default function UserManagement() {
                   onChange={handleInputChange}
                 />
                 <FormSelect
+                  label="Select Agency"
+                  name="selectedAgency"
+                  options={allAgencies.map((role) => ({ id: role._id, name: role.personName }))}
+                  onChange={handleInputChange}
+                />
+
+
+
+
+                <FormSelect
                   label="Select Role"
                   name="role"
                   options={usersRoles.map((role) => role.name)}
@@ -433,9 +467,9 @@ export default function UserManagement() {
           <AppButton
             text="Add Staff"
             variant="outlined"
-            color="#581E47"
+            color="#fff"
             bgColor="#581E47"
-            onClick={() => setOpen(true)}
+            onClick={handleAddStaff}
           />
         </Box>
         <Sheet
@@ -487,10 +521,10 @@ export default function UserManagement() {
                   color="primary"
                   onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
                 > */}
-                  User Name
+                  Staff Name
                   {/* </Link> */}
                 </th>
-                <th style={{ textAlign: 'center' }}>User Email</th>
+                <th style={{ textAlign: 'center' }}>Staff Email</th>
                 <th style={{ textAlign: 'center' }}>Role</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
                 <th />
