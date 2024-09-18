@@ -49,6 +49,7 @@ const BookingEngine = () => {
 
   const loadCityOptions = useCallback(async (inputValue) => {
     if (inputValue.length < 3) return [];
+    console.log("cityu is calling.......")
     try {
       const response = await searchCityCode(inputValue);
       console.log("res of city search ==", inputValue);
@@ -64,6 +65,7 @@ const BookingEngine = () => {
 
   const handleCityChange = (selectedOption, name) => {
     if (name === "departure") {
+      console.log("dispathching.......")
       dispatch(setDepartureCity(selectedOption));
     } else if (name === "arrival") {
       dispatch(setArrivalCity(selectedOption));
@@ -186,6 +188,7 @@ const BookingEngine = () => {
             name="departureDate"
             date={departureDate}
             handleChnage={handleDateChnage}
+            minDate={new Date()}
           />
         </Box>
         {tripType === "Round Trip" && (
@@ -197,6 +200,7 @@ const BookingEngine = () => {
               name="returnDate"
               date={returnDate}
               handleChnage={handleDateChnage}
+              minDate={new Date()}
             />
           </Box>
         )}

@@ -484,19 +484,26 @@ const AddAgency = () => {
             <Box display="flex" flexDirection="column" gap={2}>
               {fileName.map((name, index) => (
                 <Box key={index} display="flex" gap={2}>
-                  <AppButton
-                    text={name || "Upload File"} // Display file name or default text
-                    type="file"
-                    variant="outlined"
-                    color="#fff"
-                    bgColor="#581E47"
-                    onChange={(e) => handleInputChange(e, index)}
-                    component="label"
-                    // width="250px"
-                    multiple
-                    endDecorator={<DeleteIcon onClick={() => handleFileDelete(index)} />}
-                  />
-                </Box>
+                <AppButton
+                  text={name || "Upload File"}
+                  type="file"
+                  variant="outlined"
+                  color="#fff"
+                  bgColor="#581E47"
+                  onChange={(e) => handleInputChange(e, index)}
+                  component="label"
+                  multiple
+                />
+                <AppButton
+                  text=""
+                  variant="outlined"
+                  color="#fff"
+                  bgColor="#fff"
+                  borderColor="#fff"
+                  onClick={() => handleFileDelete(index)}
+                  startDecorator={<DeleteIcon sx={{color: "#000", fontSize: '30px'}} />}
+                />
+              </Box>
               ))}
               <Box display="flex" alignItems="center" mt={2}>
                 <AppButton
@@ -506,7 +513,7 @@ const AddAgency = () => {
                   width="250px"
                   color="#fff"
                   bgColor="#581E47"
-                  endIcon={<AddIcon />} // Add "+" icon
+                  endDecorator={<AddIcon />} // Add "+" icon
                 />
               </Box>
             </Box>

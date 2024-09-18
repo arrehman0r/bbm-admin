@@ -38,6 +38,8 @@ import { setDashboardOption } from "../redux/reducer/dashboardSlice";
 import { setLoginUser } from "../redux/reducer/userSlice";
 import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import { setLoading } from "../redux/reducer/loaderSlice";
+import { resetFiltersState } from "../redux/reducer/ticketSlice";
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
   return (
@@ -63,10 +65,12 @@ export default function Sidebar() {
   const selectedOption = useSelector((state) => state.dashboard.option);
   const userData = useSelector((state) => state.user.loginUser)
   const handleLogout = () => {
-    localStorage.clear();
+    dispatch(resetFiltersState());
     dispatch(setLoginUser(null));
-    dispatch(setDashboardOption(null))
-  
+    dispatch(setDashboardOption("Dashboard"))
+   
+    dispatch(setLoading(false))
+
   };
 
   const dispatch = useDispatch();
@@ -158,7 +162,7 @@ export default function Sidebar() {
             "--ListItem-radius": (theme) => theme.vars.radius.sm,
           }}
         >
-        
+
           <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{ backgroundColor: selectedOption === "Dashboard" ? '#581E47' : "#fff" }} >
             <DashboardIcon />
             <ListItemContent>
@@ -266,7 +270,7 @@ export default function Sidebar() {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             maxWidth: '20ch',
-          }} >{userData?.email}asxcasdesdc</Typography>
+          }} >{userData?.email}</Typography>
         </Box>
         <IconButton
           size="sm"
