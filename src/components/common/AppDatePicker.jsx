@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import "react-datepicker/dist/react-datepicker.css";
 
-const AppDatePicker = ({ label, size, placeholder, name, date, minDate , handleChnage , zIndex }) => {
+const AppDatePicker = ({ label, size, placeholder, name, date, minDate , handleChange , zIndex }) => {
   // const [startDate, setStartDate] = useState(null);
 
   return (
@@ -14,7 +14,7 @@ const AppDatePicker = ({ label, size, placeholder, name, date, minDate , handleC
         // showIcon
         selected={date}
         minDate={minDate}
-        onChange={(selectedDate) => handleChnage(selectedDate, name)}
+        onChange={(selectedDate) => handleChange(selectedDate, name)}
         placeholderText={placeholder}
         // icon={<CalendarTodayIcon />}
         name={name}

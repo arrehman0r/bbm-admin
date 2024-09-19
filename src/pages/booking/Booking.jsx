@@ -11,6 +11,7 @@ import AlasamLogo from "../../images/alasamLogo.png";
 import AppButton from "../../components/common/AppButton";
 import BookingFooter from "../../pages-components/BookingEngine/BookingFooter";
 import { submitBookingRequest } from "../../server/api";
+import { cnicRegex, emailRegex, passwordRegex, phoneNumberRegex } from "../../components/utils";
 
 const Booking = () => {
   const location = useLocation();
@@ -51,6 +52,45 @@ const Booking = () => {
     }
   }, [flight]);
 
+
+  const validateForm = () => {
+    let valid = true;
+
+    travelers.forEach((traveler, index) => {
+      if (!emailRegex.test(traveler.email)) {
+        enqueueSnackbar(`Please provide a valid email address for traveler ${index + 1}.`, { variant: "error" });
+        valid = false;
+      }
+
+      if (!cnicRegex.test(traveler.cnic)) {
+        enqueueSnackbar(`Please enter a valid CNIC (13 digits) for traveler ${index + 1}.`, { variant: "error" });
+        valid = false;
+      }
+
+      if (!phoneNumberRegex.test(traveler.phoneNumber)) {
+        enqueueSnackbar(`Please enter a valid phone number (11 digits) for traveler ${index + 1}.`, { variant: "error" });
+        valid = false;
+      }
+
+      if (!traveler.dob || new Date(traveler.dob).toDateString() === new Date().toDateString()) {
+        enqueueSnackbar(`Please provide a valid date of birth for traveler ${index + 1}.`, { variant: "error" });
+        valid = false;
+      }
+
+      if (traveler.passportIssuanceDate && new Date(traveler.passportIssuanceDate) > new Date()) {
+        enqueueSnackbar(`Passport issuance date cannot be in the future for traveler ${index + 1}.`, { variant: "error" });
+        valid = false;
+      }
+
+      if (traveler.passportExpiryDate && new Date(traveler.passportExpiryDate) < new Date()) {
+        enqueueSnackbar(`Passport expiry date cannot be in the past for traveler ${index + 1}.`, { variant: "error" });
+        valid = false;
+      }
+    });
+
+    return valid;
+  };
+
   const handleInputChange = (index, field, value) => {
     setTravelers((prevTravelers) => {
       const newTravelers = [...prevTravelers];
@@ -82,7 +122,7 @@ const Booking = () => {
   };
 
   const formFields = [
-    { component: InputField, label: "CNIC *", name: "cnic",type : "number" },
+    { component: InputField, label: "CNIC *", name: "cnic", type: "number" },
     { component: InputField, label: "First Name *", name: "fullName" },
     { component: InputField, label: "Last Name *", name: "lastName" },
     {
@@ -96,9 +136,9 @@ const Booking = () => {
       component: FormSelect,
       label: "Nationality *",
       name: "nationality",
-      options: countries.map((c) => c.name),
+      options: countries.map((c) => ({ id: c.isoCode, name: c.name }))
     },
-   
+
     {
       component: FormSelect,
       label: "Gender *",
@@ -110,11 +150,11 @@ const Booking = () => {
       label: "Country Phone Code *",
       name: "countryPhoneCode",
       options: [
-        "+1", "+44", "+33", "+34", "+39", "+46", "+971", "+966", "+974", "+965", "+968", "+92", "+91"],
+        "1", "44", "33", "34", "+39", "+46", "+971", "+966", "+974", "965", "968", "92", "91"],
     },
-    { component: InputField, label: "Phone *", name: "phoneNumber", type : "number" },
+    { component: InputField, label: "Phone *", name: "phoneNumber", type: "number" },
     { component: InputField, label: "Email *", name: "email", type: "email" },
-    { component: InputField, label: "Passport Number *", name: "passportNumber"},
+    { component: InputField, label: "Passport Number *", name: "passportNumber" },
     {
       component: AppDatePicker,
       name: "dob",
@@ -137,8 +177,10 @@ const Booking = () => {
       component: FormSelect,
       label: "Passport Issuance Country *",
       name: "passportIssuanceCountry",
-      options: countries.map((c) => c.name),
+      options: countries.map((c) => ({ id: c.isoCode, name: c.name }))
+
     },
+
     {
       component: FormSelect,
       label: "Passport Issuance City *",
@@ -149,7 +191,7 @@ const Booking = () => {
 
 
 
-console.log("booking page..")
+  console.log("countriesss..", countries)
   const renderTravelerForm = (traveler, index) => (
     <Box
       key={index}
@@ -174,12 +216,12 @@ console.log("booking page..")
                   name={name}
                   size={size}
                   date={traveler[name]}
-                  zIndex = "1"
-                  handleChnage={(date) => handleDateChange(index, name, date)}
+                  zIndex="1"
+                  handleChange={(date) => handleDateChange(index, name, date)}
                 />
               ) : (
                 <Field
-                type={type}
+                  type={type}
                   label={label}
                   name={name}
                   options={options}
@@ -199,12 +241,14 @@ console.log("booking page..")
     </Box>
   );
   const handleSubmit = () => {
-    
-    
-    
-    
-    
-    
+
+    if (!validateForm()) {
+      return;
+    }
+
+
+
+
     // Transform the traveler data to match the required format
     const transformedTravelers = travelers.map((traveler, index) => ({
       id: (index + 1).toString(), // Generate an ID based on the index
@@ -225,6 +269,7 @@ console.log("booking page..")
 
           issuanceCountry: traveler.passportIssuanceCountry,
           issuanceLocation: traveler.passportIssuanceCity,
+          validityCountry: traveler.passportIssuanceCountry,
           nationality: traveler.nationality,
           birthPlace: traveler.country,
           documentType: "PASSPORT", // Hardcoded as per requirements
@@ -243,10 +288,17 @@ console.log("booking page..")
         emailAddress: traveler.email,
       },
     }));
-
+    console.log("transformedTravelers", transformedTravelers)
     // Prepare the body for the API request
     const body = {
-      travelers: transformedTravelers,
+
+      data: {
+        type: "flight-order",
+        flightOffers: [
+          flight?.itineraries
+        ],
+        travelers: transformedTravelers,
+      }
       // Add other booking details here if needed
     };
 
