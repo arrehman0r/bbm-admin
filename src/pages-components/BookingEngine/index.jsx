@@ -264,10 +264,10 @@ const BookingEngine = () => {
       </Box>
       {flightTickets.length > 0 && (
         <Box
-          style={{
+          sx={{
             width: "100%",
             display: "flex",
-            marginTop: "40px",
+            mt: 5,
           }}
         >
           <BookingFilters />
@@ -279,7 +279,7 @@ const BookingEngine = () => {
               flexDirection: "column",
               alignItems: "center",
               gap: "20px",
-              padding: "10px",
+              p: 1.2,
               width: {
                 xs: "100%",
                 sm: "100%",

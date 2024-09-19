@@ -84,14 +84,12 @@ export default function BookingFilters() {
 
   return (
     <Box
-      style={{
+      sx={{
         width: "30%",
         height: "auto",
         backgroundColor: "white",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-      sx={{
+        borderRadius: 1.2,
+        p: 2.4,
         display: {
           xs: 'none',
           sm: 'none',
@@ -100,6 +98,7 @@ export default function BookingFilters() {
           xl: 'block',
         },
       }}
+     
     >
       <AccordionGroup
         variant="plain"
