@@ -187,7 +187,7 @@ const BookingEngine = () => {
             placeholder="Departure Date"
             name="departureDate"
             date={departureDate}
-            handleChnage={handleDateChnage}
+            handleChange={handleDateChnage}
             minDate={new Date()}
           />
         </Box>
@@ -199,7 +199,7 @@ const BookingEngine = () => {
               placeholder="Arrival Date"
               name="returnDate"
               date={returnDate}
-              handleChnage={handleDateChnage}
+              handleChange={handleDateChnage}
               minDate={new Date()}
             />
           </Box>
