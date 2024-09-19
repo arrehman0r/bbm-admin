@@ -178,6 +178,11 @@ const BookingEngine = () => {
     console.log("selected flight is ........", flight);
     navigate("/booking", { state: { flight } });
   };
+  const [baggage, setBaggage] = useState(false)
+
+  const handleBaggage=()=>{
+    setBaggage(!baggage )
+  }
 
   return (
     <Box>
@@ -291,6 +296,8 @@ const BookingEngine = () => {
                   <Ticket
                     flight={flight}
                     handleTicketSelect={handleTicketSelect}
+                    handleBaggage={handleBaggage}
+                    baggage={baggage}
                   />
                 </div>
               ))}

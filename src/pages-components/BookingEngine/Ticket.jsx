@@ -1,9 +1,11 @@
-import { Box } from "@mui/joy";
-import React from "react";
+import { Box, Divider, Typography } from "@mui/joy";
+import React, { useState } from "react";
 import { formatDate, formatDuration } from "../../components/utils";
 import AppButton from "../../components/common/AppButton";
 import CustomTypography from "../../components/common/CustomTyprography";
-const Ticket = ({ flight, handleTicketSelect }) => {
+const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
+
+ 
   return (
     <Box
       style={{
@@ -305,7 +307,7 @@ const Ticket = ({ flight, handleTicketSelect }) => {
             borderColor="#581E47"
             color="white"
             text="Select"
-            onClick={() => handleTicketSelect({ flight })}
+            onClick={() => handleBaggage()}
           />
           <CustomTypography
             level="h4"
@@ -355,6 +357,73 @@ const Ticket = ({ flight, handleTicketSelect }) => {
           </CustomTypography>
         </Box>
       </Box>
+     {baggage && (
+ <Box 
+ sx={{
+  width: "100%",
+  height: baggage ? "auto" : "0", 
+  opacity: baggage ? 1 : 0,        
+  visibility: baggage ? "visible" : "hidden", 
+  overflow: "hidden",
+  transition: "all 0.3s ease-in-out", 
+  display: "flex",
+  gap: "5px",
+  alignItems: "center",
+  padding: baggage ? "10px" : "0px",
+}} >
+ <Box style={{width:"33%" , height:"90%"  , borderRadius:"8px", padding:"10px", display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
+   <Typography style={{fontWeight:"670"}}>LITE</Typography>
+   <Divider  />
+   <Typography style={{fontWeight:"570"}}>Baggage</Typography>
+   <Box >
+   <Typography style={{fontSize:"0.9rem"}}>Check in Baggage: Not Included</Typography>
+   <Typography style={{fontSize:"0.9rem"}}>Check in Baggage: 1 piece of Hand Baggage</Typography>
+   </Box>
+   <Typography style={{fontWeight:"570"}}>Fare Rules</Typography>
+<Box>
+   <Typography style={{color:"blue"}}>Details</Typography>
+   <Typography level="h4">Rs 69427</Typography>
+   </Box>
+   <AppButton text="Selected" width="100%"/>
+
+ </Box>
+ <Box style={{width:"33%" , height:"90%"  , borderRadius:"8px", padding:"10px", display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
+   <Typography style={{fontWeight:"670"}}>VALUE</Typography>
+   <Divider  />
+   <Typography style={{fontWeight:"570"}}>Baggage</Typography>
+   <Box >
+   <Typography style={{fontSize:"0.9rem"}}>Check in Baggage: Not Included</Typography>
+   <Typography style={{fontSize:"0.9rem"}}>Check in Baggage: 1 piece of Hand Baggage</Typography>
+   </Box>
+   <Typography style={{fontWeight:"570"}}>Fare Rules</Typography>
+<Box>
+   <Typography style={{color:"blue"}}>Details</Typography>
+   <Typography level="h4">Rs 69427</Typography>
+   </Box>
+   <AppButton text="Selected" width="100%"/>
+
+ </Box>     
+ <Box style={{width:"33%" , height:"90%"  , borderRadius:"8px", padding:"10px", display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
+   <Typography style={{fontWeight:"670"}}>FLEX</Typography>
+   <Divider  />
+   <Typography style={{fontWeight:"570"}}>Baggage</Typography>
+   <Box >
+   <Typography style={{fontSize:"0.9rem"}}>Check in Baggage: Not Included</Typography>
+   <Typography style={{fontSize:"0.9rem"}}>Check in Baggage: 1 piece of Hand Baggage</Typography>
+   </Box>
+   <Typography style={{fontWeight:"570"}}>Fare Rules</Typography>
+<Box>
+   <Typography style={{color:"blue"}}>Details</Typography>
+   <Typography level="h4">Rs 69427</Typography>
+   </Box>
+   <AppButton text="Selected" width="100%"/>
+
+ </Box> 
+
+ </Box>
+     )}
+     
+
     </Box>
   );
 };
