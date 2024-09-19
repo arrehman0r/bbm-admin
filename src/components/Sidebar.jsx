@@ -163,28 +163,24 @@ export default function Sidebar() {
           }}
         >
 
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{ backgroundColor: selectedOption === "Dashboard" ? '#581E47' : "#fff" }} >
-            <DashboardIcon />
-            <ListItemContent>
-              <Typography level="title-sm" sx={{
-                color: selectedOption === "Dashboard" ? "white" : "inherit",
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{ backgroundColor: selectedOption === "Dashboard" ? '#581E47' : "#fff" , color: selectedOption === "Dashboard" ? "white" : "#000",
                 '&:hover': {
                   color: 'black',
-                },
-              }}>Dashboard</Typography>
+                },}} >
+            <DashboardIcon />
+            <ListItemContent>
+              Dashboard
             </ListItemContent>
 
           </ListItemButton>
 
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{ backgroundColor: selectedOption === "Booking Engine" ? '#581E47' : "#fff" }} >
-            <AirplaneTicketIcon />
-            <ListItemContent>
-              <Typography level="title-sm" sx={{
-                color: selectedOption === "Booking Engine" ? "white" : "inherit",
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{ backgroundColor: selectedOption === "Booking Engine" ? '#581E47' : "#fff", color: selectedOption === "Booking Engine" ? "white" : "#000",
                 '&:hover': {
                   color: 'black',
-                },
-              }}>Booking Engine</Typography>
+                },}}  >
+            <AirplaneTicketIcon />
+            <ListItemContent>
+             Booking Engine
             </ListItemContent>
 
           </ListItemButton>
