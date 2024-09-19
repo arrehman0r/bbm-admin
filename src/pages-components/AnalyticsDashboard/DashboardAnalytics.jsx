@@ -17,40 +17,44 @@ import {
   Typography,
   Sheet,
 } from "@mui/joy";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomTypography from "../../components/common/CustomTyprography";
+import { getAgencySalesData, getDashboardData, getFlightSalesData } from "../../server/api";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../../redux/reducer/loaderSlice";
+import { NEXT_PUBLIC_IMAGES_PROD_URL } from "../../env";
 
 const DashboardAnalytics = () => {
   const handleChange = (event, newValue) => {
     // API call here for the data change
   };
 
-  const cardsData = [
-    {
-      title: "Active Agencies",
-      src: "/static/images/avatar/1.jpg",
-      description: "20",
-      alt: "a",
-    },
-    {
-      title: "Todays Bookings",
-      src: "/static/images/avatar/1.jpg",
-      description: "200",
-      alt: "a",
-    },
-    {
-      title: "Revenue Per Agency",
-      src: "/static/images/avatar/1.jpg",
-      description: "Rs 22500",
-      alt: "a",
-    },
-    {
-      title: "Cash Received Today",
-      src: "/static/images/avatar/1.jpg",
-      description: "Rs 150000",
-      alt: "a",
-    },
-  ];
+  // const cardsData = [
+  //   {
+  //     title: "Active Agencies",
+  //     src: "/static/images/avatar/1.jpg",
+  //     description: "20",
+  //     alt: "a",
+  //   },
+  //   {
+  //     title: "Todays Bookings",
+  //     src: "/static/images/avatar/1.jpg",
+  //     description: "200",
+  //     alt: "a",
+  //   },
+  //   {
+  //     title: "Revenue Per Agency",
+  //     src: "/static/images/avatar/1.jpg",
+  //     description: "Rs 22500",
+  //     alt: "a",
+  //   },
+  //   {
+  //     title: "Cash Received Today",
+  //     src: "/static/images/avatar/1.jpg",
+  //     description: "Rs 150000",
+  //     alt: "a",
+  //   },
+  // ];
 
   const chartData = [
     { name: "Jan", uv: 4000, pv: 2400, amt: 2400 },
@@ -67,22 +71,81 @@ const DashboardAnalytics = () => {
     { name: "Dec", uv: 3490, pv: 4300, amt: 2100 },
   ];
 
-  const flightSalesData = [
-    { airline: "Emirates", totalSales: "$1,500,000", price: "$900", destination: "Dubai" },
-    { airline: "Qatar Airways", totalSales: "$1,200,000", price: "$850", destination: "Doha" },
-    { airline: "Singapore Airlines", totalSales: "$1,000,000", price: "$950", destination: "Singapore" },
-    { airline: "British Airways", totalSales: "$900,000", price: "$800", destination: "London" },
-    { airline: "Delta Airlines", totalSales: "$850,000", price: "$750", destination: "New York" },
-  ];
+  // const flightSalesData = [
+  //   { airline: "Emirates", totalSales: "$1,500,000", price: "$900", destination: "Dubai" },
+  //   { airline: "Qatar Airways", totalSales: "$1,200,000", price: "$850", destination: "Doha" },
+  //   { airline: "Singapore Airlines", totalSales: "$1,000,000", price: "$950", destination: "Singapore" },
+  //   { airline: "British Airways", totalSales: "$900,000", price: "$800", destination: "London" },
+  //   { airline: "Delta Airlines", totalSales: "$850,000", price: "$750", destination: "New York" },
+  // ];
 
-  const agencySalesData = [
-    { agencyName: "SkyHigh Travel", totalSales: "$2,000,000", bookings: "3,000", location: "USA" },
-    { agencyName: "Global Tours", totalSales: "$1,800,000", bookings: "2,500", location: "UK" },
-    { agencyName: "Luxury Travels", totalSales: "$1,600,000", bookings: "2,300", location: "France" },
-    { agencyName: "Elite Voyages", totalSales: "$1,400,000", bookings: "2,000", location: "UAE" },
-    { agencyName: "World Adventures", totalSales: "$1,200,000", bookings: "1,900", location: "Australia" },
-    { agencyName: "FlyAway Services", totalSales: "$1,000,000", bookings: "1,800", location: "Canada" },
-  ];
+
+
+  const [agencySalesData, setAgencySalesData] = useState([])
+  const [flightSalesData, setFlightSalesData] = useState([])
+  const [dashboardData, setDashboardData] = useState([])
+  const dispatch = useDispatch()
+  const fetchAgencySalesData = async () => {
+    dispatch(setLoading(true))
+    try {
+      const res = await getAgencySalesData()
+      setAgencySalesData(res.result)
+      dispatch(setLoading(false))
+    }
+    catch (error) {
+      console.log("error fetching agency sales data", error)
+      dispatch(setLoading(false))
+
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+  }
+
+  const fetchFlightSalesData = async () => {
+
+    dispatch(setLoading(true))
+    try {
+      const res = await getFlightSalesData()
+      setFlightSalesData(res.result)
+      dispatch(setLoading(false))
+    }
+    catch (error) {
+      console.log("error fetching agency sales data", error)
+      dispatch(setLoading(false))
+
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+
+  }
+
+  const fetchDashboardData = async () => {
+
+    dispatch(setLoading(true))
+    try {
+      const res = await getDashboardData()
+      setDashboardData(res.result)
+      dispatch(setLoading(false))
+    }
+    catch (error) {
+      console.log("error fetching agency sales data", error)
+      dispatch(setLoading(false))
+
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+
+  }
+
+
+  useEffect(() => {
+    fetchAgencySalesData()
+    fetchFlightSalesData()
+    fetchDashboardData()
+  }, [])
 
   return (
     <Box>
@@ -99,14 +162,14 @@ const DashboardAnalytics = () => {
         }}
         sx={{ boxShadow: "xl" }}
       >
-        {cardsData.map((card, index) => (
+        {dashboardData.map((card, index) => (
           <Box style={{ width: "100%", border: "none" }} key={index}>
             <div style={{ display: "flex" }}>
-              <div>
-                <Avatar src={card?.src} />
-              </div>
+              <img src={card.src} alt="Lamp" width="32" height="32" />
+
+
               <div style={{ margin: "0px 10px" }}>
-                <CustomTypography>{card.title}</CustomTypography>
+                <CustomTypography level="h1">{card.title}</CustomTypography>
                 <CustomTypography>{card.description}</CustomTypography>
               </div>
             </div>
@@ -196,13 +259,13 @@ const DashboardAnalytics = () => {
 
       {/* Flight Sales Table */}
       <Box
-        style={{
-          width: "100%",
+        sx={{
+          p: 2, width: "100%",
           height: "20rem",
           marginTop: "120px",
           display: "flex",
           border: "1px solid #CCD6E0",
-          borderRadius: "10px",
+          borderRadius: 'md',
         }}
       >
         <Box style={{ width: "60%", height: "100%" }}>
@@ -240,46 +303,53 @@ const DashboardAnalytics = () => {
             <Table aria-label="flight sales data">
               <thead>
                 <tr>
-                  <th style={{ width: "20%" }}>Airline</th>
-                  <th style={{ width: "30%" }}>Total Sales</th>
-                  <th style={{ width: "20%" }}>Price</th>
-                  <th style={{ width: "30%" }}>Destination</th>
+                  <th style={{ textAlign: 'center' }}  >Airline</th>
+                  <th style={{ textAlign: 'center' }} >Total Sales</th>
+                  <th style={{ textAlign: 'center' }}>Total Bookings</th>
+                  <th style={{ textAlign: 'center' }}>Destination</th>
                 </tr>
               </thead>
               <tbody>
                 {flightSalesData.map((row, index) => (
                   <tr key={index}>
-                    <td>{row.airline}</td>
-                    <td>{row.totalSales}</td>
-                    <td>{row.price}</td>
-                    <td>{row.destination}</td>
+                    <td style={{ textAlign: 'center' }}>{row.airline}</td>
+                    <td style={{ textAlign: 'center' }}>{row.totalSales}</td>
+                    <td style={{ textAlign: 'center' }}>{row.totalBookings}</td>
+                    <td style={{ textAlign: 'center' }}>{row.destination}</td>
                   </tr>
                 ))}
               </tbody>
             </Table>
           </Box>
         </Box>
+
+
+
+
       </Box>
-      
+
       {/* Additional Sales Data */}
-      <Box style={{ width: "100%", marginTop: "20px" }}>
-        <Typography level="h4">Agency Sales</Typography>
+      <Box sx={{ p: 2, borderRadius: 'md', width: "100%", marginTop: "20px", color: "#CCD6E0", border: "1px solid #CCD6E0" }}>
+        <Typography level="h4">
+          {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Sales" : "Staff Sales"}
+        </Typography>
+
         <Table aria-label="agency sales data">
           <thead>
             <tr>
-              <th>Agency Name</th>
-              <th>Total Sales</th>
-              <th>Bookings</th>
-              <th>Location</th>
+              <th style={{ textAlign: 'center' }}> {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Name" : "Staff Name"}</th>
+              <th style={{ textAlign: 'center' }}>Total Sales</th>
+              <th style={{ textAlign: 'center' }}>Bookings</th>
+              <th style={{ textAlign: 'center' }}>Location</th>
             </tr>
           </thead>
           <tbody>
             {agencySalesData.map((agency, index) => (
               <tr key={index}>
-                <td>{agency.agencyName}</td>
-                <td>{agency.totalSales}</td>
-                <td>{agency.bookings}</td>
-                <td>{agency.location}</td>
+                <td style={{ textAlign: 'center' }}>{agency.agencyName ? agency.agencyName : agency.staffName}</td>
+                <td style={{ textAlign: 'center' }}>{agency.totalSales}</td>
+                <td style={{ textAlign: 'center' }}>{agency.bookings}</td>
+                <td style={{ textAlign: 'center' }}>{agency.location} Pakistan </td>
               </tr>
             ))}
           </tbody>

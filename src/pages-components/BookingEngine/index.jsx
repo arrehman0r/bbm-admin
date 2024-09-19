@@ -12,7 +12,7 @@ import PassengerCount from "../../components/PassengerCount";
 import SearchSelect from "../../components/common/SearchSelect";
 import { TripOptions } from "../../components/utils/constants";
 import BookingFooter from "./BookingFooter";
-import { getFlightsData, searchCityCode } from "../../server/api";
+import { getFlightsData, getSabreFlightsData, searchCityCode } from "../../server/api";
 import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../components/utils";
@@ -111,43 +111,50 @@ const BookingEngine = () => {
     }
   };
   console.log("depaprtuer====", departureCity, arrivalCity);
-  const handleSearch = () => {
-    if (
-      !departureCity ||
-      !arrivalCity ||
-      !departureDate ||
-      (tripOption === "Round Trip" && !returnDate)
-    ) {
-      enqueueSnackbar("Please fill in all required fields.", {
+
+
+const handleSearch = () => {
+  if (
+    !departureCity ||
+    !arrivalCity ||
+    !departureDate ||
+    (tripOption === "Round Trip" && !returnDate)
+  ) {
+    enqueueSnackbar("Please fill in all required fields.", {
+      variant: "error",
+    });
+    return;
+  }
+
+  if (adultsCount === 0) {
+    enqueueSnackbar("Please select travelers.", {
+      variant: "error",
+    });
+    return;
+  }
+
+  // If it's a "One Way" trip, set the return date to null
+  let finalReturnDate = returnDate;
+  if (tripOption === "One Way") {
+    finalReturnDate = null;
+  } else {
+    // Validate that the return date is not before the departure date
+    if (new Date(returnDate) < new Date(departureDate)) {
+      enqueueSnackbar("Return date cannot be before the departure date.", {
         variant: "error",
       });
       return;
     }
+  }
 
-    if (adultsCount === 0) {
-      enqueueSnackbar("Please select travelers.", {
-        variant: "error",
-      });
-      return;
-    }
+  if (tripOption === "Round Trip") {
+    finalReturnDate = formatDate(returnDate);
+  }
 
-    // If it's a "One Way" trip, set the return date to "00-00-00"
-    let finalReturnDate = returnDate;
-    if (tripOption === "One Way") {
-      finalReturnDate = null;
-    } else {
-      // Validate that the return date is not before the departure date
-      if (new Date(returnDate) < new Date(departureDate)) {
-        enqueueSnackbar("Return date cannot be before the departure date.", {
-          variant: "error",
-        });
-        return;
-      }
-    }
-    if (tripOption === "Round Trip") {
-      finalReturnDate = formatDate(returnDate);
-    }
-    dispatch(setLoading(true));
+  dispatch(setLoading(true));
+
+  // Fetch data from both APIs concurrently using Promise.all
+  Promise.all([
     getFlightsData({
       startDate: formatDate(departureDate),
       endDate: finalReturnDate,
@@ -162,17 +169,39 @@ const BookingEngine = () => {
       ticketCount,
       flightPriceRange,
       flightStops,
+    }),
+    getSabreFlightsData({
+      startDate: formatDate(departureDate),
+      endDate: finalReturnDate,
+      arrival: arrivalCity?.value,
+      departure: departureCity?.value,
+      adultsCount,
+      childrenCount,
+      infantsCount,
+      currencyPreference,
+      airLinePreference,
+      ticketClass,
+      ticketCount,
+      flightPriceRange,
+      flightStops,
+    }),
+  ])
+    .then(([flightsData, sabreFlightsData]) => {
+      // Merge the results from both APIs
+      const mergedTickets = [
+        ...flightsData.result.ticket,
+        ...sabreFlightsData.result.ticket,
+      ];
+
+      // Dispatch the merged tickets
+      dispatch(setFlightTickets(mergedTickets));
+      dispatch(setLoading(false));
     })
-      .then((res) => {
-        console.log("Flight search result:", res);
-        dispatch(setFlightTickets(res.result.ticket));
-        dispatch(setLoading(false));
-      })
-      .catch((err) => {
-        console.error("Error fetching flights:", err);
-        dispatch(setLoading(false));
-      });
-  };
+    .catch((err) => {
+      console.error("Error fetching flights:", err);
+      dispatch(setLoading(false));
+    });
+};
 
   const handleTicketSelect = ({ flight }) => {
     console.log("selected flight is ........", flight);

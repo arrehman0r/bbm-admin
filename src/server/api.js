@@ -81,29 +81,25 @@ export const getFlightBooking = (body) => {
   return makeRequest("post", "agency", body);
 };
 
-export const get = (body) => {
-  return makeRequest("post", "agency", body);
-};
-
 export const getAnalyticsData = () => {
   return makeRequest("get", "agency/EmployeeData");
 };
 
-export const getFlightsData = ({ 
-  startDate, 
-  endDate, 
-  arrival, 
-  departure, 
-  adultsCount, 
-  childrenCount, 
-  infantsCount, 
-  currencyPreference, 
-  airLinePreference, 
-  excludedAirlines, 
-  ticketClass, 
-  ticketCount, 
-  flightPriceRange, 
-  flightStops 
+export const getFlightsData = ({
+  startDate,
+  endDate,
+  arrival,
+  departure,
+  adultsCount,
+  childrenCount,
+  infantsCount,
+  currencyPreference,
+  airLinePreference,
+  excludedAirlines,
+  ticketClass,
+  ticketCount,
+  flightPriceRange,
+  flightStops
 }) => {
   // Base URL with mandatory parameters
   let url = `flights/flightData?start_date=${startDate}&arrival=KRK&dept=STN`;
@@ -142,20 +138,20 @@ export const getFlightsData = ({
   if (excludedAirlines) {
     url += `&excludedAirlineCodes=${excludedAirlines}`;
   }
-console.log("url is .......",  startDate, 
-  endDate, 
-  arrival, 
-  departure, 
-  adultsCount, 
-  childrenCount, 
-  infantsCount, 
-  currencyPreference, 
-  airLinePreference, 
-  excludedAirlines, 
-  ticketClass, 
-  ticketCount, 
-  flightPriceRange, 
-  flightStops)
+  console.log("url is .......", startDate,
+    endDate,
+    arrival,
+    departure,
+    adultsCount,
+    childrenCount,
+    infantsCount,
+    currencyPreference,
+    airLinePreference,
+    excludedAirlines,
+    ticketClass,
+    ticketCount,
+    flightPriceRange,
+    flightStops)
   // Make the request with the constructed URL
   return makeRequest("get", url);
 };
@@ -163,4 +159,90 @@ console.log("url is .......",  startDate,
 
 export const submitBookingRequest = (body) => {
   return makeRequest("post", "flights/createBooking", body);
+};
+
+
+export const getSabreFlightsData = ({
+  startDate,
+  endDate,
+  arrival,
+  departure,
+  adultsCount,
+  childrenCount,
+  infantsCount,
+  currencyPreference,
+  airLinePreference,
+  excludedAirlines,
+  ticketClass,
+  ticketCount,
+  flightPriceRange,
+  flightStops
+}) => {
+  // Base URL with mandatory parameters
+  let url = `sabre/flightData?start_date=${startDate}&arrival=KRK&dept=STN`;
+
+  // Conditionally append optional parameters if they exist
+  if (endDate) {
+    url += `&end_date=${endDate}`;
+  }
+  if (adultsCount) {
+    url += `&adult=${adultsCount}`;
+  }
+  if (childrenCount) {
+    url += `&children=${childrenCount}`;
+  }
+  if (infantsCount) {
+    url += `&infants=${infantsCount}`;
+  }
+  if (currencyPreference) {
+    url += `&currencyCode=${currencyPreference}`;
+  }
+  if (ticketClass) {
+    url += `&travelClass=${ticketClass}`;
+  }
+  if (flightStops !== undefined) {
+    url += `&nonStop=${flightStops}`;
+  }
+  if (flightPriceRange) {
+    url += `&maxPrice=${flightPriceRange}`;
+  }
+  if (ticketCount) {
+    url += `&max=${ticketCount}`;
+  }
+  if (airLinePreference) {
+    url += `&includedAirlineCodes=${airLinePreference}`;
+  }
+  if (excludedAirlines) {
+    url += `&excludedAirlineCodes=${excludedAirlines}`;
+  }
+  console.log("url is .......", startDate,
+    endDate,
+    arrival,
+    departure,
+    adultsCount,
+    childrenCount,
+    infantsCount,
+    currencyPreference,
+    airLinePreference,
+    excludedAirlines,
+    ticketClass,
+    ticketCount,
+    flightPriceRange,
+    flightStops)
+  // Make the request with the constructed URL
+  return makeRequest("get", url);
+};
+
+
+
+export const getAgencySalesData = () => {
+  return makeRequest("get", "flights/agencySaleData");
+};
+
+export const getFlightSalesData = () => {
+  return makeRequest("get", "flights/getFlightSalesData");
+};
+
+export const getDashboardData = () => {
+  return makeRequest("get", "flights/data");
 };
