@@ -32,7 +32,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AlasamLogo from "./../images/alasamLogo.png"
 import ColorSchemeToggle from "./ColorSchemeToggle";
 import { closeSidebar } from "../utils";
-import { agencyTabs, superAdminTabs } from "./utils/dashBoardTabs";
+import { agencyTabs, superAdminTabs , saleTabs } from "./utils/dashBoardTabs";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardOption } from "../redux/reducer/dashboardSlice";
 import { setLoginUser } from "../redux/reducer/userSlice";
@@ -185,7 +185,11 @@ export default function Sidebar() {
 
           </ListItemButton>
           {userData && (
-            (userData.role === "super_admin" ? superAdminTabs : agencyTabs).map((item, index) => (
+            (userData?.role === "super_admin"
+              ? superAdminTabs
+              : userData?.role === "sale"
+              ? saleTabs
+              : agencyTabs ).map((item, index) => (
               <ListItem nested key={index}>
                 <Toggler
                   renderToggle={({ open, setOpen }) => (
@@ -260,7 +264,7 @@ export default function Sidebar() {
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">{userData.firstName} {userData.lastName}.</Typography>
+          <Typography level="title-sm">{userData?.firstName} {userData?.lastName}.</Typography>
           <Typography level="body-xs" sx={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',

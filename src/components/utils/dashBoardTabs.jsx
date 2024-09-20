@@ -93,3 +93,28 @@ export const agencyTabs = [
   subheading:["Email Trigger Settings"]
  }, 
 ]
+
+
+
+export const saleTabs = [
+ 
+
+{
+  heading : "CRM",
+  subheading: ["Flight Booking", "Lead Management"],
+ },
+
+ {
+  heading : "Report",
+  subheading:["Transaction Report","Wallet statement","Customer Statement"]
+ },
+ {
+  heading : "Account",
+  subheading:["ROE","Payment Receipt","Wallet Adjustment"]
+ },
+
+ {
+  heading : "Notification",
+  subheading:["Email Trigger Settings"]
+ }, 
+]
