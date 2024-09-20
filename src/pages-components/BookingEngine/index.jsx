@@ -12,7 +12,7 @@ import PassengerCount from "../../components/PassengerCount";
 import SearchSelect from "../../components/common/SearchSelect";
 import { TripOptions } from "../../components/utils/constants";
 import BookingFooter from "./BookingFooter";
-import { getFlightsData, getSabreFlightsData, searchCityCode } from "../../server/api";
+import { getFlightRules, getFlightsData, getSabreFlightsData, searchCityCode } from "../../server/api";
 import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../components/utils";
@@ -30,14 +30,13 @@ import { setLoading } from "../../redux/reducer/loaderSlice";
 import BookingFilters from "./BookingFilters";
 import TicketsTopBar from "./TicketsTopBar";
 import Ticket from "./Ticket";
+import FlightRulesModal from "../../components/modals/FlightRules";
 
 const BookingEngine = () => {
   const [tripOption, setTripOption] = useState("One Way");
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  // const [departureCity, setDepartureCity] = useState(null);
-  // const [arrivalCity, setArrivalCity] = useState(null);
-  // const [departureDate, setDepartureDate] = useState(null);
-  // const [returnDate, setReturnDate] = useState(null);
+  const [openFlightRule, setOpenFlightRule] = useState(false)
+  const [selectedFlightRules, setSelectedFlightRules] = useState([])
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -124,17 +123,17 @@ const BookingEngine = () => {
       });
       return;
     }
-  
+
     if (adultsCount === 0) {
       enqueueSnackbar("Please select travelers.", {
         variant: "error",
       });
       return;
     }
-  
+
     // If it's a "One Way" trip, set the return date to null
     let finalReturnDate = tripOption === "One Way" ? null : returnDate;
-  
+
     if (tripOption === "Round Trip") {
       // Validate that the return date is not before the departure date
       if (new Date(returnDate) < new Date(departureDate)) {
@@ -145,9 +144,9 @@ const BookingEngine = () => {
       }
       finalReturnDate = formatDate(returnDate);
     }
-  
+
     dispatch(setLoading(true));
-  
+
     const searchParams = {
       startDate: formatDate(departureDate),
       endDate: finalReturnDate,
@@ -163,9 +162,9 @@ const BookingEngine = () => {
       flightPriceRange,
       flightStops,
     };
-  
+
     let mergedTickets = [];
-  
+
     // Function to handle API responses
     const handleApiResponse = (apiName, data) => {
       console.log(`${apiName} API response received:`, data);
@@ -173,7 +172,7 @@ const BookingEngine = () => {
         mergedTickets = [...mergedTickets, ...data.result.ticket];
       }
     };
-  
+
     // Function to handle API errors
     const handleApiError = (apiName, error) => {
       console.error(`Error fetching flights from ${apiName} API:`, error);
@@ -181,7 +180,7 @@ const BookingEngine = () => {
         variant: "warning",
       });
     };
-  
+
     // Fetch data from the first API
     getFlightsData(searchParams)
       .then(data => handleApiResponse("First", data))
@@ -195,7 +194,7 @@ const BookingEngine = () => {
             // Dispatch the merged tickets and set loading to false
             dispatch(setFlightTickets(mergedTickets));
             dispatch(setLoading(false));
-            
+
             if (mergedTickets.length === 0) {
               enqueueSnackbar("No flight tickets found. Please try different search criteria.", {
                 variant: "info",
@@ -210,9 +209,33 @@ const BookingEngine = () => {
   };
   const [baggage, setBaggage] = useState(false)
 
-  const handleBaggage=()=>{
-    setBaggage(!baggage )
+  const handleBaggage = () => {
+    setBaggage(!baggage)
   }
+
+  const handleRuleClick = async (flightOffers) => {
+console.log("fkught offers is ***", flightOffers)
+    const body = {
+      flightOffers : flightOffers
+    }
+    try {
+      dispatch(setLoading(true))
+      const res = await getFlightRules(body)
+      setSelectedFlightRules(res.result)
+      setOpenFlightRule(true)
+      dispatch(setLoading(false))
+    }
+    catch (error) {
+      dispatch(setLoading(false))
+      console.log("error in fetching flight rule", error)
+
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+  }
+
+
 
   return (
     <Box>
@@ -328,6 +351,7 @@ const BookingEngine = () => {
                     handleTicketSelect={handleTicketSelect}
                     handleBaggage={handleBaggage}
                     baggage={baggage}
+                    handleRuleClick={handleRuleClick}
                   />
                 </div>
               ))}
@@ -335,9 +359,11 @@ const BookingEngine = () => {
         </Box>
       )}
 
-<Box sx={{mt: flightTickets.length == 0 ? "12rem" : "0rem"}}>
-      <BookingFooter />
+      <Box sx={{ mt: flightTickets.length == 0 ? "12rem" : "0rem" }}>
+        <BookingFooter />
       </Box>
+
+      <FlightRulesModal openFlightRule = { openFlightRule}  setOpenFlightRule = {setOpenFlightRule} selectedFlightRules= {selectedFlightRules}/>
     </Box>
   );
 };

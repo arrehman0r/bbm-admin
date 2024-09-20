@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { formatDate, formatDuration } from "../../components/utils";
 import AppButton from "../../components/common/AppButton";
 import CustomTypography from "../../components/common/CustomTyprography";
-const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
+const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRuleClick }) => {
 
+
+  console.log("flight is //", flight)
  
   return (
     <Box
@@ -17,6 +19,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
         width: "100%",
         border: "1px solid #CCD6E0",
         flexDirection: "column",
+        p: 1.2
       }}
     >
       <Box>
@@ -353,7 +356,18 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
           </CustomTypography>
         </Box>
       </Box>
+
+
+
+
+
      {baggage && (
+<Box>
+<Box sx={{py: 2}}>
+
+ <AppButton text= "Flight Rule"   onClick={()=> handleRuleClick (flight.itineraries)}/>
+</Box>
+
  <Box 
  sx={{
   width: "100%",
@@ -365,8 +379,9 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
   display: "flex",
   gap: "5px",
   alignItems: "center",
-  p: baggage ? 1.2 : 0,
+  // p: baggage ? 1.2 : 0,
 }} >
+ 
  <Box sx={{width:"33%" , height:"90%"  , borderRadius:8, p:2, display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
    <Typography sx={{fontWeight:"670"}}>LITE</Typography>
    <Divider  />
@@ -417,6 +432,8 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
  </Box> 
 
  </Box>
+ </Box>
+
      )}
      
 

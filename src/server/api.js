@@ -250,3 +250,8 @@ export const getDashboardData = () => {
 export const getAllBookings = () => {
   return makeRequest("get", "booking/getAll");
 };
+
+
+export const getFlightRules = (body) => {
+  return makeRequest("post", "flights/flightRules", body);
+};
