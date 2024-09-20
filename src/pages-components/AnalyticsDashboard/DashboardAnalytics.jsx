@@ -21,11 +21,18 @@ import {
 import React, { useEffect, useState } from "react";
 import CustomTypography from "../../components/common/CustomTyprography";
 import { getAgencySalesData, getDashboardData, getFlightSalesData } from "../../server/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
 import { NEXT_PUBLIC_IMAGES_PROD_URL } from "../../env";
 
 const DashboardAnalytics = () => {
+
+useEffect(()=>(
+console.log(userData.role)
+),[])
+
+  const userData = useSelector((state) => state.user.loginUser)
+
   const handleChange = (event, newValue) => {
     // API call here for the data change
   };
@@ -353,7 +360,12 @@ const DashboardAnalytics = () => {
       </Box>
 
       {/* Additional Sales Data */}
-      <Box sx={{ p: 2, borderRadius: 'md', width: "100%", marginTop: "20px", color: "#CCD6E0", border: "1px solid #CCD6E0" }}>
+{userData?.role === "sales" ? <div>
+  
+</div>
+:
+(
+<Box sx={{ p: 2, borderRadius: 'md', width: "100%", marginTop: "20px", color: "#CCD6E0", border: "1px solid #CCD6E0" }}>
         <Typography level="h4">
           {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Sales" : "Staff Sales"}
         </Typography>
@@ -379,6 +391,10 @@ const DashboardAnalytics = () => {
           </tbody>
         </Table>
       </Box>
+)
+}
+
+      
     </Box>
   );
 };

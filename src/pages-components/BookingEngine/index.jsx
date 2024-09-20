@@ -335,7 +335,9 @@ const BookingEngine = () => {
         </Box>
       )}
 
+<Box sx={{mt: flightTickets.length == 0 ? "12rem" : "0rem"}}>
       <BookingFooter />
+      </Box>
     </Box>
   );
 };
