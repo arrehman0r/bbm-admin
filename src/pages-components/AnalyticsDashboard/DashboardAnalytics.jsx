@@ -26,12 +26,12 @@ import { setLoading } from "../../redux/reducer/loaderSlice";
 import { NEXT_PUBLIC_IMAGES_PROD_URL } from "../../env";
 
 const DashboardAnalytics = () => {
+  const userData = useSelector((state) => state.user.loginUser)
 
 useEffect(()=>(
-console.log(userData.role)
+console.log(userData?.role, "jhhjhh")
 ),[])
 
-  const userData = useSelector((state) => state.user.loginUser)
 
   const handleChange = (event, newValue) => {
     // API call here for the data change
@@ -97,7 +97,7 @@ console.log(userData.role)
     dispatch(setLoading(true))
     try {
       const res = await getAgencySalesData()
-      setAgencySalesData(res.result)
+      setAgencySalesData(res?.result)
       dispatch(setLoading(false))
     }
     catch (error) {
@@ -150,9 +150,15 @@ console.log(userData.role)
 
 
   useEffect(() => {
-    fetchAgencySalesData()
-    fetchFlightSalesData()
-    fetchDashboardData()
+    if(!userData?.role === "sale"){
+      fetchAgencySalesData()
+      fetchFlightSalesData()
+      fetchDashboardData()
+    }else{
+      fetchFlightSalesData()
+      fetchDashboardData()
+    }
+    
   }, [])
 
   return (
@@ -360,7 +366,7 @@ console.log(userData.role)
       </Box>
 
       {/* Additional Sales Data */}
-{userData?.role === "sales" ? <div>
+{userData?.role === "sale" ? <div>
   
 </div>
 :

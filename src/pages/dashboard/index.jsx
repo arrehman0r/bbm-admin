@@ -81,7 +81,9 @@ const AppDashboard = () => {
             </Breadcrumbs>
             <Box>
         
-              <AppButton
+              <AppButton 
+             disabled
+                
                 text={
                   userData?.role === "super_admin"
                     ? "Admin Dashboard"
