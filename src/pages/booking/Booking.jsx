@@ -12,6 +12,8 @@ import AppButton from "../../components/common/AppButton";
 import BookingFooter from "../../pages-components/BookingEngine/BookingFooter";
 import { submitBookingRequest } from "../../server/api";
 import { cnicRegex, emailRegex, passwordRegex, phoneNumberRegex } from "../../components/utils";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../../redux/reducer/loaderSlice";
 
 const Booking = () => {
   const location = useLocation();
@@ -20,8 +22,9 @@ const Booking = () => {
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [travelers, setTravelers] = useState([]);
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-
+  const dispatch = useDispatch()
   useEffect(() => {
     setCountries(Country.getAllCountries());
     if (flight) {
@@ -183,7 +186,7 @@ const Booking = () => {
 
     {
       component: FormSelect,
-      label: "Passport Issuance City *",
+      label: "Passport Issuance Location *",
       name: "passportIssuanceCity",
       options: countries.map((c) => c.name),
     },
@@ -191,7 +194,7 @@ const Booking = () => {
 
 
 
-  console.log("countriesss..", countries)
+
   const renderTravelerForm = (traveler, index) => (
     <Box
       key={index}
@@ -240,7 +243,7 @@ const Booking = () => {
       </Box>
     </Box>
   );
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
 
     if (!validateForm()) {
       return;
@@ -302,15 +305,28 @@ const Booking = () => {
       // Add other booking details here if needed
     };
 
-    // Call the booking request API
-    const res = submitBookingRequest(body);
-    console.log("Response from submitBookingRequest:", res);
+    try {
+      dispatch(setLoading(true))
+      const res = await submitBookingRequest(body);
+      console.log("Response from submitBookingRequest:", res)
+      dispatch(setLoading(false))
+      navigate("/");
+      enqueueSnackbar("Booking submitted successfully", { variant: "success" });
 
-    // Show success notification
-    enqueueSnackbar("Booking submitted successfully", { variant: "success" });
+    }
+
+    catch (error) {
+      dispatch(setLoading(false))
+      enqueueSnackbar(`Something went wrong ${error}`, { variant: "success" });
+    }
+    finally {
+      dispatch(setLoading(false))
+    }
+   
+
   };
 
-  const navigate = useNavigate();
+
 
   return (
     <Box>

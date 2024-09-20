@@ -12,7 +12,7 @@ export default function InputField({
   width,
   error,
   onChange,
-  type,
+  type = "text", 
   value,
   ...props
 }) {

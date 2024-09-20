@@ -7,6 +7,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  PieChart, Pie, Cell,
 } from "recharts";
 import {
   Avatar,
@@ -323,7 +324,30 @@ const DashboardAnalytics = () => {
           </Box>
         </Box>
 
-
+        <Box style={{ width: "40%", height: "100%" }}>
+  <ResponsiveContainer width="100%" height="100%">
+    <PieChart>
+      <Pie
+        data={flightSalesData}
+        dataKey="totalSales"
+        nameKey="airline"
+        cx="50%"
+        cy="50%"
+        outerRadius={80}
+        fill="#8884d8"
+        label
+      >
+        {flightSalesData.map((entry, index) => (
+          <Cell
+            key={`cell-${index}`}
+            fill={["#8884d8", "#82ca9d", "#ffc658", "#d0ed57", "#a4de6c"][index % 5]}
+          />
+        ))}
+      </Pie>
+      <Tooltip />
+    </PieChart>
+  </ResponsiveContainer>
+</Box>
 
 
       </Box>

@@ -112,50 +112,43 @@ const BookingEngine = () => {
   };
   console.log("depaprtuer====", departureCity, arrivalCity);
 
-
-const handleSearch = () => {
-  if (
-    !departureCity ||
-    !arrivalCity ||
-    !departureDate ||
-    (tripOption === "Round Trip" && !returnDate)
-  ) {
-    enqueueSnackbar("Please fill in all required fields.", {
-      variant: "error",
-    });
-    return;
-  }
-
-  if (adultsCount === 0) {
-    enqueueSnackbar("Please select travelers.", {
-      variant: "error",
-    });
-    return;
-  }
-
-  // If it's a "One Way" trip, set the return date to null
-  let finalReturnDate = returnDate;
-  if (tripOption === "One Way") {
-    finalReturnDate = null;
-  } else {
-    // Validate that the return date is not before the departure date
-    if (new Date(returnDate) < new Date(departureDate)) {
-      enqueueSnackbar("Return date cannot be before the departure date.", {
+  const handleSearch = () => {
+    if (
+      !departureCity ||
+      !arrivalCity ||
+      !departureDate ||
+      (tripOption === "Round Trip" && !returnDate)
+    ) {
+      enqueueSnackbar("Please fill in all required fields.", {
         variant: "error",
       });
       return;
     }
-  }
-
-  if (tripOption === "Round Trip") {
-    finalReturnDate = formatDate(returnDate);
-  }
-
-  dispatch(setLoading(true));
-
-  // Fetch data from both APIs concurrently using Promise.all
-  Promise.all([
-    getFlightsData({
+  
+    if (adultsCount === 0) {
+      enqueueSnackbar("Please select travelers.", {
+        variant: "error",
+      });
+      return;
+    }
+  
+    // If it's a "One Way" trip, set the return date to null
+    let finalReturnDate = tripOption === "One Way" ? null : returnDate;
+  
+    if (tripOption === "Round Trip") {
+      // Validate that the return date is not before the departure date
+      if (new Date(returnDate) < new Date(departureDate)) {
+        enqueueSnackbar("Return date cannot be before the departure date.", {
+          variant: "error",
+        });
+        return;
+      }
+      finalReturnDate = formatDate(returnDate);
+    }
+  
+    dispatch(setLoading(true));
+  
+    const searchParams = {
       startDate: formatDate(departureDate),
       endDate: finalReturnDate,
       arrival: arrivalCity?.value,
@@ -169,40 +162,48 @@ const handleSearch = () => {
       ticketCount,
       flightPriceRange,
       flightStops,
-    }),
-    getSabreFlightsData({
-      startDate: formatDate(departureDate),
-      endDate: finalReturnDate,
-      arrival: arrivalCity?.value,
-      departure: departureCity?.value,
-      adultsCount,
-      childrenCount,
-      infantsCount,
-      currencyPreference,
-      airLinePreference,
-      ticketClass,
-      ticketCount,
-      flightPriceRange,
-      flightStops,
-    }),
-  ])
-    .then(([flightsData, sabreFlightsData]) => {
-      // Merge the results from both APIs
-      const mergedTickets = [
-        ...flightsData.result.ticket,
-        ...sabreFlightsData.result.ticket,
-      ];
-
-      // Dispatch the merged tickets
-      dispatch(setFlightTickets(mergedTickets));
-      dispatch(setLoading(false));
-    })
-    .catch((err) => {
-      console.error("Error fetching flights:", err);
-      dispatch(setLoading(false));
-    });
-};
-
+    };
+  
+    let mergedTickets = [];
+  
+    // Function to handle API responses
+    const handleApiResponse = (apiName, data) => {
+      console.log(`${apiName} API response received:`, data);
+      if (data && data.result && data.result.ticket) {
+        mergedTickets = [...mergedTickets, ...data.result.ticket];
+      }
+    };
+  
+    // Function to handle API errors
+    const handleApiError = (apiName, error) => {
+      console.error(`Error fetching flights from ${apiName} API:`, error);
+      enqueueSnackbar(`Failed to fetch data from ${apiName} API. Please try again.`, {
+        variant: "warning",
+      });
+    };
+  
+    // Fetch data from the first API
+    getFlightsData(searchParams)
+      .then(data => handleApiResponse("First", data))
+      .catch(error => handleApiError("First", error))
+      .finally(() => {
+        // Fetch data from the second API
+        getSabreFlightsData(searchParams)
+          .then(data => handleApiResponse("Sabre", data))
+          .catch(error => handleApiError("Sabre", error))
+          .finally(() => {
+            // Dispatch the merged tickets and set loading to false
+            dispatch(setFlightTickets(mergedTickets));
+            dispatch(setLoading(false));
+            
+            if (mergedTickets.length === 0) {
+              enqueueSnackbar("No flight tickets found. Please try different search criteria.", {
+                variant: "info",
+              });
+            }
+          });
+      });
+  };
   const handleTicketSelect = ({ flight }) => {
     console.log("selected flight is ........", flight);
     navigate("/booking", { state: { flight } });

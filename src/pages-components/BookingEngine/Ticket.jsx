@@ -380,7 +380,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
    <Typography sx={{color:"blue"}}>Details</Typography>
    <Typography level="h4">Rs 69427</Typography>
    </Box>
-   <AppButton text="Selected" width="100%"/>
+   <AppButton text="Selected" width="100%"  onClick={() => handleTicketSelect({ flight })}/>
 
  </Box>
  <Box sx={{width:"33%" , height:"90%"  , borderRadius:8 , p:2, display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
@@ -396,7 +396,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
    <Typography sx={{color:"blue"}}>Details</Typography>
    <Typography level="h4">Rs 69427</Typography>
    </Box>
-   <AppButton text="Selected" width="100%"/>
+   <AppButton text="Selected" width="100%"  onClick={() => handleTicketSelect({ flight })}/>
 
  </Box>     
  <Box sx={{width:"33%" , height:"90%"  , borderRadius:8, p:2, display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
@@ -412,7 +412,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage }) => {
    <Typography sx={{color:"blue"}}>Details</Typography>
    <Typography level="h4">Rs 69427</Typography>
    </Box>
-   <AppButton text="Selected" width="100%"/>
+   <AppButton text="Selected" width="100%"  onClick={() => handleTicketSelect({ flight })}/>
 
  </Box> 
 
