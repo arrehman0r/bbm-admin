@@ -520,9 +520,8 @@ const AddAgency = () => {
             <AppButton
               text="Add Agency"
               onClick={handleAddAgency}
-              variant="contained"
-              color="#fff"
-              bgColor="#581E47"
+           
+             
               height="30px"
               disabled={loading}
             />

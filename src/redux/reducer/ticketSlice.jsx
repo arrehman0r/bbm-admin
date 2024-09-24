@@ -15,7 +15,7 @@ const initialState = {
   ticketCount: null,
   ticketClass: null,
   airLinePreference: null,
-  currencyPreference: "PKR",
+  currencyPreference: "USD",
 };
 
 const ticketSlice = createSlice({
@@ -73,7 +73,7 @@ const ticketSlice = createSlice({
       state.ticketCount = null;
       state.ticketClass = null;
       state.airLinePreference = null;
-      state.currencyPreference = { label: "Pakistani Rupee", code: "PKR" };
+      state.currencyPreference = "USD";
     },
     resetFiltersState: () => initialState,
   },

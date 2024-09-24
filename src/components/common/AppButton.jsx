@@ -35,17 +35,17 @@ const AppButton = ({
       component={type === "file" ? "label" : "button"}
       disabled={disabled}
       // tabIndex={-1}
-      variant={variant || "outlined"}
+      variant={variant || "solid"}
       sx={{
-        color: color || "#fff" ,
-        backgroundColor: bgColor || "#581E47",
-        borderColor: borderColor || "#581E47",
+        // color: color || "#fff" ,
+        // backgroundColor: bgColor || "#581E47",
+        // borderColor: borderColor || "#581E47",
         ...(width && { width: width }), // Apply width only if it exists
         ...(height && { height: height }), // Apply width only if it exists
-        "&:hover": {
-          backgroundColor: bgColor,
-          color:  color || "#000" ,
-        },
+        // "&:hover": {
+        //   backgroundColor: bgColor,
+        //   color:  color || "#000" ,
+        // },
       }}
       startDecorator={startDecorator}
       endDecorator={endDecorator}

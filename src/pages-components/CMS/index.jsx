@@ -200,11 +200,11 @@ console.log("res======data", response)
             <Box sx={{ display: 'inline-flex', flexDirection: 'row' }}>
 
 
-
+{/* 
                 {apiResponse.groupedItineraryResponse?.itineraryGroups.map((segment) => (
                     <FlightTicket key={segment.id} ticketData={segment} />
                 ))}
-
+ */}
 
             </Box>
 

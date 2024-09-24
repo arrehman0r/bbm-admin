@@ -85,11 +85,11 @@ export default function BookingFilters() {
   return (
     <Box
       sx={{
-        width: "30%",
-        height: "auto",
+        width: "40%",
+       
         backgroundColor: "white",
         borderRadius: 1.2,
-        p: 2.4,
+       
         display: {
           xs: 'none',
           sm: 'none',
@@ -105,7 +105,7 @@ export default function BookingFilters() {
         transition="0.2s"
         sx={{
           border: '1px solid #CCD6E0',
-          maxWidth: 400,
+          
           borderRadius: 'md',
           [`& .${accordionDetailsClasses.content}.${accordionDetailsClasses.expanded}`]: {
             paddingBlock: '1rem',

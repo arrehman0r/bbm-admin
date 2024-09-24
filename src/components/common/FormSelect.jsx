@@ -5,10 +5,15 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import { IconButton } from "@mui/joy";
 
-const FormSelect = ({ label, options = [], onChange, name, error, placeholder, startDecorator, size }) => {
+const FormSelect = ({ label, options = [], onChange, name, error, placeholder, startDecorator, size, defaultOption }) => {
   // Check if options is an array of objects with id and name
   const isObjectArray = options.length > 0 && typeof options[0] === 'object' && options[0].hasOwnProperty('id') && options[0].hasOwnProperty('name');
   
+  // Determine default value
+  const defaultValue = isObjectArray && typeof defaultOption === 'object' 
+    ? defaultOption._id 
+    : defaultOption;
+
   return (
     <FormControl size={size || "sm"} error={error}>
       <FormLabel>{label}</FormLabel>
@@ -19,6 +24,7 @@ const FormSelect = ({ label, options = [], onChange, name, error, placeholder, s
           onChange({ target: { name, value: newValue } })
         }
         startDecorator={startDecorator && <IconButton>{startDecorator}</IconButton>}
+        defaultValue={defaultValue}
       >
         {options.map((option, index) => (
           <Option

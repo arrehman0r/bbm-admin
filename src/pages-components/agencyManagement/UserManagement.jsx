@@ -1,58 +1,37 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
-import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
-import Divider from "@mui/joy/Divider";
-import FormControl from "@mui/joy/FormControl";
-import FormLabel from "@mui/joy/FormLabel";
-import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
-import Modal from "@mui/joy/Modal";
-import ModalDialog from "@mui/joy/ModalDialog";
-import ModalClose from "@mui/joy/ModalClose";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
-import Checkbox from "@mui/joy/Checkbox";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
-import Typography from "@mui/joy/Typography";
+import IconButton from "@mui/joy/IconButton";
 import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import Dropdown from "@mui/joy/Dropdown";
-
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import BlockIcon from "@mui/icons-material/Block";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
-
-import { Country, City } from "country-state-city";
 import InputField from "../../components/common/InputField";
-import FormSelect from "../../components/common/FormSelect";
+;
 import {
   addAgencyUser,
   getTravelAgency,
   getAgencyUsers,
-  deleteAgencyUser,
   getAgencyUserRoles,
   updateAgencyUserStatus,
   getAgencyAllUsers,
   searchAgencySatff,
   searchAgencySatffAdmin,
+  updateStaffUser,
+  updateAgencyStaff,
 } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 import { useSnackbar } from "notistack";
-import ConfirmDeleteUser from "../../components/modals/ConfirmDeleteUser";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
 import { passwordRegex } from "../../components/utils";
+import AddAgencyUserModal from "../../components/modals/AddAgencyStaff";
+import EditAgencyStaffModal from "../../components/modals/EditAgencyStaff";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -79,14 +58,11 @@ function stableSort(array, comparator) {
 export default function UserManagement() {
   const userManagementRef = useRef({});
   const [order, setOrder] = useState("desc");
-  const [selected, setSelected] = useState([]);
   const [agencies, setAgencies] = useState([]);
   const [open, setOpen] = useState(false);
-  const [cities, setCities] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [userIdToDelete, setUserIdToDelete] = useState(null);
-  const [openDeleteUser, setOpenDeleteUser] = useState(false);
   const [usersRoles, setUsersRoles] = useState([]);
+  const [editStaff, setEditStaff] = useState(null); // state to store the staff being edited
+  const [openEditModal, setOpenEditModal] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.loginUser);
@@ -108,6 +84,12 @@ export default function UserManagement() {
     } catch (error) { }
   };
 
+  const handleEditStaff = (staff) => {
+    setEditStaff(staff); // Set the staff data in the state
+    setOpenEditModal(true); // Open the modal for editing
+  }
+
+
   const handleSearchInputChange = (event) => {
     const { name, value } = event.target;
     searchStaffRef.current[name] = value;
@@ -126,7 +108,7 @@ export default function UserManagement() {
     }
   };
 
-  function RowMenu({ userId, openDeleteModal, status }) {
+  function RowMenu({ userId, status, staff, handleEditStaff }) {
     return (
       <Dropdown>
         <MenuButton
@@ -142,7 +124,7 @@ export default function UserManagement() {
           <MenuItem onClick={() => handleAgencyUserStatus(userId, status)}>
             {status === "INACTIVE" ? "ACTIVE" : "INACTIVE"}
           </MenuItem>
-          {/* <MenuItem>Move</MenuItem> */}
+          <MenuItem onClick={() => handleEditStaff(staff)}>EDIT</MenuItem>
           {/* <Divider />
           <MenuItem color="danger" onClick={() => openDeleteModal(userId)}>
             Delete
@@ -171,7 +153,7 @@ export default function UserManagement() {
     try {
       dispatch(setLoading(true));
       let res;
-      if (userData?.agency_id && userData.role !== "super_admin" ) {
+      if (userData?.agency_id && userData.role !== "super_admin") {
         res = await getAgencyUsers(userData?.agency_id, page);
       } else if (userData.role === "super_admin") {
         res = await getAgencyAllUsers(page);
@@ -331,29 +313,7 @@ export default function UserManagement() {
     }
   };
 
-  const handleDeleteAgencyUser = async () => {
-    try {
-      dispatch(setLoading(true));
-      const res = await deleteAgencyUser(userIdToDelete);
-      if (res) {
-        enqueueSnackbar("User deleted successfully", { variant: "success" });
-        fetchAgencyUsers(); // Refresh the list after deletion
-        setOpenDeleteUser(false); // Close the modal after deletion
-        dispatch(setLoading(false));
-        dispatch(setLoading(false));
-      }
-    } catch (error) {
-      enqueueSnackbar("Error deleting user.", { variant: "error" });
-      dispatch(setLoading(false));
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
 
-  const openDeleteModal = (id) => {
-    setUserIdToDelete(id); // Set the ID of the user to be deleted
-    setOpenDeleteUser(true); // Open the modal
-  };
 
   const handleAddStaff = () => {
     fetchAgencies(1);
@@ -369,13 +329,35 @@ export default function UserManagement() {
       <InputField label="Staff Name" name="StaffName" placeholder="Satff Name" onChange={handleSearchInputChange} />
       <AppButton text="Search" size="sm"
         width="120px"
-        variant="filled"
-        color="#fff"
-        bgColor="#581E47"
+       
         onClick={handleStaffSearch}
       />
     </React.Fragment>
   );
+
+  const handleSaveEdit = async () => {
+    console.log("editstaff ", editStaff)
+
+    const body = {
+      firstName:   editStaff.userName,
+      email: editStaff?.email,
+      role: editStaff?.role,
+      CNIC: editStaff?.CNIC
+    }
+    try {
+      const res = await updateAgencyStaff(editStaff._id, body);
+      enqueueSnackbar("Staff details updated successfully.", { variant: "success" });
+      fetchAgencyUsers(); // Refetch the users to get the updated data
+      setOpenEditModal(false); // Close the modal after saving
+    } catch (error) {
+      enqueueSnackbar("Error updating staff details.", { variant: "error" });
+    }
+  };
+
+  const handleStaffChange = (e) => {
+    setEditStaff({ ...editStaff, [e.target.name]: e.target.value });
+  };
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '700px' }}>
@@ -398,61 +380,9 @@ export default function UserManagement() {
           >
             <FilterAltIcon />
           </IconButton>
-          <Modal open={open} onClose={() => setOpen(false)} >
-            <ModalDialog>
-              <ModalClose />
-              <Typography id="filter-modal" level="h2">
-                Add Staff
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <InputField
-                  label="Staff Name"
-                  name="userName"
-                  placeholder="Staff Name"
-                  onChange={handleInputChange}
-                />
-                <FormSelect
-                  label="Select Agency"
-                  name="selectedAgency"
-                  options={allAgencies.map((role) => ({ id: role._id, name: role.personName }))}
-                  onChange={handleInputChange}
-                />
 
 
 
-
-                <FormSelect
-                  label="Select Role"
-                  name="role"
-                  options={usersRoles.map((role) => role.name)}
-                  onChange={handleInputChange}
-                />
-                <InputField
-                  label="CNIC"
-                  name="userCnic"
-                  placeholder="Staff CNIC"
-                  onChange={handleInputChange}
-                />
-                <InputField
-                  label="Email Address"
-                  name="userEmail"
-                  placeholder="Email Address"
-                  onChange={handleInputChange}
-                />
-
-                <InputField
-                  label="Password"
-                  name="password"
-                  placeholder="Password"
-                  onChange={handleInputChange}
-                />
-                <Button color="primary" onClick={handleAddUser}>
-                  Submit
-                </Button>
-              </Sheet>
-            </ModalDialog>
-          </Modal>
         </Sheet>
 
         <Box
@@ -466,9 +396,7 @@ export default function UserManagement() {
           <div></div>
           <AppButton
             text="Add Staff"
-            variant="outlined"
-            color="#fff"
-            bgColor="#581E47"
+          
             onClick={handleAddStaff}
           />
         </Box>
@@ -558,13 +486,14 @@ export default function UserManagement() {
 
                       <td>{row.role}</td>
                       <td>{row.status}</td>
-                   
+
                       <td>
                         {" "}
                         <RowMenu
                           userId={row._id}
                           status={row.status}
-                          openDeleteModal={openDeleteModal}
+                          staff = {row}
+                          handleEditStaff={handleEditStaff}
                         />
                       </td>
                     </tr>
@@ -605,11 +534,10 @@ export default function UserManagement() {
           </Box>
         </Box>
       }
-      <ConfirmDeleteUser
-        openDeleteUser={openDeleteUser}
-        setOpenDeleteUser={setOpenDeleteUser}
-        handleDeleteAgencyUser={handleDeleteAgencyUser}
-      />
+
+
+      <AddAgencyUserModal open={open} setOpen={setOpen} handleInputChange={handleInputChange} usersRoles={usersRoles} handleAddUser={handleAddUser} allAgencies={allAgencies} />
+      <EditAgencyStaffModal handleStaffChange={handleStaffChange} openEditModal={openEditModal} setOpenEditModal={setOpenEditModal} allAgencies={allAgencies} usersRoles={usersRoles} handleSaveEdit={handleSaveEdit} editStaff={editStaff} />
     </Box>
   );
 }

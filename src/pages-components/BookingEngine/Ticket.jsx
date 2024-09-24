@@ -3,31 +3,26 @@ import React, { useState } from "react";
 import { formatDate, formatDuration } from "../../components/utils";
 import AppButton from "../../components/common/AppButton";
 import CustomTypography from "../../components/common/CustomTyprography";
-const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRuleClick }) => {
+const Ticket = ({ flight, handleTicketSelect, handleBaggage, baggage, handleRuleClick }) => {
 
 
-  console.log("flight is //", flight)
- 
+
+
   return (
     <Box
       sx={{
-        height: "auto",
-        backgroundColor: "white",
-        borderRadius: "10px",
-        display: "flex",
-        // boxShadow: "3px 3px;",
-        width: "100%",
-        border: "1px solid #CCD6E0",
-        flexDirection: "column",
-        p: 1.2
+         backgroundColor: "#F0F3F5",
+        borderRadius: 'md',
+         border: "1px solid #CCD6E0",
+          
       }}
     >
       <Box>
         <CustomTypography
           level="h4"
           sx={{
-            p:  "0.5rem 0.5rem"
-             
+            p: "0.5rem 0.5rem"
+
           }}
         >
           {flight?.api}
@@ -47,7 +42,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
               height: "auto",
               display: "flex",
               justifyContent: "space-around",
-              gap: "30px",
+              gap: 2
             }}
           >
             <Box
@@ -63,7 +58,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
             >
               <CustomTypography>Flight Number</CustomTypography>
               <CustomTypography>
-                {flight.departure.marketingFlightNumber}
+                {flight.departure?.marketingFlightNumber}
               </CustomTypography>
             </Box>
             <Box
@@ -79,7 +74,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
             >
               <CustomTypography>Airline</CustomTypography>
 
-              <CustomTypography>{flight.departure.marketing}</CustomTypography>
+              <CustomTypography>{flight.departure?.marketing}</CustomTypography>
             </Box>
 
             <Box sx={{ display: "flex", gap: "10px", width: "70%" }}>
@@ -94,15 +89,15 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                 }}
               >
                 <CustomTypography>
-                  {flight.departure.departureLocation}
+                  {flight.departure?.departureLocation}
                 </CustomTypography>{" "}
                 <CustomTypography>
-                  {flight.departure.departureTime}
+                  {formatDate(flight.departure?.departureTime)}
                 </CustomTypography>
               </Box>
               <Box
                 sx={{
-                  px:  1.2,
+                  px: 1.2,
                   justifyContent: "center",
                   alignItems: "center",
                   display: "flex",
@@ -127,7 +122,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                     : "Non Stop"}
                 </CustomTypography>
                 <CustomTypography>
-                  {formatDuration(flight.departure.elapsedTime)}
+                  {formatDuration(flight.departure?.elapsedTime)}
                 </CustomTypography>
               </Box>
               <Box
@@ -156,7 +151,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                   {flight.departure.arrivalLocation}
                 </CustomTypography>{" "}
                 <CustomTypography>
-                  {flight.departure.arrivalTime}
+                  {formatDate(flight.departure.arrivalTime)}
                 </CustomTypography>
               </Box>
             </Box>
@@ -167,8 +162,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
               sx={{
                 width: "100%",
                 height: "auto",
-                px: 2.4,
-                pr: 2.4,
+                gap: 2,
                 display: "flex",
                 justifyContent: "space-around",
               }}
@@ -185,7 +179,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
               >
                 <CustomTypography>Flight Number</CustomTypography>
                 <CustomTypography>
-                  {flight.return.marketingFlightNumber}
+                  {flight.return?.marketingFlightNumber}
                 </CustomTypography>
               </Box>
               <Box
@@ -200,7 +194,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
               >
                 <CustomTypography>Airline</CustomTypography>
 
-                <CustomTypography>{flight.return.marketing}</CustomTypography>
+                <CustomTypography>{flight.return?.marketing}</CustomTypography>
               </Box>
 
               <Box sx={{ display: "flex", gap: "10px", width: "70%" }}>
@@ -217,8 +211,8 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                   <CustomTypography>
                     {flight.return.departureLocation}
                   </CustomTypography>{" "}
-                  <CustomTypography>
-                    {flight.return.departureTime}
+                  <CustomTypography >
+                    {formatDate(flight.return?.departureTime)}
                   </CustomTypography>
                 </Box>
                 <Box
@@ -250,7 +244,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                       : "Non Stop"}
                   </CustomTypography>
                   <CustomTypography>
-                    {formatDuration(flight.return.elapsedTime)}
+                    {formatDuration(flight.return?.elapsedTime)}
                   </CustomTypography>
                 </Box>
                 <Box
@@ -280,7 +274,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                     {flight.return.arrivalLocation}
                   </CustomTypography>{" "}
                   <CustomTypography>
-                    {flight.return.arrivalTime}
+                    {formatDate(flight.return.arrivalTime)}
                   </CustomTypography>
                 </Box>
               </Box>
@@ -297,7 +291,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
             flexDirection: "column-reverse",
             gap: "1rem",
             textAlign: "right",
-            py: 0.8 ,
+            py: 0.8,
             px: 1.2,
           }}
         >
@@ -318,6 +312,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                 lg: "1rem",
                 xl: "1.2rem",
               },
+              fontWeight: '600'
             }}
           >
             Total Fare: {`${flight.totalFare}$`}
@@ -341,7 +336,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
                     </span>
                   ))}</CustomTypography> */}
 
-          <CustomTypography
+          {/* <CustomTypography
             sx={{
               fontSize: {
                 xs: "0.5rem",
@@ -353,7 +348,7 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
             }}
           >
             Adult Price: ${flight.adultPrice} x {flight.totalAdults}
-          </CustomTypography>
+          </CustomTypography> */}
         </Box>
       </Box>
 
@@ -361,81 +356,81 @@ const Ticket = ({ flight, handleTicketSelect , handleBaggage , baggage, handleRu
 
 
 
-     {baggage && (
-<Box>
-<Box sx={{py: 2}}>
+      {baggage && (
+        <Box>
+          <Box sx={{ py: 2 }}>
 
- <AppButton text= "Flight Rule"   onClick={()=> handleRuleClick (flight.itineraries)}/>
-</Box>
+            <AppButton text="Flight Rule" onClick={() => handleRuleClick(flight.itineraries)} />
+          </Box>
 
- <Box 
- sx={{
-  width: "100%",
-  height: baggage ? "auto" : "0", 
-  opacity: baggage ? 1 : 0,        
-  visibility: baggage ? "visible" : "hidden", 
-  overflow: "hidden",
-  transition: "all 0.3s ease-in-out", 
-  display: "flex",
-  gap: "5px",
-  alignItems: "center",
-  // p: baggage ? 1.2 : 0,
-}} >
- 
- <Box sx={{width:"33%" , height:"90%"  , borderRadius:8, p:2, display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
-   <Typography sx={{fontWeight:"670"}}>LITE</Typography>
-   <Divider  />
-   <Typography sx={{fontWeight:"570"}}>Baggage</Typography>
-   <Box >
-   <Typography sx={{fontSize:"0.9rem"}}>Check in Baggage: Not Included</Typography>
-   <Typography sx={{fontSize:"0.9rem"}}>Check in Baggage: 1 piece of Hand Baggage</Typography>
-   </Box>
-   <Typography sx={{fontWeight:"570"}}>Fare Rules</Typography>
-<Box>
-   <Typography sx={{color:"blue"}}>Details</Typography>
-   <Typography level="h4">Rs 69427</Typography>
-   </Box>
-   <AppButton text="Selected" width="100%"  onClick={() => handleTicketSelect({ flight })}/>
+          <Box
+            sx={{
+              width: "100%",
+              height: baggage ? "auto" : "0",
+              opacity: baggage ? 1 : 0,
+              visibility: baggage ? "visible" : "hidden",
+              overflow: "hidden",
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              gap: "5px",
+              alignItems: "center",
+              // p: baggage ? 1.2 : 0,
+            }} >
 
- </Box>
- <Box sx={{width:"33%" , height:"90%"  , borderRadius:8 , p:2, display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
-   <Typography sx={{fontWeight:"670"}}>VALUE</Typography>
-   <Divider  />
-   <Typography sx={{fontWeight:"570"}}>Baggage</Typography>
-   <Box >
-   <Typography sx={{fontSize:"0.9rem"}}>Check in Baggage: Not Included</Typography>
-   <Typography sx={{fontSize:"0.9rem"}}>Check in Baggage: 1 piece of Hand Baggage</Typography>
-   </Box>
-   <Typography sx={{fontWeight:"570"}}>Fare Rules</Typography>
-<Box>
-   <Typography sx={{color:"blue"}}>Details</Typography>
-   <Typography level="h4">Rs 69427</Typography>
-   </Box>
-   <AppButton text="Selected" width="100%"  onClick={() => handleTicketSelect({ flight })}/>
+            <Box sx={{ width: "33%", height: "90%", borderRadius: 8, p: 2, display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid grey" }}>
+              <Typography sx={{ fontWeight: "670" }}>LITE</Typography>
+              <Divider />
+              <Typography sx={{ fontWeight: "570" }}>Baggage</Typography>
+              <Box >
+                <Typography sx={{ fontSize: "0.9rem" }}>Check in Baggage: Not Included</Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>Check in Baggage: 1 piece of Hand Baggage</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: "570" }}>Fare Rules</Typography>
+              <Box>
+                <Typography sx={{ color: "blue" }}>Details</Typography>
+                <Typography level="h4">Rs 69427</Typography>
+              </Box>
+              <AppButton text="Selected" width="100%" onClick={() => handleTicketSelect({ flight })} />
 
- </Box>     
- <Box sx={{width:"33%" , height:"90%"  , borderRadius:8, p:2, display:"flex" , flexDirection:"column", gap:"0.75rem" , border:"1px solid grey"}}>
-   <Typography sx={{fontWeight:"670"}}>FLEX</Typography>
-   <Divider  />
-   <Typography sx={{fontWeight:"570"}}>Baggage</Typography>
-   <Box >
-   <Typography sx={{fontSize:"0.9rem"}}>Check in Baggage: Not Included</Typography>
-   <Typography sx={{fontSize:"0.9rem"}}>Check in Baggage: 1 piece of Hand Baggage</Typography>
-   </Box>
-   <Typography sx={{fontWeight:"570"}}>Fare Rules</Typography>
-<Box>
-   <Typography sx={{color:"blue"}}>Details</Typography>
-   <Typography level="h4">Rs 69427</Typography>
-   </Box>
-   <AppButton text="Selected" width="100%"  onClick={() => handleTicketSelect({ flight })}/>
+            </Box>
+            <Box sx={{ width: "33%", height: "90%", borderRadius: 8, p: 2, display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid grey" }}>
+              <Typography sx={{ fontWeight: "670" }}>VALUE</Typography>
+              <Divider />
+              <Typography sx={{ fontWeight: "570" }}>Baggage</Typography>
+              <Box >
+                <Typography sx={{ fontSize: "0.9rem" }}>Check in Baggage: Not Included</Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>Check in Baggage: 1 piece of Hand Baggage</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: "570" }}>Fare Rules</Typography>
+              <Box>
+                <Typography sx={{ color: "blue" }}>Details</Typography>
+                <Typography level="h4">Rs 69427</Typography>
+              </Box>
+              <AppButton text="Selected" width="100%" onClick={() => handleTicketSelect({ flight })} />
 
- </Box> 
+            </Box>
+            <Box sx={{ width: "33%", height: "90%", borderRadius: 8, p: 2, display: "flex", flexDirection: "column", gap: "0.75rem", border: "1px solid grey" }}>
+              <Typography sx={{ fontWeight: "670" }}>FLEX</Typography>
+              <Divider />
+              <Typography sx={{ fontWeight: "570" }}>Baggage</Typography>
+              <Box >
+                <Typography sx={{ fontSize: "0.9rem" }}>Check in Baggage: Not Included</Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>Check in Baggage: 1 piece of Hand Baggage</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: "570" }}>Fare Rules</Typography>
+              <Box>
+                <Typography sx={{ color: "blue" }}>Details</Typography>
+                <Typography level="h4">Rs 69427</Typography>
+              </Box>
+              <AppButton text="Selected" width="100%" onClick={() => handleTicketSelect({ flight })} />
 
- </Box>
- </Box>
+            </Box>
 
-     )}
-     
+          </Box>
+        </Box>
+
+      )}
+
 
     </Box>
   );

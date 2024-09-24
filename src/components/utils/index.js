@@ -9,7 +9,17 @@
 // };
 
 
-export const formatDate= (date)=> {
+export const formatDate = (date) => {
+  // Check if the input is just a time string
+  const timeRegex = /^\d{2}:\d{2}:\d{2}([+-]\d{2}:\d{2})$/;
+  
+  // If the input is a time string, append today's date
+  if (timeRegex.test(date)) {
+    const today = new Date();
+    const currentDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    date = `${currentDate}T${date}`; // Combine with today's date
+  }
+
   // Parse the provided date string
   const parsedDate = new Date(date);
 
@@ -27,8 +37,6 @@ export const formatDate= (date)=> {
 
   return formattedDate;
 }
-
-
 
 export const formatDuration =(duration)=> {
   // PT3H40M" to the desired format "3h 40m".

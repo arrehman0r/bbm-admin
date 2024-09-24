@@ -102,7 +102,7 @@ export const getFlightsData = ({
   flightStops
 }) => {
   // Base URL with mandatory parameters
-  let url = `flights/flightData?start_date=${startDate}&arrival=KRK&dept=STN`;
+  let url = `flights/flightData?start_date=${startDate}&arrival=LHE&dept=LON`;
 
   // Conditionally append optional parameters if they exist
   if (endDate) {
@@ -179,7 +179,7 @@ export const getSabreFlightsData = ({
   flightStops
 }) => {
   // Base URL with mandatory parameters
-  let url = `sabre/flightData?start_date=${startDate}&arrival=KRK&dept=STN`;
+  let url = `sabre/flightData?start_date=${startDate}&arrival=LHE&dept=LON`;
 
   // Conditionally append optional parameters if they exist
   if (endDate) {
@@ -254,4 +254,10 @@ export const getAllBookings = () => {
 
 export const getFlightRules = (body) => {
   return makeRequest("post", "flights/flightRules", body);
+};
+
+
+
+export const updateAgencyStaff = (id, body) => {
+  return makeRequest("patch", `staff/update/${id}`, body);
 };

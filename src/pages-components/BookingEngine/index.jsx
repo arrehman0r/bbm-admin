@@ -31,6 +31,7 @@ import BookingFilters from "./BookingFilters";
 import TicketsTopBar from "./TicketsTopBar";
 import Ticket from "./Ticket";
 import FlightRulesModal from "../../components/modals/FlightRules";
+import FlightTicketCard from "./FlightTicket";
 
 const BookingEngine = () => {
   const [tripOption, setTripOption] = useState("One Way");
@@ -106,6 +107,7 @@ const BookingEngine = () => {
     if (name === "departureDate") {
       dispatch(setDepartureDate(selectedDate));
     } else if (name === "returnDate") {
+
       dispatch(setReturnDate(selectedDate));
     }
   };
@@ -204,19 +206,21 @@ const BookingEngine = () => {
       });
   };
   const handleTicketSelect = ({ flight }) => {
-    console.log("selected flight is ........", flight);
+
     navigate("/booking", { state: { flight } });
   };
   const [baggage, setBaggage] = useState(false)
+
+
 
   const handleBaggage = () => {
     setBaggage(!baggage)
   }
 
   const handleRuleClick = async (flightOffers) => {
-console.log("fkught offers is ***", flightOffers)
+
     const body = {
-      flightOffers : flightOffers
+      flightOffers: flightOffers
     }
     try {
       dispatch(setLoading(true))
@@ -306,11 +310,10 @@ console.log("fkught offers is ***", flightOffers)
           <AppButton
             startDecorator={<SearchIcon />}
             text="Search Flight"
-            variant="contained"
-            color="#fff"
-            bgColor="#581E47"
+            variant="solid"
+
             height="48px"
-            width="10rem"
+            width="12rem"
             onClick={handleSearch}
           />
         </Box>
@@ -321,32 +324,20 @@ console.log("fkught offers is ***", flightOffers)
             width: "100%",
             display: "flex",
             mt: 5,
+            gap: 3
           }}
         >
           <BookingFilters />
           <Box
-            sx={{
-              height: "auto",
-              display: "flex",
-              justifyContent: "start",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "20px",
-              p: 1.2,
-              width: {
-                xs: "100%",
-                sm: "100%",
-                md: "100%",
-                lg: "75%",
-                xl: "75%",
-              },
-            }}
+            sx={{ width: "100%" }}
           >
             <TicketsTopBar />
-            {flightTickets.length > 0 &&
-              flightTickets.map((flight) => (
+            {flightTickets.length > 0 && flightTickets
+              .slice() // Create a shallow copy of the array to avoid mutating Redux state
+              .sort((a, b) => a.totalFare - b.totalFare) // Sort by totalFare (low to high)
+              .map((flight) => (
                 <div>
-                  <Ticket
+                  <FlightTicketCard
                     flight={flight}
                     handleTicketSelect={handleTicketSelect}
                     handleBaggage={handleBaggage}
@@ -363,7 +354,7 @@ console.log("fkught offers is ***", flightOffers)
         <BookingFooter />
       </Box>
 
-      <FlightRulesModal openFlightRule = { openFlightRule}  setOpenFlightRule = {setOpenFlightRule} selectedFlightRules= {selectedFlightRules}/>
+      <FlightRulesModal openFlightRule={openFlightRule} setOpenFlightRule={setOpenFlightRule} selectedFlightRules={selectedFlightRules} />
     </Box>
   );
 };

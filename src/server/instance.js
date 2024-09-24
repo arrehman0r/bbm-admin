@@ -52,6 +52,9 @@ export const makeRequest = async (type, path, body = null, options = {}) => {
       case 'PUT':
         response = await instance.put(path, body, config);
         break;
+        case 'PATCH':
+          response = await instance.patch(path, body, config);
+          break;
       case 'DELETE':
         response = await instance.delete(path, config);
         break;

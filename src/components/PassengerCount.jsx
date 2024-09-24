@@ -10,7 +10,7 @@ import Sheet from '@mui/joy/Sheet';
 import AppButton from './common/AppButton';
 import TextHeading from './common/TextHeading';
 import { setAdultsCount, setChildrenCount, setInfantCount } from './../redux/reducer/ticketSlice'
-
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
     const dispatch = useDispatch();
     const { adultsCount, childrenCount, infantsCount } = useSelector(state => state.ticket);
@@ -81,7 +81,7 @@ const PassengerCount = ({ handleOpenPassengerCount, isPopoverOpen }) => {
                     )}
                 >
                     <div onClick={handleOpenPassengerCount} style={{ width: '100%' }}>
-                        <AppButton text={totalTravllers > 0 ? `Total Travellers ${totalTravllers}` : "Select Adults"} onClick={handleOpenPassengerCount} width="100%" height="48px" bgColor="#fff" color="#32383E" borderColor="#CDD7E1" />
+                        <AppButton text={totalTravllers > 0 ? `Total Travellers ${totalTravllers}` : "Select Adults"} onClick={handleOpenPassengerCount} width="100%" height="48px" bgColor="#fff" color="#32383E" borderColor="#CDD7E1" endDecorator={<KeyboardArrowDownIcon/>} />
                     </div>
                 </Popover>
             </FormControl>

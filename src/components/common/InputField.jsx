@@ -11,6 +11,7 @@ export default function InputField({
   size,
   width,
   error,
+  defaultValue,
   onChange,
   type = "text", 
   value,
@@ -21,6 +22,7 @@ export default function InputField({
       <FormLabel>{label}</FormLabel>
       <Input
         value={value}
+        defaultValue={defaultValue}
         type={type}
         placeholder={placeholder}
         onChange={onChange}
