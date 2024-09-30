@@ -104,6 +104,7 @@ export default function BookingFilters() {
         variant="plain"
         transition="0.2s"
         sx={{
+          // height: '100%',
           border: '1px solid #CCD6E0',
           
           borderRadius: 'md',

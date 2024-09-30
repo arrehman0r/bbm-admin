@@ -22,6 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { cnicRegex, emailRegex, passwordRegex, phoneNumberRegex } from "../../components/utils";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { setDashboardOption } from "../../redux/reducer/dashboardSlice";
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
   const [countries, setCountries] = useState([]);
@@ -55,7 +56,7 @@ const AddAgency = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
-};
+  };
   const fetchAgencyTypes = async () => {
     try {
 
@@ -85,7 +86,7 @@ const AddAgency = () => {
   };
   const handleInputChange = useCallback(
     (event, index) => {
-      console.log("handleInputChange called", index);
+     
       const { name, value, files } = event.target;
 
       if (files && files.length > 0) {
@@ -203,7 +204,7 @@ const AddAgency = () => {
 
     if (agencyPassword !== agencyConfirmPassword) {
       enqueueSnackbar("Passwords do not match", { variant: "error" });
-      return; 
+      return;
     }
 
 
@@ -235,7 +236,7 @@ const AddAgency = () => {
     formData.append("address", agencyDetailsRef.current.address);
     formData.append("agencyEmail", agencyDetailsRef.current.agencyEmail);
     formData.append("agencyPassword", agencyDetailsRef.current.agencyPassword);
-    formData.append("agencyType", agencyDetailsRef.current.agencyType);
+    formData.append("type", agencyDetailsRef.current.agencyType);
 
     formData.append("agencyName", agencyDetailsRef.current.agencyName);
     formData.append("CNIC", agencyDetailsRef.current.cnic);
@@ -254,14 +255,16 @@ const AddAgency = () => {
       dispatch(setLoading(true));
       const res = await addTravelAgency(formData);
       enqueueSnackbar("Agency added successfully!", { variant: "success" });
+      dispatch(setDashboardOption("View Agency"))
     } catch (error) {
       console.error("Error adding agency:", error);
-      enqueueSnackbar("Error adding agency", { variant: "error" });
+      enqueueSnackbar(error, { variant: "error" });
     } finally {
       dispatch(setLoading(false));
     }
   };
 
+  console.log("agencyTypes", agencyTypes)
   const formFields = [
     {
       component: InputField,
@@ -368,8 +371,8 @@ const AddAgency = () => {
       component: FormSelect,
       label: "Agency Type",
       name: "agencyType",
-      options: agencyTypes.map((c, id) => c.type),
-      error: errors.affiliateType,
+      options: agencyTypes.map((c) => ({ id: c._id, name: c.type })),
+          error: errors.affiliateType,
     },
 
     {
@@ -423,7 +426,7 @@ const AddAgency = () => {
         <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
       ),
     }
-    
+
   ];
 
   const renderAgencyForm = useMemo(
@@ -460,7 +463,7 @@ const AddAgency = () => {
                   onChange={handleInputChange}
                   error={error}
                   placeholder={placeholder}
-                  endDecorator = {endDecorator}
+                  endDecorator={endDecorator}
                 />
               </Box>
             )
@@ -484,26 +487,26 @@ const AddAgency = () => {
             <Box display="flex" flexDirection="column" gap={2}>
               {fileName.map((name, index) => (
                 <Box key={index} display="flex" gap={2}>
-                <AppButton
-                  text={name || "Upload File"}
-                  type="file"
-                  variant="outlined"
-                  color="#fff"
-                  bgColor="#581E47"
-                  onChange={(e) => handleInputChange(e, index)}
-                  component="label"
-                  multiple
-                />
-                <AppButton
-                  text=""
-                  variant="outlined"
-                  color="#fff"
-                  bgColor="#fff"
-                  borderColor="#fff"
-                  onClick={() => handleFileDelete(index)}
-                  startDecorator={<DeleteIcon sx={{color: "#000", fontSize: '30px'}} />}
-                />
-              </Box>
+                  <AppButton
+                    text={name || "Upload File"}
+                    type="file"
+                    variant="outlined"
+                    color="#fff"
+                    bgColor="#A67E85"
+                    onChange={(e) => handleInputChange(e, index)}
+                    component="label"
+                    multiple
+                  />
+                  <AppButton
+                    text=""
+                    variant="outlined"
+                    color="#fff"
+                    bgColor="#fff"
+                    borderColor="#fff"
+                    onClick={() => handleFileDelete(index)}
+                    startDecorator={<DeleteIcon sx={{ color: "#000", fontSize: '30px' }} />}
+                  />
+                </Box>
               ))}
               <Box display="flex" alignItems="center" mt={2}>
                 <AppButton
@@ -512,7 +515,7 @@ const AddAgency = () => {
                   variant="outlined"
                   width="250px"
                   color="#fff"
-                  bgColor="#581E47"
+                  bgColor="#A67E85"
                   endDecorator={<AddIcon />} // Add "+" icon
                 />
               </Box>
@@ -520,8 +523,8 @@ const AddAgency = () => {
             <AppButton
               text="Add Agency"
               onClick={handleAddAgency}
-           
-             
+
+
               height="30px"
               disabled={loading}
             />

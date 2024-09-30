@@ -10,7 +10,7 @@ export const superAdminTabs = [
    },
    {
     heading : "Administration",
-    subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Flight Rule Configuration","Command Builder","Location Setting","Security Management",],
+    subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Fare Rule Configuration","Command Builder","Location Setting","Security Management",],
    },
    {
     heading : "Organization Management",
@@ -58,7 +58,7 @@ export const agencyTabs = [
  },
 //  {
 //   heading : "Administration",
-//   subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Flight Rule Configuration","Command Builder","Location Setting","Security Management",],
+//   subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Fare Rule Configuration","Command Builder","Location Setting","Security Management",],
 //  },
 //  {
 //   heading : "Organization Management",

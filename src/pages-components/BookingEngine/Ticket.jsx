@@ -296,8 +296,8 @@ const Ticket = ({ flight, handleTicketSelect, handleBaggage, baggage, handleRule
           }}
         >
           <AppButton
-            bgColor="#581E47"
-            borderColor="#581E47"
+            bgColor="#A67E85"
+            borderColor="#A67E85"
             color="white"
             text="Select"
             onClick={() => handleBaggage()}

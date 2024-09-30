@@ -12,6 +12,7 @@ import AppButton from "../../components/common/AppButton";
 import { getAllBookings, getFlightBooking } from "../../server/api";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import { formatDate } from "../../components/utils";
 
 const FlightBooking = () => {
   const flightBookingRef = useRef({});
@@ -19,6 +20,7 @@ const FlightBooking = () => {
   const agentData = useSelector((state) => state.user.loginUser);
   const [selected, setSelected] = useState([]);
   const [agencies, setAgencies] = useState([]);
+  const [flightBooking, setFlightBooking]= useState([])
   const agentID = agentData;
   
   const { enqueueSnackbar } = useSnackbar();
@@ -62,7 +64,7 @@ const FlightBooking = () => {
 const fetchAllFlightBookings = async()=>{
   try {
     const res = await getAllBookings();
-
+    setFlightBooking(res.result)
     enqueueSnackbar("Flight Search Successful!", { variant: "success" });
     // Reset form or handle any post-submit actions
   } catch (error) {
@@ -129,14 +131,14 @@ useEffect(()=>{
         {/* <AppButton
           text="Reset"
           variant="outlined"
-          color="#581E47"
-          bgColor="#581E47"
+          color="#A67E85"
+          bgColor="#A67E85"
         /> */}
         <AppButton
           text="Search"
           variant="solid"
           color="#fff"
-          bgColor="#581E47"
+          bgColor="#A67E85"
           onClick={handleFlightBookingSearch}
         />
       </Box>
@@ -172,7 +174,7 @@ useEffect(()=>{
         >
           <thead>
             <tr>
-              <th>
+              {/* <th>
                 <Checkbox
                   size="sm"
                   indeterminate={
@@ -185,27 +187,27 @@ useEffect(()=>{
                     )
                   }
                 />
-              </th>
-              <th>Traveller Name</th>
+              </th> */}
+              <th style={{ textAlign: 'center' }}>Traveller Name</th>
              
-              <th>Orignal Ticket Price</th>
-              <th>Ticket Price</th>
+              <th style={{ textAlign: 'center' }}>Ticket Price</th>
+              <th style={{ textAlign: 'center' }}>Ticket Date</th>
 
             
              
-              <th>Booking Date</th>
-              <th>Travel Date</th>
-              <th>PNR</th>
+              <th style={{ textAlign: 'center' }}>Booking Date</th>
+              <th style={{ textAlign: 'center' }}>Airline Code</th>
+              <th style={{ textAlign: 'center' }}>PNR</th>
             
               <th />
             </tr>
           </thead>
-          {agencies.length > 0 && (
+          {flightBooking.length > 0 && (
             <tbody>
-              {stableSort(agencies, getComparator(order, "userName"))?.map(
+              {flightBooking.map(
                 (row) => (
-                  <tr key={row.agencyName}>
-                    <td>
+                  <tr key={row._id}>
+                    {/* <td>
                       <Checkbox
                         size="sm"
                         checked={selected.includes(row.userName)}
@@ -217,16 +219,17 @@ useEffect(()=>{
                           )
                         }
                       />
-                    </td>
-                    <td>{row.personName}</td>
+                    </td> */}
+                    <td style={{ textAlign: 'center' }}>{row.travelers[0]?.name?.firstName}</td>
                     
-                    <td>{row?.availableLimit}</td>
-                    <td>{row.country}</td>
-                    <td>{row.groupArCode}</td>
-                    <td>{row.agencyType}</td>
-                    <td>{row.arCode}</td>
+                    <td style={{ textAlign: 'center' }}>{row?.finalPrice}</td>
+                    <td style={{ textAlign: 'center' }}>{formatDate(row.flightOffers[0]?.itineraries[0]?.segments[0]?.departure?.at)}</td>
+                    <td style={{ textAlign: 'center' }}>{formatDate(row.createdAt)}</td>
+                    <td style={{ textAlign: 'center' }}>{row.flightOffers[0]?.itineraries[0]?.segments[0]?.aircraft?.code}</td>
+                    <td style={{ textAlign: 'center' }}>{row.id}</td>
                     <td>
-                      <RowMenu />
+                    
+                      {/* <RowMenu /> */}
                     </td>
                   </tr>
                 )
@@ -246,7 +249,7 @@ export default FlightBooking;
 const formFields = [
   {
     component: InputField,
-    label: "Trip ID",
+    label: "Traveller Name",
     name: "tripID",
     // error: errors.tripID,
   },
@@ -314,8 +317,8 @@ const formFields = [
   // },
   {
     component: InputField,
-    label: "Email",
-    name: "email",
+    label: "PNR",
+    name: "pnr",
     // error: errors.email,
   },
   // {

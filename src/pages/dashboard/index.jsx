@@ -82,7 +82,7 @@ const AppDashboard = () => {
             <Box>
         
               <AppButton 
-             disabled
+           
                 
                 text={
                   userData?.role === "super_admin"

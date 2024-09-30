@@ -175,7 +175,6 @@ export default function UserManagement() {
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
-    console.log("value of agencykkkk", name, value)
     userManagementRef.current[name] = value;
   }, []);
 
@@ -250,19 +249,19 @@ export default function UserManagement() {
     const { userCnic, userEmail, userName, role, password, selectedAgency } = userManagementRef.current;
     console.log("we are checking all ", userCnic, userEmail, userName, role, password)
     // Validate email
-    if (!userEmail && !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(userEmail)) {
+    if (!userEmail || !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(userEmail)) {
       enqueueSnackbar("Please enter a valid email address.");
       return;
     }
 
     // Validate CNIC
-    if (!userCnic && !/^\d{13}$/.test(userCnic)) {
+    if (!userCnic || !/^\d{13}$/.test(userCnic)) {
       enqueueSnackbar("Please enter a valid CNIC (13 digits).");
       return;
     }
 
     // Validate CNIC
-    if (!password && !passwordRegex.test(password)) {
+    if (!password || !passwordRegex.test(password)) {
       enqueueSnackbar("Please enter a valid password.");
       return;
     }
@@ -296,17 +295,20 @@ export default function UserManagement() {
     try {
       dispatch(setLoading(true));
       const res = await addAgencyUser(body);
-
+      if (res.result) {
+        throw new Error('Network response was not ok');
+    }
 
       if (res.result) {
         enqueueSnackbar("User added successfully.", { variant: "success" });
         setOpen(false);
         fetchAgencyUsers();
       } else {
-        enqueueSnackbar("Failed to add user.");
+        enqueueSnackbar(res.message || "Failed to add user.", { variant: "error" }); // Show server error message if available
       }
-    } catch (error) {
-      enqueueSnackbar("Error in adding user.", { variant: "error" });
+    } catch (res) {
+      console.log(res, "user adding error/...")
+     
 
     } finally {
       dispatch(setLoading(false));
@@ -329,7 +331,7 @@ export default function UserManagement() {
       <InputField label="Staff Name" name="StaffName" placeholder="Satff Name" onChange={handleSearchInputChange} />
       <AppButton text="Search" size="sm"
         width="120px"
-       
+
         onClick={handleStaffSearch}
       />
     </React.Fragment>
@@ -339,7 +341,7 @@ export default function UserManagement() {
     console.log("editstaff ", editStaff)
 
     const body = {
-      firstName:   editStaff.userName,
+      firstName: editStaff.userName,
       email: editStaff?.email,
       role: editStaff?.role,
       CNIC: editStaff?.CNIC
@@ -396,7 +398,7 @@ export default function UserManagement() {
           <div></div>
           <AppButton
             text="Add Staff"
-          
+
             onClick={handleAddStaff}
           />
         </Box>
@@ -492,7 +494,7 @@ export default function UserManagement() {
                         <RowMenu
                           userId={row._id}
                           status={row.status}
-                          staff = {row}
+                          staff={row}
                           handleEditStaff={handleEditStaff}
                         />
                       </td>
@@ -517,14 +519,14 @@ export default function UserManagement() {
                 variant={page === currentPage ? "contained" : "outlined"}
                 onClick={() => handlePageChange(page)}
                 sx={{
-                  color: page === currentPage ? "#ffffff" : "#581E47",
-                  borderColor: "#581E47",
+                  color: page === currentPage ? "#ffffff" : "#A67E85",
+                  borderColor: "#A67E85",
                   borderWidth: 1,
-                  backgroundColor: page === currentPage ? "#581E47" : "transparent",
+                  backgroundColor: page === currentPage ? "#A67E85" : "transparent",
                   "&:hover": {
-                    backgroundColor: "#581E47",
+                    backgroundColor: "#A67E85",
                     color: "#ffffff",
-                    borderColor: "#581E47",
+                    borderColor: "#A67E85",
                   },
                 }}
               >

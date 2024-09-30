@@ -4,7 +4,8 @@ import ModalClose from "@mui/joy/ModalClose";
 import FormSelect from "../common/FormSelect";
 import InputField from "../common/InputField";
 import AppButton from "../common/AppButton";
-import Typography from "@mui/joy/Typography";
+import Checkbox from '@mui/joy/Checkbox';
+import Typography from '@mui/joy/Typography';
 import Sheet from "@mui/joy/Sheet";
 import Divider from "@mui/joy/Divider";
 const AddAgencyUserModal = ({ open, setOpen, handleInputChange, usersRoles, handleAddUser, allAgencies }) => {
@@ -25,12 +26,22 @@ const AddAgencyUserModal = ({ open, setOpen, handleInputChange, usersRoles, hand
             placeholder="Staff Name"
             onChange={handleInputChange}
           />
+
+          <Typography level="title-sm" component='label' endDecorator={<Checkbox sx={{ ml: 12 }} name="editPermission" onChange={(e) =>
+            handleInputChange({
+              target: { name: e.target.name, value: e.target.checked },
+            })
+          } />}>
+            Staff Can Edit
+          </Typography>
           <FormSelect
             label="Select Agency"
             name="selectedAgency"
-            options={allAgencies.map((role) => ({ id: role._id, name: role.personName }))}
+            options={allAgencies.map((role) => ({ id: role._id, name: role.agencyName }))}
             onChange={handleInputChange}
           />
+
+
           <FormSelect
             label="Select Role"
             name="role"
@@ -42,6 +53,8 @@ const AddAgencyUserModal = ({ open, setOpen, handleInputChange, usersRoles, hand
             name="userCnic"
             placeholder="Staff CNIC"
             onChange={handleInputChange}
+            maxLength={2} 
+            type="number"
           />
           <InputField
             label="Email Address"

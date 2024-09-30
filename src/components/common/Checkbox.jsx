@@ -8,7 +8,7 @@ const FormCheckBox = ({ label, size, defaultChecked, mt }) => {
       defaultChecked={defaultChecked}
       sx={{ 
         ".css-egebz-JoyCheckbox-checkbox": {
-          backgroundColor: "#581E47",
+          backgroundColor: "#A67E85",
         
         },
       }}

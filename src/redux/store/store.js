@@ -7,8 +7,8 @@ import rootReducer from "../reducer"; // Root reducer
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "loading"], // Only persist specific slices
-  blacklist: ["ticket"], // Use this if you want to blacklist slices
+  whitelist: ["user", "dashboard"], // Only persist specific slices
+  blacklist: ["ticket", "loading"], // Use this if you want to blacklist slices
 };
 
 

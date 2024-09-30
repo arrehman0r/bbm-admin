@@ -351,7 +351,7 @@ const Booking = () => {
           <Button variant="text" sx={{ mx: "0.5rem" }}>
             Support
           </Button>
-          <AppButton text="My Bookings" borderColor="#581E47"
+          <AppButton text="My Bookings" borderColor="#A67E85"
           />
         </Box>
       </Box>

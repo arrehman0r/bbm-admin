@@ -24,7 +24,7 @@ const Migration = () => {
             text="Save"
             variant="solid"
             color="#fff"
-            bgColor="#581E47"
+            bgColor="#A67E85"
             // onClick={handleFlightBookingSearch}
           />
         </Box>

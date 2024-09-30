@@ -1,6 +1,6 @@
 export const cards = [
     {
-        title: 'Download Alasam App', src: "/static/images/avatar/1.jpg", description: 'Find the best deals on our mobile app', alt: 'a'
+        title: 'Download Beauty By Mandy App', src: "/static/images/avatar/1.jpg", description: 'Find the best deals on our mobile app', alt: 'a'
     },
     { title: 'Help Center', src: "/static/images/avatar/1.jpg", description: 'Contact with our support team', alt: 'a' },
     { title: 'Manage Bookings', src: "/static/images/avatar/1.jpg", description: 'View and manage your bookings', alt: 'a' },

@@ -75,7 +75,7 @@ const CommandBuilder = () => {
             text="Add Command Builder Rule"
             variant="solid"
             color="#fff"
-            bgColor="#581E47"
+            bgColor="#A67E85"
             // onClick={handleFlightBookingSearch}
           />
         </Box>
@@ -116,14 +116,14 @@ const CommandBuilder = () => {
             <AppButton
               text="Reset"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
             <AppButton
               text="Search"
               variant="solid"
               color="#fff"
-              bgColor="#581E47"
+              bgColor="#A67E85"
             />
           </Box>
           <Box display="flex" gap={1}>
@@ -131,7 +131,7 @@ const CommandBuilder = () => {
               text="Save Priority"
               variant="solid"
               color="#fff"
-              bgColor="#581E47"
+              bgColor="#A67E85"
             />
           </Box>
         </Box>
@@ -141,20 +141,20 @@ const CommandBuilder = () => {
             <AppButton
               text="CSV"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
             <AppButton
               text="Excel"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
             <AppButton
               text="PDF"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
           </Box>
           <Box display="flex" gap={1}>
@@ -273,8 +273,8 @@ const CommandBuilder = () => {
             width="120px"
             text="Previous"
             variant="outlined"
-            color="#581E47"
-            bgColor="#581E47"
+            color="#A67E85"
+            bgColor="#A67E85"
             startDecorator={<KeyboardArrowLeftIcon />}
           />
 
@@ -287,13 +287,13 @@ const CommandBuilder = () => {
                 size="sm"
                 variant={Number(page) ? "outlined" : "plain"}
                 sx={{
-                  color: "#581E47",
-                  borderColor: "#581E47",
+                  color: "#A67E85",
+                  borderColor: "#A67E85",
                   borderWidth: 1,
                   "&:hover": {
-                    backgroundColor: "#581E47",
+                    backgroundColor: "#A67E85",
                     color: "#ffffff",
-                    borderColor: "#581E47",
+                    borderColor: "#A67E85",
                   },
                   backgroundColor: "transparent",
                 }}
@@ -309,8 +309,8 @@ const CommandBuilder = () => {
             width="120px"
             text="Next"
             variant="outlined"
-            color="#581E47"
-            bgColor="#581E47"
+            color="#A67E85"
+            bgColor="#A67E85"
             endDecorator={<KeyboardArrowRightIcon />}
           />
         </Box>

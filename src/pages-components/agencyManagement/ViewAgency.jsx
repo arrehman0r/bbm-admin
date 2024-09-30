@@ -223,9 +223,9 @@ export default function ViewAgency() {
 
           <AppButton text="Search" size="sm"
             width="120px"
-            variant="filled"
+           
             color="#fff"
-            bgColor="#581E47"
+            bgColor="#A67E85"
             onClick={handleAgencySearch} />
         </Box>
 
@@ -321,14 +321,14 @@ export default function ViewAgency() {
               variant={page === currentPage ? "contained" : "outlined"}
               onClick={() => handlePageChange(page)}
               sx={{
-                color: page === currentPage ? "#ffffff" : "#581E47",
-                borderColor: "#581E47",
+                color: page === currentPage ? "#ffffff" : "#A67E85",
+                borderColor: "#A67E85",
                 borderWidth: 1,
-                backgroundColor: page === currentPage ? "#581E47" : "transparent",
+                backgroundColor: page === currentPage ? "#A67E85" : "transparent",
                 "&:hover": {
-                  backgroundColor: "#581E47",
+                  backgroundColor: "#A67E85",
                   color: "#ffffff",
-                  borderColor: "#581E47",
+                  borderColor: "#A67E85",
                 },
               }}
             >

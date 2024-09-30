@@ -261,3 +261,4 @@ export const getFlightRules = (body) => {
 export const updateAgencyStaff = (id, body) => {
   return makeRequest("patch", `staff/update/${id}`, body);
 };
+

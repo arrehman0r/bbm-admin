@@ -20,6 +20,7 @@ import ContentPages from "../../pages-components/CMS/contentPages";
 import RoleManagement from "../../pages-components/RoleManagement/RoleManagement";
 import UserAccessUnmapping from "../../pages-components/RoleManagement/UserAccessUnmapping";
 import DashboardAnalytics from "../../pages-components/AnalyticsDashboard/DashboardAnalytics";
+import FareRules from "../../pages-components/Administration/FareRules";
 
 
 const DashboardMain = () => {
@@ -37,16 +38,17 @@ const DashboardMain = () => {
             {selectedOption === "Command Builder" && <CommandBuilder />}
             {selectedOption === "Booking Engine" && <BookingEngine />}
             {/* {selectedOption === "Dashboard" && <AnalyticsDashboard />} */}
-            {selectedOption === "Customer Statement" && <CustomerStatement/>}
-            {selectedOption === "Wallet Statement" && <WalletStatement/>}
-            {selectedOption === "Transaction Reports" && <TransactionReports/>}
-            {selectedOption === "ROE" && <ROE/>}
-            {selectedOption === "Payment Receipt" && <PaymentRecipt/>}
-            {selectedOption === "Wallet Adjustment" && <WalletAdjustment/>}
-            {selectedOption === "Content Pages" && <ContentPages/>}
-            {selectedOption === "Role Management" && <RoleManagement/>}
-            {selectedOption === "User Access Unmapping" && <UserAccessUnmapping/>}
-            {selectedOption === "Dashboard" && <DashboardAnalytics/>}
+            {selectedOption === "Customer Statement" && <CustomerStatement />}
+            {selectedOption === "Wallet Statement" && <WalletStatement />}
+            {selectedOption === "Transaction Reports" && <TransactionReports />}
+            {selectedOption === "ROE" && <ROE />}
+            {selectedOption === "Payment Receipt" && <PaymentRecipt />}
+            {selectedOption === "Wallet Adjustment" && <WalletAdjustment />}
+            {selectedOption === "Content Pages" && <ContentPages />}
+            {selectedOption === "Role Management" && <RoleManagement />}
+            {selectedOption === "User Access Unmapping" && <UserAccessUnmapping />}
+            {selectedOption === "Dashboard" && <DashboardAnalytics />}
+            {selectedOption === "Fare Rule Configuration" && <FareRules />}
 
 
 

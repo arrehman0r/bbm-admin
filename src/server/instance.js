@@ -2,8 +2,11 @@ import axios from 'axios';
 import { NEXT_PUBLIC_PROD_URL } from '../env';
 // import { ToastNotification } from '../Utils/ToastNotifications';
 import Cookies from 'js-cookie';
+import { useSnackbar } from 'notistack';
 
 export const baseURL = NEXT_PUBLIC_PROD_URL;
+
+
 
 export const instance = axios.create({
   baseURL: baseURL,
@@ -65,9 +68,10 @@ export const makeRequest = async (type, path, body = null, options = {}) => {
     return response;
   } catch (error) {
     console.error('Error making request:', error);
-
+    console.error('Error object:', JSON.stringify(error, null, 2));
     // Handle specific errors
-    if (error.response?.status === 401) {
+    if (error.response?.status ) {
+      console.log("erororoorororoor")
       // Handle unauthorized error, such as refreshing tokens or redirecting
       // ToastNotification('error', 'Session expired. Please login again');
     } else if (error.code === 'ECONNABORTED') {
@@ -98,13 +102,7 @@ instance.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // Handle 401 errors, e.g., redirect or clear local storage
-      // window.location.reload(true);
-      // window.location.href = '/';
-      // window.localStorage.clear();
-    }
-    const code = error.response?.status;
-    return Promise.reject({ code });
+    // Return the error message so it can be handled by the calling component
+    return Promise.reject(error.response?.data?.error || "Something went wrong");
   }
-);
+)

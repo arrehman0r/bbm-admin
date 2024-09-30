@@ -10,16 +10,16 @@ const customTheme = extendTheme({
     light: {
       palette: {
         primary: {
-          50: '#f8e7f0',
-          100: '#E8DCFC',
-          200: '#da94b4',
-          300: '#c96b94',
-          400: '#b94278',
-          500: '#581E47', // Your custom primary color
-          600: '#49193c',
-          700: '#3a1431',
-          800: '#2c0e25',
-          900: '#1d0919',
+          50: '#f8ecee',
+          100: '#edd2d5',
+          200: '#e2b7ba',
+          300: '#d79ca0',
+          400: '#cc8185',
+          500: '#A67E85', // Your custom primary color
+          600: '#8f6e74',
+          700: '#785d63',
+          800: '#614c52',
+          900: '#4a3b41',
         },
         // Add other color definitions as needed (e.g., secondary, danger)
       },

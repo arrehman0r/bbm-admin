@@ -32,7 +32,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AlasamLogo from "./../images/alasamLogo.png"
 import ColorSchemeToggle from "./ColorSchemeToggle";
 import { closeSidebar } from "../utils";
-import { agencyTabs, superAdminTabs , saleTabs } from "./utils/dashBoardTabs";
+import { agencyTabs, superAdminTabs, saleTabs } from "./utils/dashBoardTabs";
 import { useDispatch, useSelector } from "react-redux";
 import { setDashboardOption } from "../redux/reducer/dashboardSlice";
 import { setLoginUser } from "../redux/reducer/userSlice";
@@ -40,6 +40,8 @@ import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { setLoading } from "../redux/reducer/loaderSlice";
 import { resetFiltersState } from "../redux/reducer/ticketSlice";
+import LogoutModal from "./modals/LogoutModal";
+import { BbmLogo } from "../images";
 function Toggler({ defaultExpanded = false, renderToggle, children }) {
   const [open, setOpen] = React.useState(defaultExpanded);
   return (
@@ -64,14 +66,20 @@ function Toggler({ defaultExpanded = false, renderToggle, children }) {
 export default function Sidebar() {
   const selectedOption = useSelector((state) => state.dashboard.option);
   const userData = useSelector((state) => state.user.loginUser)
+  const [openLogout, setOpenLogout] = React.useState(false)
   const handleLogout = () => {
-    dispatch(resetFiltersState());
-    dispatch(setLoginUser(null));
-    dispatch(setDashboardOption("Dashboard"))
-   
-    dispatch(setLoading(false))
-
-  };
+    setOpenLogout(false)
+    dispatch(setLoading(true));
+    
+    // Show loading for 3 seconds
+    setTimeout(() => {
+        dispatch(resetFiltersState());
+        dispatch(setLoginUser(null));
+        dispatch(setDashboardOption("Dashboard"));
+        dispatch(setLoading(false));
+        // Optionally, you can redirect or perform any other action after logout
+    }, 3000); // 3000 milliseconds = 3 seconds
+};
 
   const dispatch = useDispatch();
 
@@ -137,7 +145,8 @@ export default function Sidebar() {
         {/* <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton> */}
-        <img src={AlasamLogo} />
+        <BbmLogo/>
+        {/* <img src={AlasamLogo} /> */}
         {/* <Typography level="title-lg">Alasam.</Typography> */}
         {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
@@ -163,10 +172,12 @@ export default function Sidebar() {
           }}
         >
 
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{ backgroundColor: selectedOption === "Dashboard" ? '#581E47' : "#fff" , color: selectedOption === "Dashboard" ? "white" : "#000",
-                '&:hover': {
-                  color: 'black',
-                },}} >
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Dashboard"))} sx={{
+            backgroundColor: selectedOption === "Dashboard" ? '#A67E85' : "#fff", color: selectedOption === "Dashboard" ? "white" : "#000",
+            '&:hover': {
+              color: 'black',
+            },
+          }} >
             <DashboardIcon />
             <ListItemContent>
               Dashboard
@@ -174,13 +185,15 @@ export default function Sidebar() {
 
           </ListItemButton>
 
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{ backgroundColor: selectedOption === "Booking Engine" ? '#581E47' : "#fff", color: selectedOption === "Booking Engine" ? "white" : "#000",
-                '&:hover': {
-                  color: 'black',
-                },}}  >
+          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{
+            backgroundColor: selectedOption === "Booking Engine" ? '#A67E85' : "#fff", color: selectedOption === "Booking Engine" ? "white" : "#000",
+            '&:hover': {
+              color: 'black',
+            },
+          }}  >
             <AirplaneTicketIcon />
             <ListItemContent>
-             Booking Engine
+              Booking Engine
             </ListItemContent>
 
           </ListItemButton>
@@ -188,46 +201,46 @@ export default function Sidebar() {
             (userData?.role === "super_admin"
               ? superAdminTabs
               : userData?.role === "sale"
-              ? saleTabs
-              : agencyTabs ).map((item, index) => (
-              <ListItem nested key={index}>
-                <Toggler
-                  renderToggle={({ open, setOpen }) => (
-                    <ListItemButton onClick={() => setOpen(!open)}>
-                      <AssignmentRoundedIcon color="#fff" />
-                      <ListItemContent>
-                        <Typography level="title-sm">{item.heading}</Typography>
-                      </ListItemContent>
-                      <KeyboardArrowDownIcon
-                        sx={{ transform: open ? "rotate(180deg)" : "none" }}
-                      />
-                    </ListItemButton>
-                  )}
-                >
-                  <List sx={{ gap: 0.5 }}>
-                    {item.subheading.map((subitem, index) => (
-                      <ListItem
-                        key={index}
-                        sx={{
-                          mt: 0.5,
-                          backgroundColor:
-                            selectedOption === subitem ? "#581E47" : "",
-                        }}
-                      >
-                        <ListItemButton
-                          onClick={() => handleOptionClick(subitem)}
-                          sx={{
-                            color: selectedOption === subitem ? "white" : "",
-                          }}
-                        >
-                          {subitem}
+                ? saleTabs
+                : agencyTabs).map((item, index) => (
+                  <ListItem nested key={index}>
+                    <Toggler
+                      renderToggle={({ open, setOpen }) => (
+                        <ListItemButton onClick={() => setOpen(!open)}>
+                          <AssignmentRoundedIcon color="#fff" />
+                          <ListItemContent>
+                            <Typography level="title-sm">{item.heading}</Typography>
+                          </ListItemContent>
+                          <KeyboardArrowDownIcon
+                            sx={{ transform: open ? "rotate(180deg)" : "none" }}
+                          />
                         </ListItemButton>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Toggler>
-              </ListItem>
-            ))
+                      )}
+                    >
+                      <List sx={{ gap: 0.5 }}>
+                        {item.subheading.map((subitem, index) => (
+                          <ListItem
+                            key={index}
+                            sx={{
+                              mt: 0.5,
+                              backgroundColor:
+                                selectedOption === subitem ? "#A67E85" : "",
+                            }}
+                          >
+                            <ListItemButton
+                              onClick={() => handleOptionClick(subitem)}
+                              sx={{
+                                color: selectedOption === subitem ? "white" : "",
+                              }}
+                            >
+                              {subitem}
+                            </ListItemButton>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Toggler>
+                  </ListItem>
+                ))
           )}
 
         </List>
@@ -276,11 +289,12 @@ export default function Sidebar() {
           size="sm"
           variant="plain"
           color="neutral"
-          onClick={handleLogout}
+          onClick={() => setOpenLogout(true)}
         >
           <LogoutRoundedIcon />
         </IconButton>
       </Box>
+      <LogoutModal open={openLogout} setOpen={setOpenLogout} handleLogout={handleLogout} />
     </Sheet>
   );
 }

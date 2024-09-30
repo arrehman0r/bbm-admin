@@ -91,7 +91,7 @@ const ProductList = () => {
             text="Add Product"
             variant="solid"
             color="#fff"
-            bgColor="#581E47"
+            bgColor="#A67E85"
             // onClick={handleFlightBookingSearch}
           />
         </Box>
@@ -134,14 +134,14 @@ const ProductList = () => {
             <AppButton
               text="Reset"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
             <AppButton
               text="Search"
               variant="solid"
               color="#fff"
-              bgColor="#581E47"
+              bgColor="#A67E85"
             />
           </Box>
           <Box display="flex" gap={1}>
@@ -149,13 +149,13 @@ const ProductList = () => {
               text="Save Priority"
               variant="solid"
               color="#fff"
-              bgColor="#581E47"
+              bgColor="#A67E85"
             />
             <AppButton
               text="Save Sequence"
               variant="solid"
               color="#fff"
-              bgColor="#581E47"
+              bgColor="#A67E85"
             />
           </Box>
         </Box>
@@ -167,20 +167,20 @@ const ProductList = () => {
             <AppButton
               text="CSV"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
             <AppButton
               text="Excel"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
             <AppButton
               text="PDF"
               variant="outlined"
-              color="#581E47"
-              bgColor="#581E47"
+              color="#A67E85"
+              bgColor="#A67E85"
             />
           </Box>
           <Box display="flex" gap={1}>
@@ -300,8 +300,8 @@ const ProductList = () => {
             width="120px"
             text="Previous"
             variant="outlined"
-            color="#581E47"
-            bgColor="#581E47"
+            color="#A67E85"
+            bgColor="#A67E85"
             startDecorator={<KeyboardArrowLeftIcon />}
           />
 
@@ -314,13 +314,13 @@ const ProductList = () => {
                 size="sm"
                 variant={Number(page) ? "outlined" : "plain"}
                 sx={{
-                  color: "#581E47",
-                  borderColor: "#581E47",
+                  color: "#A67E85",
+                  borderColor: "#A67E85",
                   borderWidth: 1,
                   "&:hover": {
-                    backgroundColor: "#581E47",
+                    backgroundColor: "#A67E85",
                     color: "#ffffff",
-                    borderColor: "#581E47",
+                    borderColor: "#A67E85",
                   },
                   backgroundColor: "transparent",
                 }}
@@ -336,8 +336,8 @@ const ProductList = () => {
             width="120px"
             text="Next"
             variant="outlined"
-            color="#581E47"
-            bgColor="#581E47"
+            color="#A67E85"
+            bgColor="#A67E85"
             endDecorator={<KeyboardArrowRightIcon />}
           />
         </Box>

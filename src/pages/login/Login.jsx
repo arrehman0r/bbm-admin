@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
-import { GoogleIcon } from '../../images';
+import { BbmLogo, GoogleIcon } from '../../images';
 import Alasam from "./../../images/alasamLogo.png"
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -158,7 +158,8 @@ export default function AppLogin() {
                     >
                         <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
                             {/* <IconButton variant="soft" color="primary" size="sm"> */}
-                            <img src={Alasam} />
+                            <BbmLogo/>
+                            {/* <img src={Alasam} /> */}
                             {/* <BadgeRoundedIcon /> */}
                             {/* </IconButton> */}
                             {/* <Typography level="title-lg"></Typography> */}
@@ -251,7 +252,7 @@ export default function AppLogin() {
                     </Box>
                     <Box component="footer" sx={{ py: 3 }}>
                         <Typography level="body-xs" textAlign="center">
-                            © Alasam {new Date().getFullYear()}
+                            © Beauty By Mandy {new Date().getFullYear()}
                         </Typography>
                     </Box>
                 </Box>
@@ -272,10 +273,10 @@ export default function AppLogin() {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundImage:
-                        'url(https://images.pexels.com/photos/1443894/pexels-photo-1443894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+                        'url(https://images.pexels.com/photos/1884582/pexels-photo-1884582.jpeg)',
                     [theme.getColorSchemeSelector('dark')]: {
                         backgroundImage:
-                            'url(https://images.pexels.com/photos/1443894/pexels-photo-1443894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+                            'url(https://images.pexels.com/photos/1884582/pexels-photo-1884582.jpeg)',
                     },
                 })}
             />

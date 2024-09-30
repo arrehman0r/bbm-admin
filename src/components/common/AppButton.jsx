@@ -38,8 +38,8 @@ const AppButton = ({
       variant={variant || "solid"}
       sx={{
         // color: color || "#fff" ,
-        // backgroundColor: bgColor || "#581E47",
-        // borderColor: borderColor || "#581E47",
+        // backgroundColor: bgColor || "#A67E85",
+        // borderColor: borderColor || "#A67E85",
         ...(width && { width: width }), // Apply width only if it exists
         ...(height && { height: height }), // Apply width only if it exists
         // "&:hover": {

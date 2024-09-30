@@ -102,14 +102,14 @@ const ROE =()=>{
             <AppButton
                 text="Reset"
                 variant="outlined"
-                color="#581E47"
-                bgColor="#581E47"
+                color="#A67E85"
+                bgColor="#A67E85"
             />
             <AppButton
                 text="Search"
                 variant="solid"
                 color="#fff"
-                bgColor="#581E47"
+                bgColor="#A67E85"
             />
         </Box>
         {console.log(flightBookingRef)}
