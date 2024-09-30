@@ -30,11 +30,12 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 import { Country, City } from "country-state-city";
 import InputField from "../../components/common/InputField";
-import { getTravelAgency, searchTravelAgency, searchTravelAgencyByEmail } from "../../server/api";
+import { addBusinessServices, getAllServices, getTravelAgency, searchTravelAgency, searchTravelAgencyByEmail } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
 import { useSnackbar } from "notistack";
+import AddServicesModal from "../../components/modals/AddServices";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -90,7 +91,10 @@ export default function ViewAgency() {
   const searchAgencyRef = useRef({});
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [openAddServices, setOpenAddServices] = useState(false)
+  const userManagementRef = useRef({});
 
+  // console.log("userData ", userData)
   const { enqueueSnackbar } = useSnackbar();
   // useEffect(() => {
   //   setCountries(Country.getAllCountries());
@@ -98,9 +102,9 @@ export default function ViewAgency() {
   const fetchAgencies = async (page) => {
     dispatch(setLoading(true));
     try {
-      const res = await getTravelAgency(page);
-      setAgencies(res.result.agency);
-      setTotalPages(res.result.totalPages);  // Set the total pages
+      const res = await getAllServices(userData?.businessId, page);
+      setAgencies(res.body.services.data);
+      setTotalPages(res.totalPages);  // Set the total pages
       console.log("res of agencies", res);
     } catch (error) {
       console.log("error ---", error);
@@ -123,58 +127,111 @@ export default function ViewAgency() {
     const { name, value } = event.target;
     searchAgencyRef.current[name] = value;
   }
+  const handleInputChange = useCallback((event) => {
+    const { name, value } = event.target;
+    console.log( name, value )
+    userManagementRef.current[name] = value;
+  }, []);
 
-  const handleAgencySearch = async () => {
-    console.log("earch called", searchAgencyRef.current)
-    const { cnic, staffEmail, agencyName } = searchAgencyRef.current;
+  const [fileName, setFileName] = useState("");
+  const [file, setFile] = useState(null);
 
-    // Validation checks
-    if (staffEmail && !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(staffEmail)) {
-      enqueueSnackbar("Please enter a valid email address.")
-      return;
-    }
-
-    if (cnic && !/^\d{13}$/.test(cnic)) {
-      enqueueSnackbar("Please enter a valid CNIC (13 digits).")
-
-      return;
-    }
-
-    if (agencyName && agencyName.length < 5) {
-      enqueueSnackbar("Agency name should be at least 5 characters long.")
-      return;
-    }
-
-    // Prepare the search parameters
-    const searchParams = {
-      CNIC: cnic,
-      emailId: staffEmail,
-      agencyName: agencyName,
-    };
-
-    // Remove empty fields
-    Object.keys(searchParams).forEach(key => {
-      if (!searchParams[key]) {
-        delete searchParams[key];
-      }
-    });
-
-    // Make the search API call
-    dispatch(setLoading(true));
-    try {
-      const res = await searchTravelAgency(searchParams);
-      setAgencies(res.result.agency);
-    } catch (error) {
-      console.error("Error searching agencies:", error);
-    } finally {
-      dispatch(setLoading(false));
-    }
+  const handleFileChange = (e) => {
+    const uploadedFile = e.target.files[0];
+    setFile(uploadedFile); // Save the file in state
+    setFileName(uploadedFile?.name || ""); // Display file name in the button
   };
+
+
+  // const handleAgencySearch = async () => {
+  //   console.log("earch called", searchAgencyRef.current)
+  //   const { cnic, staffEmail, agencyName } = searchAgencyRef.current;
+
+  //   // Validation checks
+  //   if (staffEmail && !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(staffEmail)) {
+  //     enqueueSnackbar("Please enter a valid email address.")
+  //     return;
+  //   }
+
+  //   if (cnic && !/^\d{13}$/.test(cnic)) {
+  //     enqueueSnackbar("Please enter a valid CNIC (13 digits).")
+
+  //     return;
+  //   }
+
+  //   if (agencyName && agencyName.length < 5) {
+  //     enqueueSnackbar("Agency name should be at least 5 characters long.")
+  //     return;
+  //   }
+
+  //   // Prepare the search parameters
+  //   const searchParams = {
+  //     CNIC: cnic,
+  //     emailId: staffEmail,
+  //     agencyName: agencyName,
+  //   };
+
+  //   // Remove empty fields
+  //   Object.keys(searchParams).forEach(key => {
+  //     if (!searchParams[key]) {
+  //       delete searchParams[key];
+  //     }
+  //   });
+
+  //   // Make the search API call
+  //   dispatch(setLoading(true));
+  //   try {
+  //     const res = await searchTravelAgency(searchParams);
+  //     setAgencies(res.result.agency);
+  //   } catch (error) {
+  //     console.error("Error searching agencies:", error);
+  //   } finally {
+  //     dispatch(setLoading(false));
+  //   }
+  // };
+
+  const handleAddServices = async () => {
+    const { serviceName, description, servicePrice, isDeal, featured } = userManagementRef.current;
+console.log( "files are ", serviceName, description, servicePrice, isDeal, featured)
+    if (!serviceName || !description || !servicePrice ) {
+      enqueueSnackbar("All fields are required", { variant: "error" });
+      return;
+    }
+    const body = {
+
+      name: serviceName,
+      description: description,
+      price: servicePrice,
+      availability: true,
+      featured: featured,
+      isDeal: isDeal,
+      images: [
+        file,
+
+      ],
+      businessId: userData?.businessId
+
+
+    }
+
+    try {
+      const res = await addBusinessServices(body)
+      setOpenAddServices(false)
+      enqueueSnackbar("Servieces added successfully")
+      console.log("res of service", res)
+    }
+
+    catch (error) {
+      enqueueSnackbar(error)
+      console.log("error is ", error)
+    }
+  }
+
 
 
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height : '700px' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '700px' }}>
       <Box>
         <Sheet
           className="SearchAndFilters-mobile"
@@ -182,7 +239,7 @@ export default function ViewAgency() {
         >
           <Input
             size="sm"
-            placeholder="Search"
+            placeholder="Add Services"
             startDecorator={<SearchIcon />}
             sx={{ flexGrow: 1 }}
           />
@@ -199,7 +256,7 @@ export default function ViewAgency() {
 
         <Box
           className="SearchAndFilters-tabletUp"
-          sx={{ display: { xs: "none", sm: "flex" }, alignItems: 'end', flexWrap: "wrap", gap: 1.5 }}
+          sx={{ display: { xs: "none", sm: "flex" }, alignItems: 'end', justifyContent: 'end', flexWrap: "wrap", gap: 1.5 }}
         >
           {/* <FormControl sx={{ flex: 1 }} size="sm">
           <FormLabel>Search for Agency</FormLabel>
@@ -210,7 +267,7 @@ export default function ViewAgency() {
           />
         </FormControl> */}
 
-          <InputField type="number" label="CNIC / NTN" name="cnic" placeholder="CNIC / NTN" onChange={handleSearchInputChange} />
+          {/* <InputField type="number" label="CNIC / NTN" name="cnic" placeholder="CNIC / NTN" onChange={handleSearchInputChange} />
 
           <InputField label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} />
 
@@ -219,14 +276,14 @@ export default function ViewAgency() {
             name="agencyName"
             placeholder="Agency Name"
             onChange={handleSearchInputChange}
-          />
+          /> */}
 
-          <AppButton text="Search" size="sm"
-            width="120px"
-           
+          <AppButton text="Add Services" size="sm"
+            width="150px"
+
             color="#fff"
             bgColor="#A67E85"
-            onClick={handleAgencySearch} />
+            onClick={() => setOpenAddServices(true)} />
         </Box>
 
         <Sheet
@@ -256,18 +313,17 @@ export default function ViewAgency() {
             }}
           >
             <thead>
-            <tr>
-      <th style={{ textAlign: 'center' }}>Agency Name</th>
-      <th style={{ textAlign: 'center' }}>Status</th>
-      <th style={{ textAlign: 'center' }}>Available Limit</th>
-      <th style={{ textAlign: 'center' }}>Country</th>
-      <th style={{ textAlign: 'center' }}>Code</th>
-      <th style={{ textAlign: 'center' }}>Agency Type</th>
-      <th style={{ textAlign: 'center' }}>AR Code</th>
-      <th style={{ textAlign: 'center' }}>Actions</th>
+              <tr>
+                <th style={{ textAlign: 'center' }}>Service Name</th>
+                <th style={{ textAlign: 'center' }}>Price</th>
+              
+                <th style={{ textAlign: 'center' }}>Services Type</th>
+                <th style={{ textAlign: 'center' }}>Status</th>
+             
+                <th style={{ textAlign: 'center' }}>Actions</th>
 
-      
-    </tr>
+
+              </tr>
             </thead>
             {agencies.length > 0 && (
               <tbody>
@@ -289,13 +345,12 @@ export default function ViewAgency() {
                         }
                       />
                     </td> */}
-                      <td>{row.personName}</td>
+                      <td>{row.name}</td>
+                 
+                      <td>${row?.price}</td>
+                      <td>Beauty</td>
+                  
                       <td>Active</td>
-                      <td>{row?.availableLimit}</td>
-                      <td>{row.country}</td>
-                      <td>{row.groupArCode}</td>
-                      <td>{row.agencyType}</td>
-                      <td>{row.arCode}</td>
                       <td>
                         <RowMenu />
                       </td>
@@ -308,36 +363,37 @@ export default function ViewAgency() {
         </Sheet>
       </Box>
 
-{totalPages > 1  &&
-      <Box
-        className="Pagination-laptopUp"
-        sx={{ pt: 2, display: { xs: "none", md: "flex" }, justifyContent: 'center' }}
-      >
-        <Box display="flex" gap={1}>
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-            <IconButton
-              key={page}
-              size="sm"
-              variant={page === currentPage ? "contained" : "outlined"}
-              onClick={() => handlePageChange(page)}
-              sx={{
-                color: page === currentPage ? "#ffffff" : "#A67E85",
-                borderColor: "#A67E85",
-                borderWidth: 1,
-                backgroundColor: page === currentPage ? "#A67E85" : "transparent",
-                "&:hover": {
-                  backgroundColor: "#A67E85",
-                  color: "#ffffff",
+      {totalPages > 1 &&
+        <Box
+          className="Pagination-laptopUp"
+          sx={{ pt: 2, display: { xs: "none", md: "flex" }, justifyContent: 'center' }}
+        >
+          <Box display="flex" gap={1}>
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+              <IconButton
+                key={page}
+                size="sm"
+                variant={page === currentPage ? "contained" : "outlined"}
+                onClick={() => handlePageChange(page)}
+                sx={{
+                  color: page === currentPage ? "#ffffff" : "#A67E85",
                   borderColor: "#A67E85",
-                },
-              }}
-            >
-              {page}
-            </IconButton>
-          ))}
+                  borderWidth: 1,
+                  backgroundColor: page === currentPage ? "#A67E85" : "transparent",
+                  "&:hover": {
+                    backgroundColor: "#A67E85",
+                    color: "#ffffff",
+                    borderColor: "#A67E85",
+                  },
+                }}
+              >
+                {page}
+              </IconButton>
+            ))}
+          </Box>
         </Box>
-      </Box>
-}
+      }
+      <AddServicesModal open={openAddServices} setOpen={setOpenAddServices} handleFileChange={handleFileChange} file={file} fileName={fileName} setFileName={setFileName} handleAddServices={handleAddServices} handleInputChange={handleInputChange} />
     </Box>
   );
 }

@@ -53,12 +53,19 @@ export const addAgencyUser = (body) => {
   return makeRequest("post", "staff/create", body);
 };
 
+export const addBusinessServices = (body) => {
+  return makeRequest("post", "services", body);
+};
 export const deleteAgencyUser = (id) => {
   return makeRequest("delete", `users/${id}`);
 };
 
 export const getAgencyUserRoles = () => {
   return makeRequest("get", `roles/roleAgency`);
+};
+
+export const getAllServices = (id, page) => {
+  return makeRequest("get", `services/business/${id}?page=${page}`);
 };
 
 export const getAgencyTypes = () => {

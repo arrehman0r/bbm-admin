@@ -1,8 +1,8 @@
 
 export const superAdminTabs = [
     {
-   heading : "Agency Management",
-   subheading: ["Add Agency", "View Agency","User Management"],
+   heading : "Business Management",
+   subheading: ["Add Business", "View Business","User Management"],
   },
   {
     heading : "CRM",
@@ -49,8 +49,8 @@ export const superAdminTabs = [
 export const agencyTabs = [
  
   {
- heading : "Agency Management",
- subheading: ["View Agency","User Management"],
+ heading : "Business Management",
+ subheading: ["Add Business", "View Services","User Management"],
 },
 {
   heading : "CRM",
@@ -118,3 +118,4 @@ export const saleTabs = [
   subheading:["Email Trigger Settings"]
  }, 
 ]
+

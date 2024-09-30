@@ -246,23 +246,13 @@ export default function UserManagement() {
   }, []);
 
   const handleAddUser = async () => {
-    const { userCnic, userEmail, userName, role, password, selectedAgency } = userManagementRef.current;
+    const { userCnic, userName, role } = userManagementRef.current;
     console.log("we are checking all ", userCnic, userEmail, userName, role, password)
     // Validate email
-    if (!userEmail || !/^[\w-\.]+@(gmail\.com|[\w-]+\.asaam\.pk)$/.test(userEmail)) {
-      enqueueSnackbar("Please enter a valid email address.");
-      return;
-    }
 
     // Validate CNIC
     if (!userCnic || !/^\d{13}$/.test(userCnic)) {
       enqueueSnackbar("Please enter a valid CNIC (13 digits).");
-      return;
-    }
-
-    // Validate CNIC
-    if (!password || !passwordRegex.test(password)) {
-      enqueueSnackbar("Please enter a valid password.");
       return;
     }
 

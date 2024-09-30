@@ -212,7 +212,7 @@ console.log(userData?.role, "jhhjhh")
               padding: "0px 2rem",
             }}
           >
-            <Typography level="h3">Flight Counts</Typography>
+            <Typography level="h3">Sales Counts</Typography>
           </Box>
           <Box
             style={{
@@ -285,7 +285,7 @@ console.log(userData?.role, "jhhjhh")
         <Box style={{ width: "60%", height: "100%" }}>
           <Box style={{ width: "100%", height: "5rem", display: "flex" }}>
             <Box style={{ width: "60%", display: "flex", alignItems: "center" }}>
-              <Typography level="h3"> Flights with Highest Sales</Typography>
+              <Typography level="h3"> Business with Highest Sales</Typography>
             </Box>
             <Box
               style={{

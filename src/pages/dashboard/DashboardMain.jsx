@@ -28,8 +28,8 @@ const DashboardMain = () => {
     const userData = useSelector((state) => state.user.loginUser)
     return (
         <div>
-            {selectedOption === "Add Agency" && userData.role === "super_admin" && <AddAgency />}
-            {selectedOption === "View Agency" && <ViewAgency />}
+            {selectedOption === "Add Business" && <AddAgency />}
+            {selectedOption === "View Services" && <ViewAgency />}
             {selectedOption === "User Management" && <UserManagement />}
             {selectedOption === "Flight Booking" && <FlightBooking />}
             {selectedOption === "Product List" && <ProductList />}

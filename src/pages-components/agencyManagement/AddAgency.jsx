@@ -23,6 +23,7 @@ import { cnicRegex, emailRegex, passwordRegex, phoneNumberRegex } from "../../co
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { setDashboardOption } from "../../redux/reducer/dashboardSlice";
+import { usCities } from "../../components/utils/constants";
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
   const [countries, setCountries] = useState([]);
@@ -86,7 +87,7 @@ const AddAgency = () => {
   };
   const handleInputChange = useCallback(
     (event, index) => {
-     
+
       const { name, value, files } = event.target;
 
       if (files && files.length > 0) {
@@ -268,47 +269,37 @@ const AddAgency = () => {
   const formFields = [
     {
       component: InputField,
-      label: "Agency Name *",
+      label: "Business Name *",
       name: "agencyName",
       error: errors.affiliateName,
     },
     {
       component: InputField,
-      label: "CNIC *",
+      label: "NTN *",
       name: "cnic",
       type: "number",
       error: errors.affiliateName,
     },
-    {
-      component: InputField,
-      label: "Affiliate Name *",
-      name: "affiliateName",
-      error: errors.affiliateName,
-    },
+
     {
       component: InputField,
       label: "Person Name *",
       name: "personName",
       error: errors.personName,
     },
-    {
-      component: InputField,
-      label: "Designation *",
-      name: "designation",
-      error: errors.designation,
-    },
-    {
-      component: FormSelect,
-      label: "Country *",
-      name: "country",
-      options: countries.map((c) => c.name),
-      error: errors.country,
-    },
+
+    // {
+    //   component: FormSelect,
+    //   label: "Country *",
+    //   name: "country",
+    //   options: countries.map((c) => c.name),
+    //   error: errors.country,
+    // },
     {
       component: FormSelect,
       label: "City *",
       name: "city",
-      options: cities,
+      options: usCities,
       error: errors.city,
     },
     {
@@ -322,16 +313,21 @@ const AddAgency = () => {
       component: FormSelect,
       label: "TimeZone *",
       name: "timeZone",
-      options: timeZones,
+      options: [
+        "America/Los_Angeles",   // Pacific Standard Time (PST)
+        "America/Denver",        // Mountain Standard Time (MST)
+        "America/Chicago",       // Central Standard Time (CST)
+        "America/New_York",      // Eastern Standard Time (EST)
+        "America/Anchorage",     // Alaska Standard Time (AKST)
+        "Pacific/Honolulu",      // Hawaii-Aleutian Standard Time (HAST)
+        "America/Puerto_Rico",   // Atlantic Standard Time (AST)
+        "Atlantic/Canary",       // Western European Time (WET)
+        "America/Argentina/Buenos_Aires",  // Argentina Time (ART)
+        "America/Sao_Paulo"      // Brazil Standard Time (BRT)
+      ],
       error: errors.timeZone,
     },
-    {
-      component: FormSelect,
-      label: "Default Currency *",
-      name: "defaultCurrency",
-      options: ["USD", "EUR", "PKR", "RMB"],
-      error: errors.defaultCurrency,
-    },
+    
     {
       component: FormSelect,
       label: "Currency *",
@@ -339,55 +335,16 @@ const AddAgency = () => {
       options: ["USD", "EUR", "PKR", "RMB"],
       error: errors.currency,
     },
-    {
-      component: InputField,
-      label: "Number of staff can be added",
-      name: "staffNumber",
-      type: "number",
-      error: errors.staffNumber,
-    },
+   
     {
       component: FormSelect,
-      label: "Sales Channel *",
-      name: "salesChannel",
-      options: ["Online", "Offline"],
-      error: errors.salesChannel,
-    },
-    {
-      component: InputField,
-      label: "PO Box Number",
-      name: "poBoxNumber",
-      error: errors.poBoxNumber,
-      type: "number",
-    },
-    {
-      component: FormSelect,
-      label: "Affiliate Type",
-      name: "affiliateType",
-      options: ["B2B", "B2C"],
-      error: errors.affiliateType,
-    },
-    {
-      component: FormSelect,
-      label: "Agency Type",
+      label: "Business Type",
       name: "agencyType",
       options: agencyTypes.map((c) => ({ id: c._id, name: c.type })),
-          error: errors.affiliateType,
+      error: errors.affiliateType,
     },
 
-    {
-      component: InputField,
-      label: "AR Code",
-      name: "arCode",
-      error: errors.arCode,
 
-    },
-    {
-      component: InputField,
-      label: "Group AR Code",
-      name: "groupArCode",
-      error: errors.groupArCode,
-    },
     // {
     //   component: FormSelect,
     //   label: "email",
@@ -396,36 +353,36 @@ const AddAgency = () => {
     //   placeholder: "Fixed",
     //   error: errors.markupValue,
     // },
-    {
-      component: InputField,
-      label: "Email",
-      name: "agencyEmail",
-      error: errors.agencyEmail,
-    },
-    {
-      component: InputField,
-      label: "Password",
-      name: "agencyPassword",
-      error: errors.agencyPassword,
-      type: showPassword ? "text" : "password",
-      endDecorator: showPassword ? (
-        <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
-      ) : (
-        <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
-      ),
-    },
-    {
-      component: InputField,
-      label: "Confirm Password",
-      name: "agencyConfirmPassword",
-      error: errors.agencyPassword,
-      type: showPassword ? "text" : "password",
-      endDecorator: showPassword ? (
-        <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
-      ) : (
-        <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
-      ),
-    }
+    // {
+    //   component: InputField,
+    //   label: "Email",
+    //   name: "agencyEmail",
+    //   error: errors.agencyEmail,
+    // },
+    // {
+    //   component: InputField,
+    //   label: "Password",
+    //   name: "agencyPassword",
+    //   error: errors.agencyPassword,
+    //   type: showPassword ? "text" : "password",
+    //   endDecorator: showPassword ? (
+    //     <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+    //   ) : (
+    //     <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+    //   ),
+    // },
+    // {
+    //   component: InputField,
+    //   label: "Confirm Password",
+    //   name: "agencyConfirmPassword",
+    //   error: errors.agencyPassword,
+    //   type: showPassword ? "text" : "password",
+    //   endDecorator: showPassword ? (
+    //     <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+    //   ) : (
+    //     <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />
+    //   ),
+    // }
 
   ];
 
@@ -521,7 +478,7 @@ const AddAgency = () => {
               </Box>
             </Box>
             <AppButton
-              text="Add Agency"
+              text="Add Business"
               onClick={handleAddAgency}
 
 

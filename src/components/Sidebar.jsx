@@ -185,7 +185,7 @@ export default function Sidebar() {
 
           </ListItemButton>
 
-          <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{
+          {/* <ListItemButton onClick={() => dispatch(setDashboardOption("Booking Engine"))} sx={{
             backgroundColor: selectedOption === "Booking Engine" ? '#A67E85' : "#fff", color: selectedOption === "Booking Engine" ? "white" : "#000",
             '&:hover': {
               color: 'black',
@@ -196,7 +196,7 @@ export default function Sidebar() {
               Booking Engine
             </ListItemContent>
 
-          </ListItemButton>
+          </ListItemButton> */}
           {userData && (
             (userData?.role === "super_admin"
               ? superAdminTabs
