@@ -103,7 +103,7 @@ export default function ViewAgency() {
     dispatch(setLoading(true));
     try {
       const res = await getAllServices(userData?.businessId, page);
-      setAgencies(res.body.services.data);
+      setAgencies(res.body.data);
       setTotalPages(res.totalPages);  // Set the total pages
       console.log("res of agencies", res);
     } catch (error) {

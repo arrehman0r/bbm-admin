@@ -12,9 +12,9 @@ import AppButton from "../../components/common/AppButton";
 import { getAllBookings, getFlightBooking } from "../../server/api";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import { formatDate } from "../../components/utils";
+import { formatDate, tConvert } from "../../components/utils";
 
-const FlightBooking = () => {
+const TodaysAppointments = () => {
   const flightBookingRef = useRef({});
   const [errors, setErrors] = useState({});
   const agentData = useSelector((state) => state.user.loginUser);
@@ -65,11 +65,11 @@ const fetchAllFlightBookings = async()=>{
   try {
     const res = await getAllBookings();
     setFlightBooking(res.result)
-    enqueueSnackbar("Flight Search Successful!", { variant: "success" });
+    // enqueueSnackbar("Flight Search Successful!", { variant: "success" });
     // Reset form or handle any post-submit actions
   } catch (error) {
-    console.error("Error searching flight:", error);
-    enqueueSnackbar("Error searching flight", { variant: "error" });
+    console.error("Error searching appointments:", error);
+    enqueueSnackbar("Error searching appointments", { variant: "error" });
   }
 }
 
@@ -83,6 +83,7 @@ useEffect(()=>{
         sx={{
           display: "flex",
           flexWrap: "wrap",
+          alignItems: 'center',
           gap: 2,
         }}
       >
@@ -107,20 +108,7 @@ useEffect(()=>{
             </Box>
           )
         )}
-      </Box>
-      {/* <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 4,
-          mt: 3,
-        }}
-      >
-        <FormCheckBox label="Is Pay at Agency" />
-        <FormCheckBox label="Is Import PNR" />
-        <FormCheckBox label="Is Promo Code Applied" />
-      </Box> */}
-      <Box
+           <Box
         sx={{
           display: "flex",
           flexWrap: "wrap",
@@ -139,10 +127,25 @@ useEffect(()=>{
           variant="solid"
           color="#fff"
           bgColor="#A67E85"
+          width="120px"
           onClick={handleFlightBookingSearch}
         />
       </Box>
-      {console.log(flightBookingRef)}
+      </Box>
+      {/* <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 4,
+          mt: 3,
+        }}
+      >
+        <FormCheckBox label="Is Pay at Agency" />
+        <FormCheckBox label="Is Import PNR" />
+        <FormCheckBox label="Is Promo Code Applied" />
+      </Box> */}
+   
+     
 
       <Divider sx={{ mt: 3 }} />
 
@@ -188,16 +191,16 @@ useEffect(()=>{
                   }
                 />
               </th> */}
-              <th style={{ textAlign: 'center' }}>Traveller Name</th>
+              <th style={{ textAlign: 'center' }}>Service Name</th>
              
-              <th style={{ textAlign: 'center' }}>Ticket Price</th>
-              <th style={{ textAlign: 'center' }}>Ticket Date</th>
+              <th style={{ textAlign: 'center' }}>Service Price</th>
+              <th style={{ textAlign: 'center' }}>Date</th>
 
             
              
-              <th style={{ textAlign: 'center' }}>Booking Date</th>
-              <th style={{ textAlign: 'center' }}>Airline Code</th>
-              <th style={{ textAlign: 'center' }}>PNR</th>
+              <th style={{ textAlign: 'center' }}>Time</th>
+              <th style={{ textAlign: 'center' }}>Status</th>
+              <th style={{ textAlign: 'center' }}>Booking Id </th>
             
               <th />
             </tr>
@@ -220,13 +223,14 @@ useEffect(()=>{
                         }
                       />
                     </td> */}
-                    <td style={{ textAlign: 'center' }}>{row.travelers[0]?.name?.firstName}</td>
-                    
-                    <td style={{ textAlign: 'center' }}>{row?.finalPrice}</td>
-                    <td style={{ textAlign: 'center' }}>{formatDate(row.flightOffers[0]?.itineraries[0]?.segments[0]?.departure?.at)}</td>
-                    <td style={{ textAlign: 'center' }}>{formatDate(row.createdAt)}</td>
-                    <td style={{ textAlign: 'center' }}>{row.flightOffers[0]?.itineraries[0]?.segments[0]?.aircraft?.code}</td>
-                    <td style={{ textAlign: 'center' }}>{row.id}</td>
+                    <td style={{ textAlign: 'center' }}>{row.serviceName}</td>
+                    <td style={{ textAlign: 'center' }}>${row?.price}</td>
+                    <td style={{ textAlign: 'center' }}>{formatDate(row.slots[0]?.startDate)}</td>
+                    <td style={{ textAlign: 'center' }}>{tConvert(row?.slots[0]?.startTime)}</td>
+                  
+                  
+                    <td style={{ textAlign: 'center' }}>{row.customer?.firstName}</td>
+                    <td style={{ textAlign: 'center' }}>{row.bookingId}</td>
                     <td>
                     
                       {/* <RowMenu /> */}
@@ -242,14 +246,14 @@ useEffect(()=>{
   );
 };
 
-export default FlightBooking;
+export default TodaysAppointments;
 
 
 
 const formFields = [
   {
     component: InputField,
-    label: "Traveller Name",
+    label: "Customer Name",
     name: "tripID",
     // error: errors.tripID,
   },
@@ -317,8 +321,8 @@ const formFields = [
   // },
   {
     component: InputField,
-    label: "PNR",
-    name: "pnr",
+    label: "Booking Id",
+    name: "bookingId",
     // error: errors.email,
   },
   // {

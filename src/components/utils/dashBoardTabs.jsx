@@ -50,20 +50,20 @@ export const agencyTabs = [
  
   {
  heading : "Business Management",
- subheading: ["Add Business", "View Services","User Management"],
+ subheading: ["Add Business", "View Services","Staff Management"],
 },
 {
-  heading : "CRM",
-  subheading: ["Flight Booking", "Lead Management"],
+  heading : "Appointments",
+  subheading: ["Todays Appointments", "Lead Management"],
  },
 //  {
 //   heading : "Administration",
 //   subheading: ["Product List", "Commercial Plans" ,"Migration","Supplier Management","Tax Configuration","Fare Rule Configuration","Command Builder","Location Setting","Security Management",],
 //  },
-//  {
-//   heading : "Organization Management",
-//   subheading:["Organization Staff"]
-//  },
+ {
+  heading : "Deals",
+  subheading:["View Deals"]
+ },
 //  {
 //   heading : "Role Management",
 //   subheading:["Role Management","User Access Unmapping"]

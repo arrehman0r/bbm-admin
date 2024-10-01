@@ -25,14 +25,17 @@ import {
   updateStaffUser,
   updateAgencyStaff,
   getAllServices,
+  addDailyDeal,
+  getDailyDeals,
 } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
-import { passwordRegex } from "../../components/utils";
+import { formatDate, passwordRegex } from "../../components/utils";
 import AddAgencyUserModal from "../../components/modals/AddAgencyStaff";
 import EditAgencyStaffModal from "../../components/modals/EditAgencyStaff";
+import AddNewDealModal from "../../components/modals/AddNewDeal";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -56,7 +59,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function UserManagement() {
+export default function ViewDeals() {
   const userManagementRef = useRef({});
   const [order, setOrder] = useState("desc");
   const [agencies, setAgencies] = useState([]);
@@ -73,6 +76,39 @@ export default function UserManagement() {
   const [allServices, setAllAgencies] = useState([]);
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
+  const [dates, setDates] = useState({
+    startDate: null,
+    endDate: null
+  });
+
+  const handleDateChange = (selectedDate, name) => {
+    setDates(prevDates => {
+      if (name === "startDate") {
+        // If end date exists and is before new start date, reset it
+        if (prevDates.endDate && selectedDate > prevDates.endDate) {
+          return {
+            startDate: selectedDate,
+            endDate: null
+          };
+        }
+        return {
+          ...prevDates,
+          startDate: selectedDate
+        };
+      } else if (name === "endDate") {
+        // Only allow end date if start date is set and end date is after start date
+        if (prevDates.startDate && selectedDate >= prevDates.startDate) {
+          return {
+            ...prevDates,
+            endDate: selectedDate
+          };
+        }
+        return prevDates;
+      }
+      return prevDates;
+    });
+  };
+
 
   useEffect(() => {
     fetchAgencyUserRoles();
@@ -158,9 +194,9 @@ export default function UserManagement() {
       dispatch(setLoading(true));
       console.log("fetch agency called", currentPage)
       let res;
-      if (userData?.businessId ) {
-        res = await getAgencyUsers(userData?.businessId, page);
-        console.log("all staff", res)
+      if (userData?.businessId) {
+        res = await getDailyDeals(userData?.businessId);
+        console.log("all deals", res)
       }
 
       if (res?.body) {
@@ -175,11 +211,16 @@ export default function UserManagement() {
     }
   };
 
+  console.log("userManagementRef", userManagementRef)
 
-
-  const handleInputChange = useCallback((event) => {
-    const { name, value } = event.target;
-    userManagementRef.current[name] = value;
+  const handleInputChange = useCallback((eventOrDate, name) => {
+    if (eventOrDate instanceof Date) {
+      // Handling date change
+      userManagementRef.current[name] = eventOrDate;
+    } else {
+      const { name, value } = eventOrDate.target;
+      userManagementRef.current[name] = value;
+    }
   }, []);
 
   const handleStaffSearch = async () => {
@@ -250,49 +291,49 @@ export default function UserManagement() {
   }, []);
 
   const handleAddUser = async () => {
-    const {  userName, service, staffEmail, bio, staffphone } = userManagementRef.current;
-    console.log("we are checking all ",  staffEmail, userName);
-  
+    const { dealName, service, discountValue, description, minimumOrder, type } = userManagementRef.current;
+    console.log("we are checking all ");
+
     // Validate service (role), email, and username length
     if (!service) {
       enqueueSnackbar("Please select staff service.");
       return;
     }
-    if (!staffEmail) {
-      enqueueSnackbar("Please enter email.");
+    if (!discountValue) {
+      enqueueSnackbar("Please enter discount value.");
       return;
     }
-    if (!userName || userName.length < 5) {
+    if (!dealName || dealName.length < 5) {
       enqueueSnackbar("Staff name should be at least 5 characters long.");
       return;
     }
-  
+
     // Create FormData instance
     const formData = new FormData();
-    formData.append('firstName', userName);
-    formData.append('phone', staffphone);
-    formData.append('email', staffEmail);
-    formData.append('password', 'STAFF@123afsd');
-    formData.append('role', 'STAFF');
+    formData.append('name', dealName);
+    formData.append('discountValue', discountValue);
+    formData.append('endDate', dates.endDate);
+    formData.append('startDate', dates?.startDate);
+    formData.append('minimumOrder', minimumOrder);
     formData.append('serviceId', service);
-    formData.append('bio', bio);
+    formData.append('description', description);
+    formData.append('type', type);
+
     if (file) {  // Ensure there's a file selected
-      formData.append('profileImg', file);
+      formData.append('images', file);
     }
     formData.append('businessId', userData?.businessId);
-  
+
     try {
       dispatch(setLoading(true));
-  
-      const res = await addAgencyUser(formData); // Pass FormData instead of a plain object
-  
-      if (!res.result) {
-        enqueueSnackbar("User added successfully.", { variant: "success" });
-        setOpen(false);
-        fetchAgencyUsers();
-      } else {
-        enqueueSnackbar(res.message || "Failed to add user.", { variant: "error" });
-      }
+
+      const res = await addDailyDeal(formData); // Pass FormData instead of a plain object
+
+
+      enqueueSnackbar("Deal added successfully.", { variant: "success" });
+      setOpen(false);
+      fetchAgencyUsers();
+
     } catch (error) {
       enqueueSnackbar(error || "Error occurred.", { variant: "error" });
       console.error(error);
@@ -300,7 +341,7 @@ export default function UserManagement() {
       dispatch(setLoading(false));
     }
   };
-  
+
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
@@ -311,17 +352,17 @@ export default function UserManagement() {
 
 
   const handleAddStaff = () => {
-    fetchAgencies(1);setFile
+    fetchAgencies(1); setFile
     setOpen(true)
   }
 
   const renderFilters = () => (
     <React.Fragment>
-      <InputField type="number" label="CNIC" name="cnic" placeholder="CNIC Number" onChange={handleSearchInputChange} />
+      <InputField type="number" label="Deal Name" name="cnic" placeholder="Deal Name" onChange={handleSearchInputChange} />
 
       {/* <InputField type="email" label="Email ID" name="staffEmail" placeholder="Email ID" onChange={handleSearchInputChange} /> */}
 
-      <InputField label="Staff Name" name="StaffName" placeholder="Satff Name" onChange={handleSearchInputChange} />
+      <InputField label="Service Name" name="Services" placeholder="Service Name" onChange={handleSearchInputChange} />
       <AppButton text="Search" size="sm"
         width="120px"
 
@@ -390,8 +431,8 @@ export default function UserManagement() {
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <div></div>
           <AppButton
-            text="Add Staff"
-
+            text="Add Deal"
+            width="150px"
             onClick={handleAddStaff}
           />
         </Box>
@@ -444,13 +485,13 @@ export default function UserManagement() {
                   color="primary"
                   onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
                 > */}
-                  Staff Name
+                  Deal Name
                   {/* </Link> */}
                 </th>
-                <th style={{ textAlign: 'center' }}>Staff Email</th>
-                <th style={{ textAlign: 'center' }}>Staff Phone</th>
+                <th style={{ textAlign: 'center' }}>Deal Price</th>
+                <th style={{ textAlign: 'center' }}>Deal Ended At</th>
 
-                <th style={{ textAlign: 'center' }}>Role</th>
+                <th style={{ textAlign: 'center' }}>Services</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
                 <th />
               </tr>
@@ -475,12 +516,12 @@ export default function UserManagement() {
                       />
                     </td> */}
 
-                      <td>{row.firstName}</td>
-                      <td>{row?.email}</td>
-                      <td>{row?.phone}</td>
+                      <td>{row?.name}</td>
+                      <td>${row?.discountValue}</td>
+                      <td>{formatDate(row?.endDate)}</td>
 
-                      <td> Beautician</td>
-                      <td>{row.rating}</td>
+                      <td>  {row?.servicesId.map((service) => service.name).join(', ')}</td>
+                      <td>{row.isActive == true ? "Active" : "Inactive"}</td>
 
                       <td>
                         {" "}
@@ -531,8 +572,7 @@ export default function UserManagement() {
       }
 
 
-      <AddAgencyUserModal open={open} setOpen={setOpen} handleInputChange={handleInputChange} usersRoles={usersRoles} handleAddUser={handleAddUser} allServices={allServices} handleFileChange={handleFileChange} fileName={fileName} />
-      <EditAgencyStaffModal handleStaffChange={handleStaffChange} openEditModal={openEditModal} setOpenEditModal={setOpenEditModal} allAgencies={allServices} usersRoles={usersRoles} handleSaveEdit={handleSaveEdit} editStaff={editStaff} />
+      <AddNewDealModal open={open} setOpen={setOpen} dates={dates} handleInputChange={handleInputChange} usersRoles={usersRoles} handleDateChange={handleDateChange} handleAddUser={handleAddUser} allServices={allServices} handleFileChange={handleFileChange} fileName={fileName} />
     </Box>
   );
 }

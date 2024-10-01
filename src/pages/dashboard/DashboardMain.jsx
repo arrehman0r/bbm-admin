@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import AddAgency from "../../pages-components/agencyManagement/AddAgency";
 import ViewAgency from "../../pages-components/agencyManagement/ViewAgency";
 import UserManagement from "../../pages-components/agencyManagement/UserManagement";
-import FlightBooking from "../../pages-components/CRM/FlightBooking";
 import ProductList from "../../pages-components/Administration/ProductList";
 import CommercialPlans from "../../pages-components/Administration/CommercialPlans";
 import Migration from "../../pages-components/Administration/Migration";
@@ -21,6 +20,8 @@ import RoleManagement from "../../pages-components/RoleManagement/RoleManagement
 import UserAccessUnmapping from "../../pages-components/RoleManagement/UserAccessUnmapping";
 import DashboardAnalytics from "../../pages-components/AnalyticsDashboard/DashboardAnalytics";
 import FareRules from "../../pages-components/Administration/FareRules";
+import TodaysAppointments from "../../pages-components/CRM/TodaysAppointments";
+import ViewDeals from "../../pages-components/Deals/ViewDeals";
 
 
 const DashboardMain = () => {
@@ -30,8 +31,8 @@ const DashboardMain = () => {
         <div>
             {selectedOption === "Add Business" && <AddAgency />}
             {selectedOption === "View Services" && <ViewAgency />}
-            {selectedOption === "User Management" && <UserManagement />}
-            {selectedOption === "Flight Booking" && <FlightBooking />}
+            {selectedOption === "Staff Management" && <UserManagement />}
+            {selectedOption === "Todays Appointments" && <TodaysAppointments />}
             {selectedOption === "Product List" && <ProductList />}
             {selectedOption === "Commercial Plans" && <CommercialPlans />}
             {selectedOption === "Migration" && <Migration />}
@@ -48,7 +49,7 @@ const DashboardMain = () => {
             {selectedOption === "Role Management" && <RoleManagement />}
             {selectedOption === "User Access Unmapping" && <UserAccessUnmapping />}
             {selectedOption === "Dashboard" && <DashboardAnalytics />}
-            {selectedOption === "Fare Rule Configuration" && <FareRules />}
+            {selectedOption === "View Deals" && <ViewDeals />}
 
 
 

@@ -103,6 +103,6 @@ instance.interceptors.response.use(
   },
   (error) => {
     // Return the error message so it can be handled by the calling component
-    return Promise.reject(error.response?.data?.error || "Something went wrong");
+    return Promise.reject(error?.response?.data?.message || "Something went wrong");
   }
 )

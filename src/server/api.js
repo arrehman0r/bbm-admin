@@ -43,14 +43,14 @@ export const searchCityCode = (keyword) => {
 };
 
 export const getAgencyUsers = (id, pageNumber) => {
-  return makeRequest("get", `staff/getAll/${id}?page=${pageNumber}`);
+  return makeRequest("get", `staff/getStaffByBusiness/${id}?page=${pageNumber}`);
 };
 export const getAgencyAllUsers = (pageNumber) => {
   return makeRequest("get", `staff/getAllAdmin?page=${pageNumber}`);
 };
 
 export const addAgencyUser = (body) => {
-  return makeRequest("post", "staff/create", body);
+  return makeRequest("post", "staff", body);
 };
 
 export const addBusinessServices = (body) => {
@@ -65,7 +65,11 @@ export const getAgencyUserRoles = () => {
 };
 
 export const getAllServices = (id, page) => {
-  return makeRequest("get", `services/business/${id}?page=${page}`);
+  let url = `services/business/${id}`;
+  if (page) {
+    url += `?page=${page}`;
+  }
+  return makeRequest("get", url);
 };
 
 export const getAgencyTypes = () => {
@@ -255,7 +259,7 @@ export const getDashboardData = () => {
 };
 
 export const getAllBookings = () => {
-  return makeRequest("get", "booking/getAll");
+  return makeRequest("get", "business/appointments");
 };
 
 
@@ -269,3 +273,10 @@ export const updateAgencyStaff = (id, body) => {
   return makeRequest("patch", `staff/update/${id}`, body);
 };
 
+export const addDailyDeal = (body) => {
+  return makeRequest("post", `deals/daily`, body);
+};
+
+export const getDailyDeals = (id) => {
+  return makeRequest("get", `deals/getDealsByBusiness/${id}`);
+};
