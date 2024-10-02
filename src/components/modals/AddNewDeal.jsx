@@ -11,7 +11,7 @@ import Divider from "@mui/joy/Divider";
 import AppTextArea from "../common/AppTextArea";
 import AppDatePicker from "../common/AppDatePicker";
 import DateRangeIcon from '@mui/icons-material/DateRange';
-const AddNewDealModal = ({ open, setOpen, handleInputChange, dates, fileName, handleAddUser, handleDateChange, handleFileChange, allServices }) => {
+const AddNewDealModal = ({ taxes, open, setOpen, handleInputChange, dates, fileName, handleAddUser, handleDateChange, handleFileChange, allServices }) => {
 
 
     return (
@@ -34,7 +34,7 @@ const AddNewDealModal = ({ open, setOpen, handleInputChange, dates, fileName, ha
                     <FormSelect
                         label="Deal Type"
                         name="type"
-                        multiple={true}
+                        // multiple={true}
                         options={["Combo Deal", "Simple Deal"]}
                         onChange={handleInputChange}
                     />
@@ -48,6 +48,13 @@ const AddNewDealModal = ({ open, setOpen, handleInputChange, dates, fileName, ha
                         type="number"
                     />
 
+                    <FormSelect
+                        label="Select Tax Type"
+                        name="taxType"
+                        // multiple={true}
+                        options={taxes.map((c) => ({ id: c._id, name: c.title }))}
+                        onChange={handleInputChange}
+                    />
                     <AppDatePicker
                         size="sm"
                         startDecorator={<DateRangeIcon />}
@@ -104,7 +111,7 @@ const AddNewDealModal = ({ open, setOpen, handleInputChange, dates, fileName, ha
                     // error={errors.address}
                     />
                     <AppButton
-                        text={fileName || "Upload Staff Image"}
+                        text={fileName || "Upload Deal Banner Image"}
                         type="file"
                         variant="outlined"
                         color="#fff"

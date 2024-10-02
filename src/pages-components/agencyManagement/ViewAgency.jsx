@@ -30,7 +30,7 @@ import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 
 import { Country, City } from "country-state-city";
 import InputField from "../../components/common/InputField";
-import { addBusinessServices, getAllServices, getTravelAgency, searchTravelAgency, searchTravelAgencyByEmail } from "../../server/api";
+import { addBusinessServices, getAllServices, getAllTaxes, getTravelAgency, searchTravelAgency, searchTravelAgencyByEmail } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/reducer/loaderSlice";
@@ -102,6 +102,7 @@ export default function ViewAgency() {
   const fetchAgencies = async (page) => {
     dispatch(setLoading(true));
     try {
+      console.log("this run ", page)
       const res = await getAllServices(userData?.businessId, page);
       setAgencies(res.body.data);
       setTotalPages(res.totalPages);  // Set the total pages
@@ -120,6 +121,7 @@ export default function ViewAgency() {
 
   useEffect(() => {
     fetchAgencies(currentPage);
+
   }, []);
 
 
@@ -129,7 +131,7 @@ export default function ViewAgency() {
   }
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
-    console.log( name, value )
+    console.log(name, value)
     userManagementRef.current[name] = value;
   }, []);
 
@@ -191,43 +193,57 @@ export default function ViewAgency() {
   // };
 
   const handleAddServices = async () => {
-    const { serviceName, description, servicePrice, isDeal, featured } = userManagementRef.current;
-console.log( "files are ", serviceName, description, servicePrice, isDeal, featured)
-    if (!serviceName || !description || !servicePrice ) {
+    const { serviceName, description, servicePrice, isDeal, featured, tax } = userManagementRef.current;
+    
+    console.log("files are ", serviceName, description, servicePrice, isDeal, featured);
+    
+    if (!serviceName || !description || !servicePrice) {
       enqueueSnackbar("All fields are required", { variant: "error" });
       return;
     }
-    const body = {
-
-      name: serviceName,
-      description: description,
-      price: servicePrice,
-      availability: true,
-      featured: featured,
-      isDeal: isDeal,
-      images: [
-        file,
-
-      ],
-      businessId: userData?.businessId
-
-
+  
+    // Initialize a new FormData object
+    const formData = new FormData();
+    formData.append('name', serviceName);
+    formData.append('description', description);
+    formData.append('price', servicePrice);
+    formData.append('availability', true);
+    formData.append('featured', featured);
+    formData.append('isDeal', isDeal);
+    formData.append('tax', tax);
+    
+    // Append the file (if multiple files, you can loop through and append)
+    if (file) {
+      formData.append('images', file);
     }
-
+  
     try {
-      const res = await addBusinessServices(body)
-      setOpenAddServices(false)
-      enqueueSnackbar("Servieces added successfully")
-      console.log("res of service", res)
+      const res = await addBusinessServices(formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      setOpenAddServices(false);
+      enqueueSnackbar("Services added successfully");
+      fetchAgencies(currentPage);
+      console.log("res of service", res);
+    } catch (error) {
+      enqueueSnackbar(error?.message || "An error occurred", { variant: "error" });
+      console.log("error is ", error);
     }
-
+  };
+  
+  const [taxes, setTaxes] = useState([])
+  const fetchAllTaxes = async () => {
+    try {
+      const res = await getAllTaxes()
+      setTaxes(res.data)
+    }
     catch (error) {
       enqueueSnackbar(error)
-      console.log("error is ", error)
     }
   }
-
-
 
 
   return (
@@ -283,7 +299,7 @@ console.log( "files are ", serviceName, description, servicePrice, isDeal, featu
 
             color="#fff"
             bgColor="#A67E85"
-            onClick={() => setOpenAddServices(true)} />
+            onClick={() => [setOpenAddServices(true), fetchAllTaxes()]} />
         </Box>
 
         <Sheet
@@ -316,10 +332,10 @@ console.log( "files are ", serviceName, description, servicePrice, isDeal, featu
               <tr>
                 <th style={{ textAlign: 'center' }}>Service Name</th>
                 <th style={{ textAlign: 'center' }}>Price</th>
-              
+
                 <th style={{ textAlign: 'center' }}>Services Type</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
-             
+
                 <th style={{ textAlign: 'center' }}>Actions</th>
 
 
@@ -346,10 +362,10 @@ console.log( "files are ", serviceName, description, servicePrice, isDeal, featu
                       />
                     </td> */}
                       <td>{row.name}</td>
-                 
+
                       <td>${row?.price}</td>
                       <td>Beauty</td>
-                  
+
                       <td>Active</td>
                       <td>
                         <RowMenu />
@@ -393,7 +409,7 @@ console.log( "files are ", serviceName, description, servicePrice, isDeal, featu
           </Box>
         </Box>
       }
-      <AddServicesModal open={openAddServices} setOpen={setOpenAddServices} handleFileChange={handleFileChange} file={file} fileName={fileName} setFileName={setFileName} handleAddServices={handleAddServices} handleInputChange={handleInputChange} />
+      <AddServicesModal open={openAddServices} taxes={taxes} setOpen={setOpenAddServices} handleFileChange={handleFileChange} file={file} fileName={fileName} setFileName={setFileName} handleAddServices={handleAddServices} handleInputChange={handleInputChange} />
     </Box>
   );
 }

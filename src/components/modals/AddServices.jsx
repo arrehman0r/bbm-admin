@@ -10,7 +10,7 @@ import Sheet from "@mui/joy/Sheet";
 import Divider from "@mui/joy/Divider";
 import AppTextArea from "../common/AppTextArea";
 
-const AddServicesModal = ({ open, setOpen, handleInputChange, handleAddServices, handleFileChange, file, fileName, setFileName }) => {
+const AddServicesModal = ({ open, setOpen, handleInputChange, handleAddServices, handleFileChange, file, fileName, taxes }) => {
     return (
         <Modal open={open} onClose={() => setOpen(false)} >
             <ModalDialog sx={{ width: 500 }}>
@@ -33,14 +33,19 @@ const AddServicesModal = ({ open, setOpen, handleInputChange, handleAddServices,
                         onChange={handleInputChange}
                     />
                     <InputField
-                        label="Service Price"
+                        label="Service Price in $"
                         name="servicePrice"
                         placeholder="Enter service price"
                         onChange={handleInputChange}
                         type="number"
                     />
-
-
+                    <FormSelect
+                        options={taxes.map((tax) => ({ id: tax._id, name: tax.title }))}
+                        label="Tax"
+                        name="tax"
+                        placeholder="Select Tax"
+                        onChange={handleInputChange}
+                    />
 
                     <Typography level="body-sm" component="label">
                         <Checkbox

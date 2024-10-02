@@ -78,7 +78,7 @@ export default function Sidebar() {
         dispatch(setDashboardOption("Dashboard"));
         dispatch(setLoading(false));
         // Optionally, you can redirect or perform any other action after logout
-    }, 3000); // 3000 milliseconds = 3 seconds
+    }, 1000); // 3000 milliseconds = 3 seconds
 };
 
   const dispatch = useDispatch();

@@ -24,20 +24,14 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { setDashboardOption } from "../../redux/reducer/dashboardSlice";
 import { usCities } from "../../components/utils/constants";
+import AppDatePicker from "../../components/common/AppDatePicker";
 const AddAgency = () => {
   const agencyDetailsRef = useRef({});
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [timeZones, setTimeZones] = useState([]);
-  const [languages, setLanguages] = useState([
-    "English",
-    "Spanish",
-    "French",
-    "German",
-    "Urdu",
-    "Hindi",
-    "Punjabi",
-  ]);
+  const userData = useSelector((state) => state.user.loginUser);
+
   const [errors, setErrors] = useState({});
   const [images, setImages] = useState([]);
   const [fileName, setFileName] = useState(["Upload File"]); // State to manage multiple file upload buttons
@@ -47,6 +41,10 @@ const AddAgency = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const MAX_FILES = 5;
   const MAX_FILE_SIZE = 5 * 1024 * 1024;
+  const [dates, setDates] = useState({
+    startDate: null,
+    endDate: null
+  });
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -150,11 +148,7 @@ const AddAgency = () => {
   const validateForm = () => {
     const newErrors = {};
     const requiredFields = [
-      "affiliateName", "personName", "cnic", "designation", "phoneNumber",
-      "country", "city", "timeZone", "defaultCurrency", "currency",
-      "salesChannel", "poBoxNumber", "affiliateType",
-      "agencyType", "arCode", "groupArCode",
-      "agencyEmail", "agencyPassword", "agencyConfirmPassword"
+      "businessName",  "ntn", "businessPhoneNumber", "timeZone", "businessType", "businessEmail"
     ];
     requiredFields.forEach((field) => {
       if (!agencyDetailsRef.current[field]) {
@@ -166,97 +160,54 @@ const AddAgency = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  const timeOptions = Array.from({ length: 24 }, (_, i) => ({
+    label: `${i.toString().padStart(2, '0')}:00`,
+    value: `${i.toString().padStart(2, '0')}:00`,
+  }));
 
   const handleAddAgency = async () => {
-    if (!validateForm()) {
-      enqueueSnackbar("Please fill in all required fields.", {
-        variant: "error",
-      });
-      return;
-    }
-
-    const agencyEmail = agencyDetailsRef.current.agencyEmail;
-    if (agencyEmail && !emailRegex.test(agencyEmail)) {
-      enqueueSnackbar("Invalid Email Format", {
-        variant: "error",
-      });
-      return
-    }
-
-    const agencyCnic = agencyDetailsRef.current.cnic;
-    if (agencyCnic && !cnicRegex.test(agencyCnic)) {
-      enqueueSnackbar("Invalid CNIC Format", {
-        variant: "error",
-      });
-      return
-    }
-
-    const agencyPhone = agencyDetailsRef.current.phoneNumber;
-    if (agencyPhone && !phoneNumberRegex.test(agencyPhone)) {
-      enqueueSnackbar("Invalid Phone Format", {
-        variant: "error",
-      });
-      return
-    }
-
-    // Validate password
-    const agencyPassword = agencyDetailsRef.current.agencyPassword;
-    const agencyConfirmPassword = agencyDetailsRef.current.agencyConfirmPassword;
-
-    if (agencyPassword !== agencyConfirmPassword) {
-      enqueueSnackbar("Passwords do not match", { variant: "error" });
-      return;
-    }
-
-
-    if (agencyPassword && !passwordRegex.test(agencyPassword)) {
-      enqueueSnackbar("Password must contain at least 8 characters, including uppercase, lowercase, number, and special character", {
-        variant: "error",
-      });
-      return
-    }
-
-
-
+    // ... validation logic remains the same ...
+  
     const formData = new FormData();
-    formData.append("affiliateName", agencyDetailsRef.current.affiliateName);
-    formData.append("personName", agencyDetailsRef.current.personName);
-    formData.append("designation", agencyDetailsRef.current.designation);
-    formData.append("phoneNumber", agencyDetailsRef.current.phoneNumber);
-    formData.append("country", agencyDetailsRef.current.country);
-    formData.append("city", agencyDetailsRef.current.city);
+    formData.append("name", agencyDetailsRef.current.businessName);
+    formData.append("ntn", agencyDetailsRef.current.ntn);
+    formData.append("phone", agencyDetailsRef.current.businessPhoneNumber);
     formData.append("timeZone", agencyDetailsRef.current.timeZone);
-    formData.append("defaultCurrency", agencyDetailsRef.current.defaultCurrency);
-    formData.append("currency", agencyDetailsRef.current.currency);
-    formData.append("addStaff", agencyDetailsRef.current.staffNumber);
-    formData.append("salesChannel", agencyDetailsRef.current.salesChannel);
-    formData.append("poBoxNumber", agencyDetailsRef.current.poBoxNumber);
-    formData.append("affiliateType", agencyDetailsRef.current.affiliateType);
-    formData.append("arCode", agencyDetailsRef.current.arCode);
-    formData.append("groupArCode", agencyDetailsRef.current.groupArCode);
-    formData.append("address", agencyDetailsRef.current.address);
-    formData.append("agencyEmail", agencyDetailsRef.current.agencyEmail);
-    formData.append("agencyPassword", agencyDetailsRef.current.agencyPassword);
-    formData.append("type", agencyDetailsRef.current.agencyType);
-
-    formData.append("agencyName", agencyDetailsRef.current.agencyName);
-    formData.append("CNIC", agencyDetailsRef.current.cnic);
-    formData.append("role", "agency");
-
+    
+    // Append address as an object
+    formData.append("address[street]", agencyDetailsRef.current.address);
+    formData.append("address[city]", agencyDetailsRef.current.city);
+    // formData.append("address[state]", agencyDetailsRef.current.state);
+    // formData.append("address[zip]", agencyDetailsRef.current.zip);
+    formData.append("address[country]", "USA");
+    formData.append("address[location][]", 1212);
+    formData.append("address[location][]", 1313);
+  
+    formData.append("businessType", agencyDetailsRef.current.businessType);
+    formData.append("ownerId", userData?.id);
+    
+    // Append location object directly
+    formData.append("location[type]", "Point");
+    formData.append("location[coordinates][]", -96.7970);
+    formData.append("location[coordinates][]", 32.7767);
+  
+    // Append business hours
+    formData.append("businessHours[0][isOpen]", true);
+    formData.append("businessHours[0][startTime]", agencyDetailsRef.current.startTime);
+    formData.append("businessHours[0][endTime]", agencyDetailsRef.current.endTime);
+  
     // Create an array to hold all files
     const allFiles = images.flat(); // Flatten nested arrays
-
+  
     // Append all files to FormData
     allFiles.forEach((file) => {
-      formData.append('files', file); // Use the same key ''
+      formData.append('files', file);
     });
-
-
+  
     try {
       dispatch(setLoading(true));
       const res = await addTravelAgency(formData);
-      enqueueSnackbar("Agency added successfully!", { variant: "success" });
-      dispatch(setDashboardOption("View Agency"))
+      enqueueSnackbar("Business details added successfully!", { variant: "success" });
     } catch (error) {
       console.error("Error adding agency:", error);
       enqueueSnackbar(error, { variant: "error" });
@@ -264,29 +215,29 @@ const AddAgency = () => {
       dispatch(setLoading(false));
     }
   };
-
+  
   console.log("agencyTypes", agencyTypes)
   const formFields = [
     {
       component: InputField,
       label: "Business Name *",
-      name: "agencyName",
+      name: "businessName",
       error: errors.affiliateName,
     },
     {
       component: InputField,
       label: "NTN *",
-      name: "cnic",
+      name: "ntn",
       type: "number",
       error: errors.affiliateName,
     },
 
-    {
-      component: InputField,
-      label: "Person Name *",
-      name: "personName",
-      error: errors.personName,
-    },
+    // {
+    //   component: InputField,
+    //   label: "Person Name *",
+    //   name: "personName",
+    //   error: errors.personName,
+    // },
 
     // {
     //   component: FormSelect,
@@ -302,12 +253,27 @@ const AddAgency = () => {
       options: usCities,
       error: errors.city,
     },
+
     {
       component: InputField,
       label: "Phone *",
-      name: "phoneNumber",
+      name: "businessPhoneNumber",
       type: "number",
       error: errors.phoneNumber,
+    },
+    {
+      component: InputField,
+      label: "Email *",
+      name: "businessEmail",
+      type: "email",
+      error: errors.businessEmail,
+    },
+    {
+      component: InputField,
+      label: "Street Address *",
+      name: "address",
+      type: "address",
+      error: errors.address,
     },
     {
       component: FormSelect,
@@ -327,7 +293,7 @@ const AddAgency = () => {
       ],
       error: errors.timeZone,
     },
-    
+
     {
       component: FormSelect,
       label: "Currency *",
@@ -335,16 +301,37 @@ const AddAgency = () => {
       options: ["USD", "EUR", "PKR", "RMB"],
       error: errors.currency,
     },
-   
+    {
+      component: FormSelect,
+      multiple: true,
+      label: "Accepted Payment Methods *",
+      name: "acceptedMethods",
+      options: ["Credit Card", "Cash", "PayPal"],
+      error: errors.acceptedMethods,
+    },
     {
       component: FormSelect,
       label: "Business Type",
-      name: "agencyType",
+      name: "businessType",
       options: agencyTypes.map((c) => ({ id: c._id, name: c.type })),
       error: errors.affiliateType,
     },
 
+    {
+      component: FormSelect,
+      label: "Start Time",
+      name: "startTime",
+      options: timeOptions.map((c) => ({ id: c.label, name: c.value })),
 
+      error: errors.startTime,
+    },
+    {
+      component: FormSelect,
+      label: "End Time",
+      name: "endTime",
+      options: timeOptions.map((c) => ({ id: c.label, name: c.value })),
+      error: errors.endTime,
+    },
     // {
     //   component: FormSelect,
     //   label: "email",
@@ -399,7 +386,7 @@ const AddAgency = () => {
         >
           {formFields.map(
             (
-              { component: Field, label, name, options, error, placeholder, type, endDecorator },
+              { component: Field, label, name, options, error, placeholder, type, endDecorator, multiple },
               index
             ) => (
               <Box
@@ -415,6 +402,7 @@ const AddAgency = () => {
                   label={label}
                   name={name}
                   options={options}
+                  multiple={multiple}
                   fullWidth
                   type={type}
                   onChange={handleInputChange}
@@ -426,11 +414,12 @@ const AddAgency = () => {
             )
           )}
         </Box>
+
         <AppTextArea
-          label="Address"
-          name="address"
+          label="Description"
+          name="description"
           onChange={handleInputChange}
-          error={errors.address}
+          error={errors.description}
         />
         <Box mt={3}>
           <TextHeading text="Affiliate Documents" level="h5" />

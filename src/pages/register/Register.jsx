@@ -17,8 +17,13 @@ import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import BadgeRoundedIcon from '@mui/icons-material/BadgeRounded';
 import { GoogleIcon } from '../../images';
-
-
+import { useNavigate } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { userRegister } from '../../server/api';
+import { useSnackbar } from 'notistack';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../../redux/reducer/loaderSlice';
 
 // function ColorSchemeToggle() {
 // //   const { onClick, ...other } = props;
@@ -45,6 +50,73 @@ import { GoogleIcon } from '../../images';
 // }
 
 export default function AppRegister() {
+
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const [formData, setFormData] = React.useState({
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      phone: ''
+
+
+  });
+  const dispatch = useDispatch()
+  const validateForm = () => {
+      const { password, email } = formData;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!password || !email) {
+          enqueueSnackbar("Please fill in all required fields.", { variant: 'error' });
+          return false;
+      }
+      if (!emailRegex.test(email)) {
+          enqueueSnackbar("Please enter a valid email address", { variant: 'error' });
+
+          return false;
+      }
+      return true;
+  };
+
+  const handleUserLogin = async (event) => {
+      event.preventDefault();
+      if (validateForm()) {
+          console.log("form is valid")
+          try {
+              dispatch(setLoading(true))
+              const res = await userRegister(formData);
+            
+              if (res.body._id) {
+                  enqueueSnackbar("Registration successful!", { variant: 'success' });
+                  // dispatch(setLoginUser(res?.user))
+                  // Cookies.set('auth-token', res.token, { expires: 7 });
+                  dispatch(setLoading(false))
+                  navigate("/login")
+              } 
+          } catch (error) {
+              enqueueSnackbar(error, { variant: 'error' });
+              console.log("error is ", error)
+              dispatch(setLoading(false))
+          }
+          finally {
+              dispatch(setLoading(false))
+          }
+      }
+  };
+
+  const handleChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+  };
+
+
+
+
+
   return (
     <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
       <CssBaseline />
@@ -151,7 +223,7 @@ export default function AppRegister() {
               or
             </Divider> */}
             <Stack gap={4} sx={{ mt: 2 }}>
-              <form
+            <form onSubmit={handleUserLogin}
                 // onSubmit={(event: React.FormEvent<SignInFormElement>) => {
                 //   event.preventDefault();
                 //   const formElements = event.currentTarget.elements;
@@ -165,15 +237,25 @@ export default function AppRegister() {
               >
                   <FormControl required>
                   <FormLabel>Name</FormLabel>
-                  <Input type="name" name="name" />
+                  <Input type="first-name" name="firstName" value={formData.firstName} onChange={handleChange} />
+                 
+                </FormControl>
+                <FormControl required>
+                  <FormLabel>Name</FormLabel>
+                  <Input type="last-name" name="lastName" value={formData.lastName} onChange={handleChange} />
+                 
                 </FormControl>
                 <FormControl required>
                   <FormLabel>Email</FormLabel>
-                  <Input type="email" name="email" />
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} />
+                </FormControl>
+                <FormControl required>
+                  <FormLabel>Phone</FormLabel>
+                  <Input type="phone" name="phone" value={formData.phone} onChange={handleChange} />
                 </FormControl>
                 <FormControl required>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" name="password" />
+                  <Input type={showPassword ? "text" : "password"} name="password" endDecorator={showPassword ? <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} /> : <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />} value={formData.password} onChange={handleChange} />
                 </FormControl>
                 <Stack gap={4} sx={{ mt: 2 }}>
                   <Box

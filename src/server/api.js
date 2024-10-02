@@ -2,7 +2,7 @@ import { makeRequest } from "./instance";
 
 
 export const addTravelAgency = (body) => {
-  return makeRequest("post", "agency", body);
+  return makeRequest("post", "business", body);
 };
 
 export const getTravelAgency = (pageNumber) => {
@@ -85,7 +85,7 @@ export const userLogin = (body) => {
 };
 
 export const userRegister = (body) => {
-  return makeRequest("post", "auth/register", body)
+  return makeRequest("post", "auth/adminRegister", body)
 }
 
 export const getFlightBooking = (body) => {
@@ -280,3 +280,10 @@ export const addDailyDeal = (body) => {
 export const getDailyDeals = (id) => {
   return makeRequest("get", `deals/getDealsByBusiness/${id}`);
 };
+
+
+
+export const getAllTaxes = () => {
+  return makeRequest("get", `tax/getAll`);
+};
+

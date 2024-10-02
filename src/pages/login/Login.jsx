@@ -84,7 +84,7 @@ export default function AppLogin() {
             try {
                 dispatch(setLoading(true))
                 const res = await userLogin(formData);
-
+                console.log("res of login", res)
                 if (res.user.id) {
                     enqueueSnackbar("Login successful!", { variant: 'success' });
                     dispatch(setLoginUser(res?.user))
@@ -96,7 +96,7 @@ export default function AppLogin() {
                     dispatch(setLoading(false))
                 }
             } catch (error) {
-                enqueueSnackbar("An error occurred during login.", { variant: 'error' });
+                enqueueSnackbar(error, { variant: 'error' });
                 dispatch(setLoading(false))
             }
             finally {
@@ -158,7 +158,7 @@ export default function AppLogin() {
                     >
                         <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
                             {/* <IconButton variant="soft" color="primary" size="sm"> */}
-                            <BbmLogo/>
+                            <BbmLogo />
                             {/* <img src={Alasam} /> */}
                             {/* <BadgeRoundedIcon /> */}
                             {/* </IconButton> */}
@@ -194,11 +194,11 @@ export default function AppLogin() {
                                 <Typography component="h1" level="h3">
                                     Login
                                 </Typography>
-                                {/* <Typography level="body-sm">
+                                <Typography level="body-sm">
                                     New to alasam? <Link href="/register" level="title-sm">
                                         Regsiter
                                     </Link>
-                                </Typography> */}
+                                </Typography>
                             </Stack>
                             {/* <Button
                                 variant="soft"
@@ -226,8 +226,8 @@ export default function AppLogin() {
                                 </FormControl>
                                 <FormControl required>
                                     <FormLabel>Password</FormLabel>
-                                    <Input  type={showPassword ? "text" : "password"} name="password" endDecorator= {showPassword ?  <VisibilityIcon sx={{cursor: 'pointer'}} onClick={togglePasswordVisibility} /> : <VisibilityOffIcon sx={{cursor: 'pointer'}} onClick={togglePasswordVisibility} />}   value={formData.password} onChange={handleChange} />
-                                  
+                                    <Input type={showPassword ? "text" : "password"} name="password" endDecorator={showPassword ? <VisibilityIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} /> : <VisibilityOffIcon sx={{ cursor: 'pointer' }} onClick={togglePasswordVisibility} />} value={formData.password} onChange={handleChange} />
+
                                 </FormControl>
                                 <Stack gap={4} sx={{ mt: 2 }}>
                                     <Box
@@ -236,7 +236,7 @@ export default function AppLogin() {
                                             justifyContent: 'space-between',
                                             alignItems: 'center',
                                         }}
-                                     onClick = {()=>   enqueueSnackbar("Contact Aadministration for forget password", { variant: 'neutral' })}
+                                        onClick={() => enqueueSnackbar("Contact Aadministration for forget password", { variant: 'neutral' })}
 
                                     >
                                         <Link level="title-sm">

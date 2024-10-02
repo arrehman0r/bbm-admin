@@ -27,6 +27,7 @@ import {
   getAllServices,
   addDailyDeal,
   getDailyDeals,
+  getAllTaxes,
 } from "../../server/api";
 import AppButton from "../../components/common/AppButton";
 import { useSnackbar } from "notistack";
@@ -80,6 +81,17 @@ export default function ViewDeals() {
     startDate: null,
     endDate: null
   });
+  const [taxes, setTaxes] = useState([])
+  const fetchAllTaxes = async () => {
+
+    try {
+      const res = await getAllTaxes()
+      setTaxes(res.data)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleDateChange = (selectedDate, name) => {
     setDates(prevDates => {
@@ -112,6 +124,7 @@ export default function ViewDeals() {
 
   useEffect(() => {
     fetchAgencyUserRoles();
+  
   }, []);
   const fetchAgencyUserRoles = async () => {
     try {
@@ -193,9 +206,10 @@ export default function ViewDeals() {
     try {
       dispatch(setLoading(true));
       console.log("fetch agency called", currentPage)
+      console.log("user data ;;;;;;;" ,userData?.id )
       let res;
-      if (userData?.businessId) {
-        res = await getDailyDeals(userData?.businessId);
+      if (userData?.id) {
+        res = await getDailyDeals(userData?.id);
         console.log("all deals", res)
       }
 
@@ -291,7 +305,7 @@ export default function ViewDeals() {
   }, []);
 
   const handleAddUser = async () => {
-    const { dealName, service, discountValue, description, minimumOrder, type } = userManagementRef.current;
+    const { dealName, service, discountValue, description, minimumOrder, type, taxType } = userManagementRef.current;
     console.log("we are checking all ");
 
     // Validate service (role), email, and username length
@@ -318,6 +332,9 @@ export default function ViewDeals() {
     formData.append('serviceId', service);
     formData.append('description', description);
     formData.append('type', type);
+    formData.append('tax', taxType);
+
+
 
     if (file) {  // Ensure there's a file selected
       formData.append('images', file);
@@ -352,7 +369,8 @@ export default function ViewDeals() {
 
 
   const handleAddStaff = () => {
-    fetchAgencies(1); setFile
+    fetchAgencies(1); 
+    fetchAllTaxes()
     setOpen(true)
   }
 
@@ -572,7 +590,7 @@ export default function ViewDeals() {
       }
 
 
-      <AddNewDealModal open={open} setOpen={setOpen} dates={dates} handleInputChange={handleInputChange} usersRoles={usersRoles} handleDateChange={handleDateChange} handleAddUser={handleAddUser} allServices={allServices} handleFileChange={handleFileChange} fileName={fileName} />
+      <AddNewDealModal open={open} taxes={taxes} setOpen={setOpen} dates={dates} handleInputChange={handleInputChange} usersRoles={usersRoles} handleDateChange={handleDateChange} handleAddUser={handleAddUser} allServices={allServices} handleFileChange={handleFileChange} fileName={fileName} />
     </Box>
   );
 }
