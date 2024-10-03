@@ -195,8 +195,8 @@ export default function AppLogin() {
                                     Login
                                 </Typography>
                                 <Typography level="body-sm">
-                                    New to alasam? <Link href="/register" level="title-sm">
-                                        Regsiter
+                                    New to beauty by mandy? <Link href="/register" level="title-sm">
+                                        Register
                                     </Link>
                                 </Typography>
                             </Stack>

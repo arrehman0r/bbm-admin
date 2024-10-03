@@ -122,10 +122,10 @@ export default function ViewDeals() {
   };
 
 
-  useEffect(() => {
-    fetchAgencyUserRoles();
+  // useEffect(() => {
+  //   fetchAgencyUserRoles();
   
-  }, []);
+  // }, []);
   const fetchAgencyUserRoles = async () => {
     try {
       const res = await getAgencyUserRoles();
@@ -209,7 +209,7 @@ export default function ViewDeals() {
       console.log("user data ;;;;;;;" ,userData?.id )
       let res;
       if (userData?.id) {
-        res = await getDailyDeals(userData?.id);
+        res = await getDailyDeals(userData?.businessId);
         console.log("all deals", res)
       }
 

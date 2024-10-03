@@ -74,9 +74,9 @@ export default function UserManagement() {
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
 
-  useEffect(() => {
-    fetchAgencyUserRoles();
-  }, []);
+  // useEffect(() => {
+  //   fetchAgencyUserRoles();
+  // }, []);
   const fetchAgencyUserRoles = async () => {
     try {
       const res = await getAgencyUserRoles();

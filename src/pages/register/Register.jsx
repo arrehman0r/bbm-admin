@@ -236,12 +236,12 @@ export default function AppRegister() {
                 // }}
               >
                   <FormControl required>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <Input type="first-name" name="firstName" value={formData.firstName} onChange={handleChange} />
                  
                 </FormControl>
                 <FormControl required>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Last Name</FormLabel>
                   <Input type="last-name" name="lastName" value={formData.lastName} onChange={handleChange} />
                  
                 </FormControl>
