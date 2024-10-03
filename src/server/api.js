@@ -255,7 +255,7 @@ export const getFlightSalesData = () => {
 };
 
 export const getDashboardData = () => {
-  return makeRequest("get", "flights/data");
+  return makeRequest("get", "business/getDetails");
 };
 
 export const getAllBookings = () => {

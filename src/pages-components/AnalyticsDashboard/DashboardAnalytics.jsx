@@ -153,6 +153,7 @@ const DashboardAnalytics = () => {
   useEffect(() => {
 
     // fetchAgencySalesData()
+    fetchDashboardData()
 
 
   }, [])
@@ -268,134 +269,134 @@ const DashboardAnalytics = () => {
       </Sheet>
 
       {/* Flight Sales Table */}
-      <Box
-        sx={{
-          p: 2, width: "100%",
-          height: "20rem",
-          marginTop: "120px",
-          display: "flex",
-          border: "1px solid #CCD6E0",
-          borderRadius: 'md',
-        }}
-      >
-        <Box style={{ width: "60%", height: "100%" }}>
-          <Box style={{ width: "100%", height: "5rem", display: "flex" }}>
-            <Box style={{ width: "60%", display: "flex", alignItems: "center" }}>
-              <Typography level="h3"> Business with Highest Sales</Typography>
-            </Box>
-            <Box
-              style={{
-                width: "40%",
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <Select
-                defaultValue="This year"
-                onChange={handleChange}
-                size="sm"
+
+      {flightSalesData.length > 0 &&
+        <Box
+          sx={{
+            p: 2, width: "100%",
+            height: "20rem",
+            marginTop: "120px",
+            display: "flex",
+            border: "1px solid #CCD6E0",
+            borderRadius: 'md',
+          }}
+        >
+          <Box style={{ width: "60%", height: "100%" }}>
+            <Box style={{ width: "100%", height: "5rem", display: "flex" }}>
+              <Box style={{ width: "60%", display: "flex", alignItems: "center" }}>
+                <Typography level="h3"> Business with Highest Sales</Typography>
+              </Box>
+              <Box
                 style={{
-                  height: "50%",
                   width: "40%",
-                  color: "#CCD6E0",
-                  border: "1px solid #CCD6E0",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
                 }}
               >
-                <Option value="this-year">This Year</Option>
-                <Option value="last-year">Last Year</Option>
-                <Option value="this-month">This Month</Option>
-                <Option value="custom-range">Custom Range</Option>
-              </Select>
+                <Select
+                  defaultValue="This year"
+                  onChange={handleChange}
+                  size="sm"
+                  style={{
+                    height: "50%",
+                    width: "40%",
+                    color: "#CCD6E0",
+                    border: "1px solid #CCD6E0",
+                  }}
+                >
+                  <Option value="this-year">This Year</Option>
+                  <Option value="last-year">Last Year</Option>
+                  <Option value="this-month">This Month</Option>
+                  <Option value="custom-range">Custom Range</Option>
+                </Select>
+              </Box>
+            </Box>
+            <Box style={{ width: "100%" }}>
+              <Table aria-label="flight sales data">
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'center' }}  >Business</th>
+                    <th style={{ textAlign: 'center' }} >Total Sales</th>
+                    <th style={{ textAlign: 'center' }}>Total Bookings</th>
+                    <th style={{ textAlign: 'center' }}>Destination</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {flightSalesData.map((row, index) => (
+                    <tr key={index}>
+                      <td style={{ textAlign: 'center' }}>{row.airline}</td>
+                      <td style={{ textAlign: 'center' }}>{row.totalSales}</td>
+                      <td style={{ textAlign: 'center' }}>{row.totalBookings}</td>
+                      <td style={{ textAlign: 'center' }}>{row.destination}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </Box>
           </Box>
-          <Box style={{ width: "100%" }}>
-            <Table aria-label="flight sales data">
-              <thead>
-                <tr>
-                  <th style={{ textAlign: 'center' }}  >Business</th>
-                  <th style={{ textAlign: 'center' }} >Total Sales</th>
-                  <th style={{ textAlign: 'center' }}>Total Bookings</th>
-                  <th style={{ textAlign: 'center' }}>Destination</th>
-                </tr>
-              </thead>
-              <tbody>
-                {flightSalesData.map((row, index) => (
-                  <tr key={index}>
-                    <td style={{ textAlign: 'center' }}>{row.airline}</td>
-                    <td style={{ textAlign: 'center' }}>{row.totalSales}</td>
-                    <td style={{ textAlign: 'center' }}>{row.totalBookings}</td>
-                    <td style={{ textAlign: 'center' }}>{row.destination}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+
+          <Box style={{ width: "40%", height: "100%" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={flightSalesData}
+                  dataKey="totalSales"
+                  nameKey="airline"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  label
+                >
+                  {flightSalesData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={["#8884d8", "#82ca9d", "#ffc658", "#d0ed57", "#a4de6c"][index % 5]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </Box>
+
+
         </Box>
-
-        <Box style={{ width: "40%", height: "100%" }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={flightSalesData}
-                dataKey="totalSales"
-                nameKey="airline"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                fill="#8884d8"
-                label
-              >
-                {flightSalesData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={["#8884d8", "#82ca9d", "#ffc658", "#d0ed57", "#a4de6c"][index % 5]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </Box>
-
-
-      </Box>
-
-      {/* Additional Sales Data */}
-      {userData?.role === "sale" ? <div>
-
-      </div>
-        :
-        (
-          <Box sx={{ p: 2, borderRadius: 'md', width: "100%", marginTop: "20px", color: "#CCD6E0", border: "1px solid #CCD6E0" }}>
-            <Typography level="h4">
-              {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Sales" : "Staff Sales"}
-            </Typography>
-
-            <Table aria-label="agency sales data">
-              <thead>
-                <tr>
-                  <th style={{ textAlign: 'center' }}> {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Name" : "Staff Name"}</th>
-                  <th style={{ textAlign: 'center' }}>Total Sales</th>
-                  <th style={{ textAlign: 'center' }}>Bookings</th>
-                  <th style={{ textAlign: 'center' }}>Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                {agencySalesData.map((agency, index) => (
-                  <tr key={index}>
-                    <td style={{ textAlign: 'center' }}>{agency.agencyName ? agency.agencyName : agency.staffName}</td>
-                    <td style={{ textAlign: 'center' }}>{agency.totalSales}</td>
-                    <td style={{ textAlign: 'center' }}>{agency.bookings}</td>
-                    <td style={{ textAlign: 'center' }}>{agency.location} USA </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Box>
-        )
       }
+      {/* Additional Sales Data */}
 
+      {agencySalesData.length > 0 &&
+        <Box sx={{ p: 2, borderRadius: 'md', width: "100%", marginTop: "20px", color: "#CCD6E0", border: "1px solid #CCD6E0" }}>
+
+
+          <Typography level="h4">
+            {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Sales" : "Staff Sales"}
+          </Typography>
+
+          <Table aria-label="agency sales data">
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'center' }}> {agencySalesData.length > 0 && agencySalesData[0].agencyName ? "Agency Name" : "Staff Name"}</th>
+                <th style={{ textAlign: 'center' }}>Total Sales</th>
+                <th style={{ textAlign: 'center' }}>Bookings</th>
+                <th style={{ textAlign: 'center' }}>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {agencySalesData.map((agency, index) => (
+                <tr key={index}>
+                  <td style={{ textAlign: 'center' }}>{agency.agencyName ? agency.agencyName : agency.staffName}</td>
+                  <td style={{ textAlign: 'center' }}>{agency.totalSales}</td>
+                  <td style={{ textAlign: 'center' }}>{agency.bookings}</td>
+                  <td style={{ textAlign: 'center' }}>{agency.location} USA </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Box>
+
+      }
 
     </Box>
   );
