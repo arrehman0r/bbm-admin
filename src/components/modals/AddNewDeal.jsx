@@ -11,9 +11,9 @@ import Divider from "@mui/joy/Divider";
 import AppTextArea from "../common/AppTextArea";
 import AppDatePicker from "../common/AppDatePicker";
 import DateRangeIcon from '@mui/icons-material/DateRange';
-const AddNewDealModal = ({ taxes, open, setOpen, handleInputChange, dates, fileName, handleAddUser, handleDateChange, handleFileChange, allServices }) => {
+const AddNewDealModal = ({ taxes, open, handleServiceInputChange, setOpen, handleInputChange, dates, fileName, handleAddUser, handleDateChange, handleFileChange, allServices }) => {
 
-
+console.log("All services" , allServices)
     return (
 
 

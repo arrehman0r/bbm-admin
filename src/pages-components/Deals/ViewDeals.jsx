@@ -77,10 +77,13 @@ export default function ViewDeals() {
   const [allServices, setAllAgencies] = useState([]);
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
+  const [selectedServices, setSelectedServices] = useState([]);
   const [dates, setDates] = useState({
     startDate: null,
     endDate: null
   });
+
+  // console.log("selectedServices", selectedServices)
   const [taxes, setTaxes] = useState([])
   const fetchAllTaxes = async () => {
 
@@ -93,6 +96,13 @@ export default function ViewDeals() {
     }
   }
 
+  const handleServiceInputChange = (event) => {
+    const { options } = event.target;
+    const selected = Array.from(options)
+      .filter(option => option.selected)
+      .map(option => option.value);
+    setSelectedServices(selected);
+  }
   const handleDateChange = (selectedDate, name) => {
     setDates(prevDates => {
       if (name === "startDate") {
@@ -306,7 +316,7 @@ export default function ViewDeals() {
 
   const handleAddUser = async () => {
     const { dealName, service, discountValue, description, minimumOrder, type, taxType } = userManagementRef.current;
-    console.log("we are checking all ");
+    console.log("we are checking all ", service);
 
     // Validate service (role), email, and username length
     if (!service) {
@@ -329,7 +339,9 @@ export default function ViewDeals() {
     formData.append('endDate', dates.endDate);
     formData.append('startDate', dates?.startDate);
     formData.append('minimumOrder', minimumOrder);
-    formData.append('serviceId', service);
+    service.forEach(serviceId => {
+      formData.append('servicesId[]', serviceId);
+  });
     formData.append('description', description);
     formData.append('type', type);
     formData.append('tax', taxType);
@@ -590,7 +602,7 @@ export default function ViewDeals() {
       }
 
 
-      <AddNewDealModal open={open} taxes={taxes} setOpen={setOpen} dates={dates} handleInputChange={handleInputChange} usersRoles={usersRoles} handleDateChange={handleDateChange} handleAddUser={handleAddUser} allServices={allServices} handleFileChange={handleFileChange} fileName={fileName} />
+      <AddNewDealModal handleServiceInputChange={handleServiceInputChange} open={open} taxes={taxes} setOpen={setOpen} dates={dates} handleInputChange={handleInputChange} usersRoles={usersRoles} handleDateChange={handleDateChange} handleAddUser={handleAddUser} allServices={allServices} handleFileChange={handleFileChange} fileName={fileName} />
     </Box>
   );
 }
