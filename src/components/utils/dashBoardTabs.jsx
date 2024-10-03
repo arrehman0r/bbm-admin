@@ -70,7 +70,7 @@ export const agencyTabs = [
 //  },
  {
   heading : "Report",
-  subheading:["Transaction Report","Wallet statement","Customer Statement"]
+  subheading:["Transaction Report","Wallet Statement","Customer Statement"]
  },
  {
   heading : "Account",
