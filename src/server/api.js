@@ -247,7 +247,7 @@ export const getSabreFlightsData = ({
 
 
 export const getAgencySalesData = () => {
-  return makeRequest("get", "flights/agencySaleData");
+  return makeRequest("get", "business/getDetails");
 };
 
 export const getFlightSalesData = () => {
@@ -287,3 +287,6 @@ export const getAllTaxes = () => {
   return makeRequest("get", `tax/getAll`);
 };
 
+export const getAllBusinessStaff = (id) => {
+  return makeRequest("get", `staff/getStaffByBusiness/${id}`);
+};

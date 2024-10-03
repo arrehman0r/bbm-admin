@@ -1,404 +1,245 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
-import Divider from "@mui/joy/Divider";
-import Box from "@mui/joy/Box";
-import Sheet from "@mui/joy/Sheet";
-import Table from "@mui/joy/Table";
-import Link from "@mui/joy/Link";
-import Checkbox from "@mui/joy/Checkbox";
-import InputField from "../../components/common/InputField";
-import FormSelect from "../../components/common/FormSelect";
-import FormCheckBox from "../../components/common/Checkbox";
-import AppButton from "../../components/common/AppButton";
-import { getAllBookings, getFlightBooking } from "../../server/api";
+import React, { useEffect, useState } from 'react';
+import Box from '@mui/joy/Box';
+import Sheet from '@mui/joy/Sheet';
+import Avatar from '@mui/joy/Avatar';
+import Typography from '@mui/joy/Typography';
+import Card from '@mui/joy/Card';
+import CircularProgress from '@mui/joy/CircularProgress';
+import Alert from '@mui/joy/Alert';
+import { styled } from '@mui/joy/styles';
+import { getAllBookings, getAllBusinessStaff } from "../../server/api";
 import { useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import { formatDate, tConvert } from "../../components/utils";
 
+// Styled components
+const TimeSlotTypography = styled(Typography)({
+  padding: '8px',
+  color: 'var(--joy-palette-text-tertiary)',
+  fontSize: '0.875rem',
+});
+
+const StaffHeader = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '8px',
+  borderBottom: '1px solid var(--joy-palette-divider)',
+  height: '64px',
+});
+
+const GridCell = styled(Box)({
+  height: '64px',
+  borderBottom: '1px solid var(--joy-palette-divider)',
+  padding: '4px',
+});
+
+const AppointmentCard = styled(Card)({
+  backgroundColor: 'var(--joy-palette-primary-softBg)',
+  height: '100%',
+  padding: '4px',
+  fontSize: '0.75rem',
+  cursor: 'pointer',
+  transition: 'transform 0.2s',
+  '&:hover': {
+    transform: 'scale(1.02)',
+  },
+});
+
+const ScrollableBox = styled(Box)({
+  overflowX: 'auto',
+  '&::-webkit-scrollbar': {
+    height: '8px',
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: 'var(--joy-palette-background-level1)',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: 'var(--joy-palette-neutral-outlinedBorder)',
+    borderRadius: '4px',
+  },
+});
+
+// Sub-components
+const TimeSlot = ({ time }) => (
+  <TimeSlotTypography>{time}</TimeSlotTypography>
+);
+
+const StaffHeaderComponent = ({ staff }) => (
+  <StaffHeader>
+    <Avatar
+      src={staff.profileImg}
+      alt={staff.firstName}
+      size="sm"
+    >
+      {staff.firstName[0]}{staff.lastName ? staff.lastName[0] : ''}
+    </Avatar>
+    <Typography level="body-sm" fontWeight="md" >
+      {staff.firstName}
+    </Typography>
+  </StaffHeader>
+);
+
+const AppointmentBlock = ({ appointment }) => (
+  <AppointmentCard variant="soft">
+    <Typography level="body-sm" fontWeight="md">
+      {appointment.customer.firstName}
+    </Typography>
+    <Typography level="body-xs">
+      {appointment.serviceName}
+    </Typography>
+    <Typography level="body-xs">
+      ${appointment.price}
+    </Typography>
+  </AppointmentCard>
+);
+
+const LoadingState = () => (
+  <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+    <CircularProgress />
+  </Box>
+);
+
+const ErrorState = ({ error }) => (
+  <Alert color="danger" sx={{ m: 2 }}>
+    {error}
+  </Alert>
+);
+
+const EmptyState = () => (
+  <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+    <Typography level="body-lg" color="neutral">
+      No appointments scheduled for today
+    </Typography>
+  </Box>
+);
+
 const TodaysAppointments = () => {
-  const flightBookingRef = useRef({});
-  const [errors, setErrors] = useState({});
-  const agentData = useSelector((state) => state.user.loginUser);
-  const [selected, setSelected] = useState([]);
-  const [agencies, setAgencies] = useState([]);
-  const [flightBooking, setFlightBooking]= useState([])
-  const agentID = agentData;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [todaysBooking, setTodaysBooking] = useState([]);
+  const [allStaff, setAllStaff] = useState([]);
   
+  const userData = useSelector((state) => state.user.loginUser);
   const { enqueueSnackbar } = useSnackbar();
-  console.log("agentID", agentID);
-
   
-  const handleInputChange = useCallback((event) => {
-    const { name, value } = event.target;
-    flightBookingRef.current[name] = value;
-  }, []);
+  const timeSlots = Array.from({ length: 10 }, (_, i) => `${i + 9}:00`);
 
-  const validateForm = () => {
-    const newErrors = {};
-    const requiredFields = ["tripID", "bookingID"];
-
-    requiredFields.forEach((field) => {
-      if (!flightBookingRef.current[field]) {
-        newErrors[field] = true;
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleFlightBookingSearch = async () => {
-    if (!validateForm()) {
-      enqueueSnackbar("Please fill in all required fields.", {
-        variant: "error",
-      });
-      return;
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const [bookingsResponse, staffResponse] = await Promise.all([
+        getAllBookings(),
+        getAllBusinessStaff(userData?.businessId)
+      ]);
+      console.log("bookingsResponse", bookingsResponse,staffResponse )
+      setTodaysBooking(bookingsResponse.result || []);
+      setAllStaff(staffResponse.body || []);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("Failed to load appointments data");
+      enqueueSnackbar("Error loading appointments", { variant: "error" });
+    } finally {
+      setLoading(false);
     }
-
-    const body = {
-      // agent_ID: agentID
-    };
-
-   
   };
 
-const fetchAllFlightBookings = async()=>{
-  try {
-    const res = await getAllBookings();
-    setFlightBooking(res.result)
-    // enqueueSnackbar("Flight Search Successful!", { variant: "success" });
-    // Reset form or handle any post-submit actions
-  } catch (error) {
-    console.error("Error searching appointments:", error);
-    enqueueSnackbar("Error searching appointments", { variant: "error" });
-  }
-}
+  useEffect(() => {
+    fetchData();
+  }, [userData?.businessId]);
 
-useEffect(()=>{
-  fetchAllFlightBookings()
-},[])
+  const getAppointmentForStaffAndTime = (staffEmail, time) => {
+    return todaysBooking.find(booking => 
+      booking.staff.email === staffEmail && 
+      booking.slots[0]?.startTime === time
+    );
+  };
+
+  if (loading) return <LoadingState />;
+  if (error) return <ErrorState error={error} />;
+  if (!allStaff.length || !todaysBooking.length) return <EmptyState />;
 
   return (
-    <div>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: 'center',
-          gap: 2,
-        }}
-      >
-        {formFields.map(
-          ({ component: Field, label, name, error, placeholder }, index) => (
-            <Box
-              key={index}
-              sx={{
-                flexBasis: "calc(33.333% - 16px)",
-                flexGrow: 0,
-                flexShrink: 0,
-              }}
-            >
-              <Field
-                label={label}
-                name={name}
-                fullWidth
-                onChange={handleInputChange}
-                error={error}
-                placeholder={placeholder}
-              />
-            </Box>
-          )
-        )}
-           <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 2,
-          mt: 3,
-        }}
-      >
-        {/* <AppButton
-          text="Reset"
-          variant="outlined"
-          color="#A67E85"
-          bgColor="#A67E85"
-        /> */}
-        <AppButton
-          text="Search"
-          variant="solid"
-          color="#fff"
-          bgColor="#A67E85"
-          width="120px"
-          onClick={handleFlightBookingSearch}
-        />
-      </Box>
-      </Box>
-      {/* <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 4,
-          mt: 3,
-        }}
-      >
-        <FormCheckBox label="Is Pay at Agency" />
-        <FormCheckBox label="Is Import PNR" />
-        <FormCheckBox label="Is Promo Code Applied" />
+    <Sheet
+      variant="outlined"
+      sx={{
+        borderRadius: 'sm',
+        overflow: 'hidden',
+      }}
+    >
+      {/* <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        p: 2,
+        borderBottom: '1px solid',
+        borderColor: 'divider'
+      }}>
+        <Typography level="h2">Today's Schedule</Typography>
+        <Typography level="body-sm">
+          {formatDate(new Date().toISOString())}
+        </Typography>
       </Box> */}
-   
-     
-
-      <Divider sx={{ mt: 3 }} />
-
-      <Sheet
-        className="OrderTableContainer"
-        variant="outlined"
-        sx={{
-          display: { xs: "none", sm: "initial" },
-          width: "100%",
-          borderRadius: "sm",
-          flexShrink: 1,
-          overflow: "auto",
-          minHeight: 0,
-        }}
-      >
-        <Table
-          aria-labelledby="tableTitle"
-          stickyHeader
-          hoverRow
-          sx={{
-            "--TableCell-headBackground":
-              "var(--joy-palette-background-level1)",
-            "--Table-headerUnderlineThickness": "1px",
-            "--TableRow-hoverBackground":
-              "var(--joy-palette-background-level1)",
-            "--TableCell-paddingY": "4px",
-            "--TableCell-paddingX": "8px",
-          }}
-        >
-          <thead>
-            <tr>
-              {/* <th>
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== agencies.length
-                  }
-                  checked={selected.length === agencies.length}
-                  onChange={(event) =>
-                    setSelected(
-                      event.target.checked ? agencies.map((row) => row.id) : []
-                    )
-                  }
-                />
-              </th> */}
-              <th style={{ textAlign: 'center' }}>Service Name</th>
-             
-              <th style={{ textAlign: 'center' }}>Service Price</th>
-              <th style={{ textAlign: 'center' }}>Date</th>
-
-            
-             
-              <th style={{ textAlign: 'center' }}>Time</th>
-              <th style={{ textAlign: 'center' }}>Status</th>
-              <th style={{ textAlign: 'center' }}>Booking Id </th>
-            
-              <th />
-            </tr>
-          </thead>
-          {flightBooking.length > 0 && (
-            <tbody>
-              {flightBooking.map(
-                (row) => (
-                  <tr key={row._id}>
-                    {/* <td>
-                      <Checkbox
-                        size="sm"
-                        checked={selected.includes(row.userName)}
-                        onChange={(event) =>
-                          setSelected(
-                            event.target.checked
-                              ? [...selected, row.userName]
-                              : selected.filter((name) => name !== row.userName)
-                          )
-                        }
-                      />
-                    </td> */}
-                    <td style={{ textAlign: 'center' }}>{row.serviceName}</td>
-                    <td style={{ textAlign: 'center' }}>${row?.price}</td>
-                    <td style={{ textAlign: 'center' }}>{formatDate(row.slots[0]?.startDate)}</td>
-                    <td style={{ textAlign: 'center' }}>{tConvert(row?.slots[0]?.startTime)}</td>
-                  
-                  
-                    <td style={{ textAlign: 'center' }}>{row.customer?.firstName}</td>
-                    <td style={{ textAlign: 'center' }}>{row.bookingId}</td>
-                    <td>
-                    
-                      {/* <RowMenu /> */}
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          )}
-        </Table>
-      </Sheet>
-    </div>
+      
+      <Box sx={{ display: 'flex' }}>
+        {/* Time column */}
+        <Box sx={{ 
+          width: '80px', 
+          borderRight: '1px solid', 
+          borderColor: 'divider',
+          flexShrink: 0,
+          bgcolor: 'background.level1'
+        }}>
+          <Box sx={{ height: 64 }} /> {/* Empty top-left cell */}
+          {timeSlots.map(time => (
+            <GridCell key={time}>
+              <TimeSlot time={time} />
+            </GridCell>
+          ))}
+        </Box>
+        
+        {/* Staff columns */}
+        <ScrollableBox>
+          <Box sx={{ display: 'flex', minWidth: 'max-content' }}>
+            {allStaff.map(staff => (
+              <Box 
+                key={staff.id} 
+                sx={{ 
+                  width: 200, 
+                  borderRight: '1px solid', 
+                  borderColor: 'divider',
+                  '&:last-child': {
+                    borderRight: 'none',
+                  },
+                }}
+              >
+                <StaffHeaderComponent staff={staff} />
+                {timeSlots.map(time => {
+                  const appointment = getAppointmentForStaffAndTime(staff.email, time);
+                  return (
+                    <GridCell key={`${staff.email}-${time}`}>
+                      {appointment && (
+                        <AppointmentBlock 
+                          appointment={appointment}
+                          onClick={() => {
+                            enqueueSnackbar(`Appointment: ${appointment.serviceName} with ${appointment.customer.firstName}`, {
+                              variant: "info"
+                            });
+                          }}
+                        />
+                      )}
+                    </GridCell>
+                  );
+                })}
+              </Box>
+            ))}
+          </Box>
+        </ScrollableBox>
+      </Box>
+    </Sheet>
   );
 };
 
 export default TodaysAppointments;
-
-
-
-const formFields = [
-  {
-    component: InputField,
-    label: "Customer Name",
-    name: "tripID",
-    // error: errors.tripID,
-  },
-  // {
-  //   component: InputField,
-  //   label: "Booking ID",
-  //   name: "bookingID",
-  //   error: errors.bookingID,
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Session ID",
-  //   name: "sessionID",
-  //   error: errors.sessionID,
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Payment Transaction ID",
-  //   name: "paymentTransactionID",
-  //   error: errors.paymentTransactionID,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Agency Type",
-  //   name: "agencyType",
-  //   error: errors.agencyType,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Agency",
-  //   name: "agency",
-  //   error: errors.agency,
-  //   placeholder: "Please enter 3 or more characters",
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Supplier Ref/PNR",
-  //   name: "supplierRefPNR",
-  //   error: errors.supplierRefPNR,
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Ticket Number",
-  //   name: "ticketNumber",
-  //   error: errors.ticketNumber,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Suppliers",
-  //   name: "suppliers",
-  //   error: errors.suppliers,
-  //   placeholder: "All supplier",
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Pax Name",
-  //   name: "paxName",
-  //   error: errors.paxName,
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Contact No.",
-  //   name: "contactNo",
-  //   error: errors.contactNo,
-  // },
-  {
-    component: InputField,
-    label: "Booking Id",
-    name: "bookingId",
-    // error: errors.email,
-  },
-  // {
-  //   component: FormSelect,
-  //   label: "Ancillary Booking Status",
-  //   name: "ancillaryBookingStatus",
-  //   error: errors.ancillaryBookingStatus,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Booking Status",
-  //   name: "bookingStatus",
-  //   error: errors.bookingStatus,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Invoice Status",
-  //   name: "invoiceStatus",
-  //   error: errors.invoiceStatus,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Payment Mode",
-  //   name: "paymentMode",
-  //   error: errors.paymentMode,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Payment Status",
-  //   name: "paymentStatus",
-  //   error: errors.paymentStatus,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Fare Type",
-  //   name: "fareType",
-  //   error: errors.fareType,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Date Type",
-  //   name: "dateType",
-  //   error: errors.dateType,
-  //   placeholder: "Booking Date",
-  // },
-  // {
-  //   component: InputField,
-  //   label: "From Date",
-  //   name: "fromDate",
-  //   error: errors.fromDate,
-  //   placeholder: "Select Date",
-  // },
-  // {
-  //   component: InputField,
-  //   label: "To Date",
-  //   name: "toDate",
-  //   error: errors.toDate,
-  //   placeholder: "Select Date",
-  // },
-  // {
-  //   component: InputField,
-  //   label: "Promo Code",
-  //   name: "promoCode",
-  //   error: errors.promoCode,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Risk Criteria",
-  //   name: "riskCriteria",
-  //   error: errors.riskCriteria,
-  // },
-  // {
-  //   component: FormSelect,
-  //   label: "Assign User",
-  //   name: "assignUser",
-  //   error: errors.assignUser,
-  //   placeholder: "Search",
-  // },
-];
