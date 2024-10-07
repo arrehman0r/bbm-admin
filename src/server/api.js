@@ -81,7 +81,7 @@ export const updateAgencyUserStatus = (id, body) => {
 }
 
 export const userLogin = (body) => {
-  return makeRequest("post", "auth/login", body)
+  return makeRequest("post", "auth/adminLogin", body)
 };
 
 export const userRegister = (body) => {
@@ -290,3 +290,8 @@ export const getAllTaxes = () => {
 export const getAllBusinessStaff = (id) => {
   return makeRequest("get", `staff/getStaffByBusiness/${id}`);
 };
+
+export const verifyEmail = (token) => {
+  return makeRequest("get", `auth/verifyEmail?token=${token}`);
+};
+
