@@ -547,7 +547,8 @@ export default function ViewDeals() {
                     </td> */}
 
                       <td>{row?.name}</td>
-                      <td>${row?.discountValue}</td>
+                      <td>${row?.finalPrice?.toFixed(1)}</td>
+
                       <td>{formatDate(row?.endDate)}</td>
 
                       <td>  {row?.servicesId.map((service) => service.name).join(', ')}</td>
