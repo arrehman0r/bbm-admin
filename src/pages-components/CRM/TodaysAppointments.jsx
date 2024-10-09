@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Avatar from '@mui/joy/Avatar';
 import Typography from '@mui/joy/Typography';
 import Card from '@mui/joy/Card';
+import CircularProgress from '@mui/joy/CircularProgress';
 import { styled } from '@mui/joy/styles';
+import { getAllBookings, getAllBusinessStaff } from "../../server/api";
+import { useSelector } from "react-redux";
 
 // Styled components (unchanged)
 const TimeSlotTypography = styled(Typography)({
@@ -99,7 +102,6 @@ const hardcodedStaff = [
   { id: 7, firstName: 'Jessica', lastName: 'Taylor', email: 'jessica.taylor@example.com', profileImg: '' },
 ];
 
-// ... rest of the code remains the same
 const hardcodedAppointments = [
   {
     bookingId: '1',
@@ -131,14 +133,50 @@ const hardcodedAppointments = [
 ];
 
 const TodaysAppointments = () => {
+  const [loading, setLoading] = useState(true);
+  const [staff, setStaff] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const userData = useSelector((state) => state.user.loginUser);
+
   const timeSlots = Array.from({ length: 10 }, (_, i) => `${i + 9}:00`);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [bookingsResponse, staffResponse] = await Promise.all([
+          getAllBookings(),
+          getAllBusinessStaff(userData?.businessId)
+        ]);
+        setAppointments(bookingsResponse.result || []);
+        setStaff(staffResponse.body || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Fallback to hardcoded data
+        setAppointments(hardcodedAppointments);
+        setStaff(hardcodedStaff);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [userData?.businessId]);
+
   const getAppointmentForStaffAndTime = (staffEmail, time) => {
-    return hardcodedAppointments.find(booking =>
+    return appointments.find(booking =>
       booking.staff.email === staffEmail &&
       booking.slots[0]?.startTime === time
     );
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Sheet
@@ -168,9 +206,9 @@ const TodaysAppointments = () => {
         {/* Staff columns */}
         <ScrollableBox>
           <Box sx={{ display: 'flex', minWidth: 'max-content' }}>
-            {hardcodedStaff.map(staff => (
+            {staff.map(staffMember => (
               <Box
-                key={staff.id}
+                key={staffMember.id}
                 sx={{
                   width: 200,
                   borderRight: '1px solid',
@@ -180,11 +218,11 @@ const TodaysAppointments = () => {
                   },
                 }}
               >
-                <StaffHeaderComponent staff={staff} />
+                <StaffHeaderComponent staff={staffMember} />
                 {timeSlots.map(time => {
-                  const appointment = getAppointmentForStaffAndTime(staff.email, time);
+                  const appointment = getAppointmentForStaffAndTime(staffMember.email, time);
                   return (
-                    <GridCell key={`${staff.email}-${time}`}>
+                    <GridCell key={`${staffMember.email}-${time}`}>
                       {appointment && (
                         <AppointmentBlock
                           appointment={appointment}
