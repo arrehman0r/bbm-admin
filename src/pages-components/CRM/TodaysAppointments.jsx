@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Box from '@mui/joy/Box';
 import Sheet from '@mui/joy/Sheet';
 import Avatar from '@mui/joy/Avatar';
 import Typography from '@mui/joy/Typography';
 import Card from '@mui/joy/Card';
-import CircularProgress from '@mui/joy/CircularProgress';
-import Alert from '@mui/joy/Alert';
 import { styled } from '@mui/joy/styles';
-import { getAllBookings, getAllBusinessStaff } from "../../server/api";
-import { useSelector } from "react-redux";
-import { useSnackbar } from "notistack";
-import { formatDate, tConvert } from "../../components/utils";
 
-// Styled components
+// Styled components (unchanged)
 const TimeSlotTypography = styled(Typography)({
   padding: '8px',
   color: 'var(--joy-palette-text-tertiary)',
@@ -60,7 +54,7 @@ const ScrollableBox = styled(Box)({
   },
 });
 
-// Sub-components
+// Sub-components (unchanged)
 const TimeSlot = ({ time }) => (
   <TimeSlotTypography>{time}</TimeSlotTypography>
 );
@@ -94,72 +88,57 @@ const AppointmentBlock = ({ appointment }) => (
   </AppointmentCard>
 );
 
-const LoadingState = () => (
-  <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-    <CircularProgress />
-  </Box>
-);
+// Hardcoded data
+const hardcodedStaff = [
+  { id: 1, firstName: 'Mary', lastName: 'Thomas', email: 'mary.thomas@example.com', profileImg: '' },
+  { id: 2, firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', profileImg: '' },
+  { id: 3, firstName: 'Sarah', lastName: 'Smith', email: 'sarah.smith@example.com', profileImg: '' },
+  { id: 4, firstName: 'Michael', lastName: 'Johnson', email: 'michael.johnson@example.com', profileImg: '' },
+  { id: 5, firstName: 'Emily', lastName: 'Brown', email: 'emily.brown@example.com', profileImg: '' },
+  { id: 6, firstName: 'David', lastName: 'Wilson', email: 'david.wilson@example.com', profileImg: '' },
+  { id: 7, firstName: 'Jessica', lastName: 'Taylor', email: 'jessica.taylor@example.com', profileImg: '' },
+];
 
-const ErrorState = ({ error }) => (
-  <Alert color="danger" sx={{ m: 2 }}>
-    {error}
-  </Alert>
-);
-
-const EmptyState = () => (
-  <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-    <Typography level="body-lg" color="neutral">
-      No appointments scheduled for today
-    </Typography>
-  </Box>
-);
+// ... rest of the code remains the same
+const hardcodedAppointments = [
+  {
+    bookingId: '1',
+    serviceName: 'Haircut',
+    slots: [{ startTime: '10:00' }],
+    status: 'BOOKED',
+    customer: { firstName: 'Alice', lastName: 'Johnson' },
+    price: 50,
+    staff: { email: 'mary.thomas@example.com' }
+  },
+  {
+    bookingId: '2',
+    serviceName: 'Manicure',
+    slots: [{ startTime: '11:00' }],
+    status: 'BOOKED',
+    customer: { firstName: 'Bob', lastName: 'Smith' },
+    price: 30,
+    staff: { email: 'john.doe@example.com' }
+  },
+  {
+    bookingId: '3',
+    serviceName: 'Massage',
+    slots: [{ startTime: '14:00' }],
+    status: 'BOOKED',
+    customer: { firstName: 'Carol', lastName: 'Davis' },
+    price: 80,
+    staff: { email: 'sarah.smith@example.com' }
+  },
+];
 
 const TodaysAppointments = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [todaysBooking, setTodaysBooking] = useState([]);
-  const [allStaff, setAllStaff] = useState([]);
-  
-  const userData = useSelector((state) => state.user.loginUser);
-  const { enqueueSnackbar } = useSnackbar();
-  
   const timeSlots = Array.from({ length: 10 }, (_, i) => `${i + 9}:00`);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const [bookingsResponse, staffResponse] = await Promise.all([
-        getAllBookings(),
-        getAllBusinessStaff(userData?.businessId)
-      ]);
-      console.log("bookingsResponse", bookingsResponse,staffResponse )
-      setTodaysBooking(bookingsResponse.result || []);
-      setAllStaff(staffResponse.body || []);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      setError("Failed to load appointments data");
-      enqueueSnackbar("Error loading appointments", { variant: "error" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [userData?.businessId]);
-
   const getAppointmentForStaffAndTime = (staffEmail, time) => {
-    return todaysBooking.find(booking => 
-      booking.staff.email === staffEmail && 
+    return hardcodedAppointments.find(booking =>
+      booking.staff.email === staffEmail &&
       booking.slots[0]?.startTime === time
     );
   };
-
-  if (loading) return <LoadingState />;
-  if (error) return <ErrorState error={error} />;
-  if (!allStaff.length || !todaysBooking.length) return <EmptyState />;
 
   return (
     <Sheet
@@ -169,25 +148,11 @@ const TodaysAppointments = () => {
         overflow: 'hidden',
       }}
     >
-      {/* <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        p: 2,
-        borderBottom: '1px solid',
-        borderColor: 'divider'
-      }}>
-        <Typography level="h2">Today's Schedule</Typography>
-        <Typography level="body-sm">
-          {formatDate(new Date().toISOString())}
-        </Typography>
-      </Box> */}
-      
       <Box sx={{ display: 'flex' }}>
         {/* Time column */}
-        <Box sx={{ 
-          width: '80px', 
-          borderRight: '1px solid', 
+        <Box sx={{
+          width: '80px',
+          borderRight: '1px solid',
           borderColor: 'divider',
           flexShrink: 0,
           bgcolor: 'background.level1'
@@ -199,16 +164,16 @@ const TodaysAppointments = () => {
             </GridCell>
           ))}
         </Box>
-        
+
         {/* Staff columns */}
         <ScrollableBox>
           <Box sx={{ display: 'flex', minWidth: 'max-content' }}>
-            {allStaff.map(staff => (
-              <Box 
-                key={staff.id} 
-                sx={{ 
-                  width: 200, 
-                  borderRight: '1px solid', 
+            {hardcodedStaff.map(staff => (
+              <Box
+                key={staff.id}
+                sx={{
+                  width: 200,
+                  borderRight: '1px solid',
                   borderColor: 'divider',
                   '&:last-child': {
                     borderRight: 'none',
@@ -221,13 +186,8 @@ const TodaysAppointments = () => {
                   return (
                     <GridCell key={`${staff.email}-${time}`}>
                       {appointment && (
-                        <AppointmentBlock 
+                        <AppointmentBlock
                           appointment={appointment}
-                          onClick={() => {
-                            enqueueSnackbar(`Appointment: ${appointment.serviceName} with ${appointment.customer.firstName}`, {
-                              variant: "info"
-                            });
-                          }}
                         />
                       )}
                     </GridCell>
